@@ -25,14 +25,6 @@
             "debug": false
           },
           {
-            "path": "external/web/WebExternalInterface.ts",
-            "platform": "web"
-          },
-          {
-            "path": "localStorage/web/WebLocalStorage.ts",
-            "platform": "web"
-          },
-          {
             "path": "media/web/HtmlSound.ts",
             "platform": "web"
           },
@@ -109,10 +101,6 @@
             "platform": "web"
           },
           {
-            "path": "web/WebXML.ts",
-            "platform": "web"
-          },
-          {
             "path": "sensor/web/WebDeviceOrientation.ts",
             "platform": "web"
           },
@@ -122,10 +110,6 @@
           },
           {
             "path": "sensor/web/WebMotion.ts",
-            "platform": "web"
-          },
-          {
-            "path": "utils/web/WebLogger.ts",
             "platform": "web"
           },
           {
@@ -173,16 +157,6 @@
         "dependencies": []
       },
       {
-        "name": "eui",
-        "description": "eui 界面制作库",
-        "description_en": "UI lib",
-        "files": [],
-        "root": "src/extension/eui",
-        "dependencies": [
-          "egret"
-        ]
-      },
-      {
         "name": "assetsmanager",
         "description": "assetsmanager 资源管理器",
         "description_en": "AssetsManager",
@@ -197,16 +171,6 @@
         "files": [],
         "root": "",
         "dependencies": []
-      },
-      {
-        "name": "game",
-        "description": "game 游戏库",
-        "description_en": "game lib",
-        "files": [],
-        "root": "src/extension/game",
-        "dependencies": [
-          "egret"
-        ]
       },
       {
         "name": "tween",
@@ -242,16 +206,6 @@
         "name": "egret-facebook",
         "description": "Facebook Instant Games SDK",
         "description_en": "Facebook Instant Games SDK",
-        "files": [],
-        "root": "",
-        "dependencies": [
-          "egret"
-        ]
-      },
-      {
-        "name": "egretia-sdk",
-        "description": "Egretia SDK",
-        "description_en": "Egretia SDK",
         "files": [],
         "root": "",
         "dependencies": [
@@ -293,23 +247,6 @@
         ]
       },
       {
-        "name": "eui",
-        "displayName": "Egret EUI 项目",
-        "displayName_en": "Egret EUI project",
-        "language": "TypeScript",
-        "tag": "game,app,TypeScript",
-        "description": "使用 eui 扩展库创建友好的交互界面",
-        "description_en": "Create friendly interactive UI with eui extensions",
-        "defaultWidth": 640,
-        "defaultHeight": 1136,
-        "modules": [
-          "egret",
-          "eui",
-          "assetsmanager",
-          "tween"
-        ]
-      },
-      {
         "name": "facebook-instant-demo",
         "displayName": "Facebook Instant Game 项目",
         "displayName_en": "Facebook Instant Game project",
@@ -323,7 +260,6 @@
           "egret",
           "game",
           "res",
-          "eui",
           "tween"
         ]
       }
