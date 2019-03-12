@@ -279,7 +279,7 @@ namespace egret.web {
         }
 
         private screenChanged = (e): void => {
-            let isfullscreen = document.fullscreenEnabled || document.webkitIsFullScreen;
+            let isfullscreen = document.fullscreenEnabled || (document as any).webkitIsFullScreen;
             if (!isfullscreen) {
                 this.checkFullScreen(false);
 

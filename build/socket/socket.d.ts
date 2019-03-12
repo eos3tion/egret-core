@@ -241,23 +241,23 @@ declare namespace egret {
          * @private
          *
          */
-        private onConnect();
+        private onConnect;
         /**
          * @private
          *
          */
-        private onClose();
+        private onClose;
         /**
          * @private
          *
          */
-        private onError();
+        private onError;
         /**
          * @private
          *
          * @param message
          */
-        private onSocketData(message);
+        private onSocketData;
         /**
          * Refresh all data accumulated in the output buffer area of the socket
          * @version Egret 2.4
@@ -408,7 +408,7 @@ declare namespace egret.web {
         private port;
         connect(host: string, port: number): void;
         connectByUrl(url: string): void;
-        private _bindEvent();
+        private _bindEvent;
         send(message: any): void;
         close(): void;
         disconnect(): void;

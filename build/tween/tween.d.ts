@@ -692,7 +692,7 @@ declare namespace egret {
          * @param delta
          * @param paused
          */
-        private static tick(timeStamp, paused?);
+        private static tick;
         private static _lastTime;
         /**
          * @private
@@ -700,7 +700,7 @@ declare namespace egret {
          * @param tween
          * @param value
          */
-        private static _register(tween, value);
+        private static _register;
         /**
          * Delete all Tween
          * @version Egret 2.4
@@ -728,7 +728,7 @@ declare namespace egret {
          * @param props
          * @param pluginData
          */
-        private initialize(target, props, pluginData);
+        private initialize;
         /**
          * @private
          *
@@ -744,14 +744,14 @@ declare namespace egret {
          * @param endPos
          * @param includeStart
          */
-        private _runAction(action, startPos, endPos, includeStart?);
+        private _runAction;
         /**
          * @private
          *
          * @param step
          * @param ratio
          */
-        private _updateTargetProps(step, ratio);
+        private _updateTargetProps;
         /**
          * Whether setting is paused
          * @param value {boolean} Whether to pause
@@ -775,35 +775,35 @@ declare namespace egret {
          * @param props
          * @returns
          */
-        private _cloneProps(props);
+        private _cloneProps;
         /**
          * @private
          *
          * @param o
          * @returns
          */
-        private _addStep(o);
+        private _addStep;
         /**
          * @private
          *
          * @param o
          * @returns
          */
-        private _appendQueueProps(o);
+        private _appendQueueProps;
         /**
          * @private
          *
          * @param o
          * @returns
          */
-        private _addAction(o);
+        private _addAction;
         /**
          * @private
          *
          * @param props
          * @param o
          */
-        private _set(props, o);
+        private _set;
         /**
          * Wait the specified milliseconds before the execution of the next animation
          * @param duration {number} Waiting time, in milliseconds
@@ -1260,10 +1260,10 @@ declare namespace egret.tween {
          * @language zh_CN
          */
         stop(): void;
-        private createTween(position);
-        private applyPaths();
-        private applyPath(path);
-        private pathComplete(path);
+        private createTween;
+        private applyPaths;
+        private applyPath;
+        private pathComplete;
     }
     /**
      * TweenGroup is a collection of TweenItem that can be played in parallel with each Item
@@ -1303,7 +1303,7 @@ declare namespace egret.tween {
          * @language zh_CN
          */
         items: TweenItem[];
-        private registerEvent(add);
+        private registerEvent;
         /**
          * Play the all TweenItems
          * @time The starting position, the default is from the last position to play。If use 0, the group will play from the start position.
@@ -1345,6 +1345,6 @@ declare namespace egret.tween {
          * @language zh_CN
          */
         stop(): void;
-        private itemComplete(e);
+        private itemComplete;
     }
 }

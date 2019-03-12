@@ -1,13 +1,19 @@
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
-var __extends = this && this.__extends || function __extends(t, e) { 
- function r() { 
- this.constructor = t;
-}
-for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
-r.prototype = e.prototype, t.prototype = new r();
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -97,7 +103,7 @@ var egret;
      * @includeExample extension/socket/WebSocket.ts
      * @language zh_CN
      */
-    var WebSocket = (function (_super) {
+    var WebSocket = /** @class */ (function (_super) {
         __extends(WebSocket, _super);
         /**
          * Create an egret.WebSocket object
@@ -508,7 +514,7 @@ var egret;
         /**
          * @private
          */
-        var HTML5WebSocket = (function () {
+        var HTML5WebSocket = /** @class */ (function () {
             function HTML5WebSocket() {
                 this.host = "";
                 this.port = 0;

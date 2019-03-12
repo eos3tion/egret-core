@@ -355,7 +355,7 @@ namespace egret {
          * @language zh_CN
          */
         public lineStyle(thickness: number = NaN, color: number = 0, alpha: number = 1.0, pixelHinting: boolean = false,
-            scaleMode: string = "normal", caps: string = null, joints: string = null, miterLimit: number = 3, lineDash?: number[]): void {
+            scaleMode: string = "normal", caps: string = null, joints: CanvasLineJoin = null, miterLimit: number = 3, lineDash?: number[]): void {
             thickness = +thickness || 0;
             color = +color || 0;
             alpha = +alpha || 0;
