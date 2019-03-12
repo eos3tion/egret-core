@@ -18,7 +18,7 @@ and limitations under the License.
 /// <reference no-default-lib="true"/>
 
 
-/// <reference path="lib.es2015.symbol.d.ts" />
+/// <reference lib="es2015.symbol" />
 
 interface SymbolConstructor {
     /**
@@ -83,7 +83,7 @@ interface SymbolConstructor {
 }
 
 interface Symbol {
-    readonly [Symbol.toStringTag]: "Symbol";
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface Array<T> {
@@ -127,23 +127,23 @@ interface Date {
 }
 
 interface Map<K, V> {
-    readonly [Symbol.toStringTag]: "Map";
+    readonly [Symbol.toStringTag]: string;
 }
 
-interface WeakMap<K extends object, V>{
-    readonly [Symbol.toStringTag]: "WeakMap";
+interface WeakMap<K extends object, V> {
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface Set<T> {
-    readonly [Symbol.toStringTag]: "Set";
+    readonly [Symbol.toStringTag]: string;
 }
 
-interface WeakSet<T> {
-    readonly [Symbol.toStringTag]: "WeakSet";
+interface WeakSet<T extends object> {
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface JSON {
-    readonly [Symbol.toStringTag]: "JSON";
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface Function {
@@ -158,19 +158,19 @@ interface Function {
 }
 
 interface GeneratorFunction {
-    readonly [Symbol.toStringTag]: "GeneratorFunction";
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface Math {
-    readonly [Symbol.toStringTag]: "Math";
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface Promise<T> {
-    readonly [Symbol.toStringTag]: "Promise";
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface PromiseConstructor {
-    readonly [Symbol.species]: Function;
+    readonly [Symbol.species]: PromiseConstructor;
 }
 
 interface RegExp {
@@ -222,7 +222,7 @@ interface RegExp {
 }
 
 interface RegExpConstructor {
-    [Symbol.species](): RegExpConstructor;
+    readonly [Symbol.species]: RegExpConstructor;
 }
 
 interface String {
@@ -260,88 +260,59 @@ interface String {
     split(splitter: { [Symbol.split](string: string, limit?: number): string[]; }, limit?: number): string[];
 }
 
-/**
- * Represents a raw buffer of binary data, which is used to store data for the
- * different typed arrays. ArrayBuffers cannot be read from or written to directly,
- * but can be passed to a typed array or DataView Object to interpret the raw
- * buffer as needed.
- */
 interface ArrayBuffer {
-    readonly [Symbol.toStringTag]: "ArrayBuffer";
+    readonly [Symbol.toStringTag]: string;
 }
 
 interface DataView {
-    readonly [Symbol.toStringTag]: "DataView";
+    readonly [Symbol.toStringTag]: string;
 }
 
-/**
- * A typed array of 8-bit integer values. The contents are initialized to 0. If the requested
- * number of bytes could not be allocated an exception is raised.
- */
 interface Int8Array {
     readonly [Symbol.toStringTag]: "Int8Array";
 }
 
-/**
- * A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the
- * requested number of bytes could not be allocated an exception is raised.
- */
 interface Uint8Array {
     readonly [Symbol.toStringTag]: "UInt8Array";
 }
 
-/**
- * A typed array of 8-bit unsigned integer (clamped) values. The contents are initialized to 0.
- * If the requested number of bytes could not be allocated an exception is raised.
- */
 interface Uint8ClampedArray {
     readonly [Symbol.toStringTag]: "Uint8ClampedArray";
 }
 
-/**
- * A typed array of 16-bit signed integer values. The contents are initialized to 0. If the
- * requested number of bytes could not be allocated an exception is raised.
- */
 interface Int16Array {
     readonly [Symbol.toStringTag]: "Int16Array";
 }
 
-/**
- * A typed array of 16-bit unsigned integer values. The contents are initialized to 0. If the
- * requested number of bytes could not be allocated an exception is raised.
- */
 interface Uint16Array {
     readonly [Symbol.toStringTag]: "Uint16Array";
 }
 
-/**
- * A typed array of 32-bit signed integer values. The contents are initialized to 0. If the
- * requested number of bytes could not be allocated an exception is raised.
- */
 interface Int32Array {
     readonly [Symbol.toStringTag]: "Int32Array";
 }
 
-/**
- * A typed array of 32-bit unsigned integer values. The contents are initialized to 0. If the
- * requested number of bytes could not be allocated an exception is raised.
- */
 interface Uint32Array {
     readonly [Symbol.toStringTag]: "Uint32Array";
 }
 
-/**
- * A typed array of 32-bit float values. The contents are initialized to 0. If the requested number
- * of bytes could not be allocated an exception is raised.
- */
 interface Float32Array {
     readonly [Symbol.toStringTag]: "Float32Array";
 }
 
-/**
- * A typed array of 64-bit float values. The contents are initialized to 0. If the requested
- * number of bytes could not be allocated an exception is raised.
- */
 interface Float64Array {
     readonly [Symbol.toStringTag]: "Float64Array";
+}
+
+interface ArrayConstructor {
+    readonly [Symbol.species]: ArrayConstructor;
+}
+interface MapConstructor {
+    readonly [Symbol.species]: MapConstructor;
+}
+interface SetConstructor {
+    readonly [Symbol.species]: SetConstructor;
+}
+interface ArrayBufferConstructor {
+    readonly [Symbol.species]: ArrayBufferConstructor;
 }
