@@ -141,7 +141,7 @@ namespace egret.web {
         /**
          * 启用RenderBuffer
          */
-        private activateBuffer(buffer: WebGLRenderBuffer, width:number, height:number): void {
+        private activateBuffer(buffer: WebGLRenderBuffer, width: number, height: number): void {
 
             buffer.rootRenderTarget.activate();
 
@@ -563,30 +563,30 @@ namespace egret.web {
             if (this.contextLost || !texture || !buffer) {
                 return;
             }
-
+            const { drawCmdManager, vao } = this;
             if (meshVertices && meshIndices) {
-                if (this.vao.reachMaxSize(meshVertices.length / 2, meshIndices.length)) {
+                if (vao.reachMaxSize(meshVertices.length / 2, meshIndices.length)) {
                     this.$drawWebGL();
                 }
             } else {
-                if (this.vao.reachMaxSize()) {
+                if (vao.reachMaxSize()) {
                     this.$drawWebGL();
                 }
             }
 
             if (smoothing != undefined && texture["smoothing"] != smoothing) {
-                this.drawCmdManager.pushChangeSmoothing(texture, smoothing);
+                drawCmdManager.pushChangeSmoothing(texture, smoothing);
             }
 
             if (meshUVs) {
-                this.vao.changeToMeshIndices();
+                vao.changeToMeshIndices();
             }
 
             let count = meshIndices ? meshIndices.length / 3 : 2;
             // 应用$filter，因为只可能是colorMatrixFilter，最后两个参数可不传
-            this.drawCmdManager.pushDrawTexture(texture, count, this.$filter, textureWidth, textureHeight);
+            drawCmdManager.pushDrawTexture(texture, count, this.$filter, textureWidth, textureHeight);
 
-            this.vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight,
+            vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight,
                 destX, destY, destWidth, destHeight, textureWidth, textureHeight,
                 meshUVs, meshVertices, meshIndices, rotated);
         }
@@ -830,16 +830,15 @@ namespace egret.web {
                 let attribute = program.attributes;
 
                 for (let key in attribute) {
+                    const location = attribute[key].location;
                     if (key === "aVertexPosition") {
-                        gl.vertexAttribPointer(attribute["aVertexPosition"].location, 2, gl.FLOAT, false, 5 * 4, 0);
-                        gl.enableVertexAttribArray(attribute["aVertexPosition"].location);
+                        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 5 * 4, 0);
                     } else if (key === "aTextureCoord") {
-                        gl.vertexAttribPointer(attribute["aTextureCoord"].location, 2, gl.FLOAT, false, 5 * 4, 2 * 4);
-                        gl.enableVertexAttribArray(attribute["aTextureCoord"].location);
+                        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 5 * 4, 2 * 4);
                     } else if (key === "aColor") {
-                        gl.vertexAttribPointer(attribute["aColor"].location, 1, gl.FLOAT, false, 5 * 4, 4 * 4);
-                        gl.enableVertexAttribArray(attribute["aColor"].location);
+                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 5 * 4, 4 * 4);
                     }
+                    gl.enableVertexAttribArray(location);
                 }
 
                 this.currentProgram = program;
@@ -989,8 +988,7 @@ namespace egret.web {
             if (filtersLen > 1) {
                 for (let i = 0; i < filtersLen - 1; i++) {
                     let filter = filters[i];
-                    let width: number = input.rootRenderTarget.width;
-                    let height: number = input.rootRenderTarget.height;
+                    const { width, height } = input.rootRenderTarget;
                     output = WebGLRenderBuffer.create(width, height);
                     output.setTransform(1, 0, 0, 1, 0, 0);
                     output.globalAlpha = 1;

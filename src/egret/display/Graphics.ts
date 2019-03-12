@@ -313,11 +313,15 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public endFill(): void {
+        public endFill(fillRule?: CanvasFillRule): void {
             if (egret.nativeRender) {
                 this.$targetDisplay.$nativeDisplayObject.setEndFill();
             }
-            this.fillPath = null;
+            let fillPath = this.fillPath;
+            if (fillPath) {
+                fillPath.fillRule = fillRule || "nonzero";
+                this.fillPath = null;
+            }
         }
 
         /**

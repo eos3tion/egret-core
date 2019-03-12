@@ -445,6 +445,7 @@ namespace egret {
          * 设置x坐标
          */
         $setX(value: number): boolean {
+            value = +value || 0;
             let self = this;
             if (self.$x == value) {
                 return false;
@@ -512,6 +513,7 @@ namespace egret {
          * 设置y坐标
          */
         $setY(value: number): boolean {
+            value = +value || 0;
             let self = this;
             if (self.$y == value) {
                 return false;
@@ -575,6 +577,7 @@ namespace egret {
          * 设置水平缩放值
          */
         $setScaleX(value: number): void {
+            value = +value || 0;
             let self = this;
             if (self.$scaleX == value) {
                 return;
@@ -639,6 +642,7 @@ namespace egret {
          * 设置垂直缩放值
          */
         $setScaleY(value: number): void {
+            value = +value || 0;
             let self = this;
             if (self.$scaleY == value) {
                 return;
@@ -701,6 +705,7 @@ namespace egret {
         }
 
         $setRotation(value: number): void {
+            value = +value || 0;
             value = clampRotation(value);
             let self = this;
             if (value == self.$rotation) {
@@ -755,6 +760,7 @@ namespace egret {
          * @param value
          */
         $setSkewX(value: number): void {
+            value = +value || 0;
             let self = this;
             if (value == self.$skewXdeg) {
                 return;
@@ -809,6 +815,7 @@ namespace egret {
          * @param value
          */
         $setSkewY(value: number): void {
+            value = +value || 0;
             let self = this;
             if (value == self.$skewYdeg) {
                 return;
@@ -981,6 +988,7 @@ namespace egret {
          * @returns
          */
         $setAnchorOffsetX(value: number): void {
+            value = +value || 0;
             let self = this;
             if (self.$anchorOffsetX == value) {
                 return;
@@ -1034,6 +1042,7 @@ namespace egret {
          * @returns
          */
         $setAnchorOffsetY(value: number): void {
+            value = +value || 0;
             let self = this;
             if (self.$anchorOffsetY == value) {
                 return;
@@ -1216,6 +1225,7 @@ namespace egret {
          * @param value
          */
         $setAlpha(value: number): void {
+            value = +value || 0;
             let self = this;
             if (self.$alpha == value) {
                 return;

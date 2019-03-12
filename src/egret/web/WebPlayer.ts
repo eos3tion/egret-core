@@ -27,7 +27,19 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+interface PlayerOption {
+    /**
+     * 使用非屏幕大小作为尺寸的画布大小  
+     * 用于降低cpu/gpu消耗  
+     * 如 DPR 超过 3 的那些手机，Canvas的尺寸只要处于接近 屏幕尺寸 2/3 时，即可比较清楚的显示文字  
+     * 但是能降低渲染消耗
+     */
+    lowDPI?: boolean;
+}
+
 namespace egret.web {
+
+
     /**
      * @private
      */
@@ -117,6 +129,7 @@ namespace egret.web {
 
             option.showLog = container.getAttribute("data-show-log") == "true";
             option.logFilter = container.getAttribute("data-log-filter");
+            option.lowDPI = options.lowDPI;
             return option;
         }
 
@@ -225,8 +238,13 @@ namespace egret.web {
             }
             let scalex = displayWidth / stageWidth,
                 scaley = displayHeight / stageHeight;
-            let canvasScaleX = scalex * sys.DisplayList.$canvasScaleFactor;
-            let canvasScaleY = scaley * sys.DisplayList.$canvasScaleFactor;
+            let $canvasScaleFactor = sys.DisplayList.$canvasScaleFactor;
+            let canvasScaleX = 1;
+            let canvasScaleY = 1;
+            if (!option.lowDPI) {
+                canvasScaleX = scalex * $canvasScaleFactor;
+                canvasScaleY = scaley * $canvasScaleFactor;
+            }
             if (egret.Capabilities.renderMode == "canvas") {
                 canvasScaleX = Math.ceil(canvasScaleX);
                 canvasScaleY = Math.ceil(canvasScaleY);
@@ -244,7 +262,7 @@ namespace egret.web {
             this.webInput.$updateSize();
             this.player.updateStageSize(stageWidth, stageHeight);//不要在这个方法后面修改属性
             // todo
-            if(egret.nativeRender) {
+            if (egret.nativeRender) {
                 canvas.width = stageWidth * canvasScaleX;
                 canvas.height = stageHeight * canvasScaleY;
             }

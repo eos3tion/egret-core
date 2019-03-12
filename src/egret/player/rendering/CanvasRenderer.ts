@@ -38,14 +38,62 @@ interface CanvasRenderingContext2D {
 }
 
 namespace egret {
+    export interface TextShadow extends Array<string | number> {
+        /**
+         * Blur
+         */
+        0: number;
+        /**
+         * 颜色
+         */
+        1?: string;
+        /**
+         * x 偏移
+         */
+        2?: number;
+        /**
+         * y 偏移
+         */
+        3?: number;
+    }
+
+    export interface ColorStop extends Array<string | number> {
+        /**
+         * A number between 0 and 1. An INDEX_SIZE_ERR is raised, if the number is not in that range.
+         */
+        0: number;
+        /**
+         * A CSS <color>. A SYNTAX_ERR is raised, if the value can not be parsed as a CSS <color> value.
+         */
+        1: string;
+    }
+
+    export interface TextExtend {
+        /**
+         * 文本渐变
+         */
+        gradients?: ColorStop[];
+
+        shadow?: TextShadow;
+    }
+    export interface ITextStyle extends TextExtend { }
+    export module sys {
+        export interface TextFormat extends TextExtend { }
+
+        export interface TextNode extends TextExtend { }
+
+        export interface Path2D {
+            fillRule?: CanvasFillRule;
+        }
+    }
 
     let blendModes = ["source-over", "lighter", "destination-out"];
     let defaultCompositeOp = "source-over";
-    let BLACK_COLOR = "#000000";
+    export let BLACK_COLOR = "#000000";
     let CAPS_STYLES = { none: 'butt', square: 'square', round: 'round' };
     let renderBufferPool: sys.RenderBuffer[] = [];//渲染缓冲区对象池
     let renderBufferPool_Filters: sys.RenderBuffer[] = [];//滤镜缓冲区对象池
-    export class CanvasRenderer {
+    export class CanvasRenderer implements sys.SystemRenderer {
 
         private nestLevel: number = 0;//渲染的嵌套层次，0表示在调用堆栈的最外层。
 
@@ -684,6 +732,7 @@ namespace egret {
             let drawData = node.drawData;
             let length = drawData.length;
             let pos = 0;
+            const { $offsetX, $offsetY } = context;
             while (pos < length) {
                 let x = drawData[pos++];
                 let y = drawData[pos++];
@@ -693,13 +742,33 @@ namespace egret {
                 let textColor = format.textColor == null ? node.textColor : format.textColor;
                 let strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
                 let stroke = format.stroke == null ? node.stroke : format.stroke;
-                context.fillStyle = toColorString(textColor);
+                let gradients = format.gradients || node.gradients;
+                let style;
+                if (gradients) {
+                    let hh = (format.size || node.size) >> 1;//textBaseline = "middle" 是从中间渲染，所以基于高度要上下补值
+                    style = context.createLinearGradient(x, y - hh, x, y + hh);
+                    for (let i = 0; i < gradients.length; i++) {
+                        const colorStop = gradients[i];
+                        style.addColorStop(colorStop[0], colorStop[1]);
+                    }
+                }
+                context.fillStyle = style || toColorString(textColor);
+                let shadow = format.shadow || node.shadow;
+                if (shadow) {
+                    let shadowBlur = shadow[0];
+                    if (shadowBlur) {
+                        context.shadowBlur = shadowBlur;
+                        context.shadowColor = shadow[1] || "black";
+                        context.shadowOffsetX = shadow[2] || 0;
+                        context.shadowOffsetY = shadow[3] || 0;
+                    }
+                }
                 context.strokeStyle = toColorString(strokeColor);
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    context.strokeText(text, x + context.$offsetX, y + context.$offsetY);
+                    context.strokeText(text, x + $offsetX, y + $offsetY);
                 }
-                context.fillText(text, x + context.$offsetX, y + context.$offsetY);
+                context.fillText(text, x + $offsetX, y + $offsetY);
             }
         }
 
@@ -714,16 +783,17 @@ namespace egret {
             forHitTest = !!forHitTest;
             for (let i = 0; i < length; i++) {
                 let path: sys.Path2D = drawData[i];
+                let rule = path.fillRule;
                 switch (path.type) {
                     case sys.PathType.Fill:
                         let fillPath = <sys.FillPath>path;
                         context.fillStyle = forHitTest ? BLACK_COLOR : getRGBAString(fillPath.fillColor, fillPath.fillAlpha);
                         this.renderPath(path, context);
                         if (this.renderingMask) {
-                            context.clip();
+                            context.clip(rule);
                         }
                         else {
-                            context.fill();
+                            context.fill(rule);
                         }
                         break;
                     case sys.PathType.GradientFill:
@@ -733,7 +803,7 @@ namespace egret {
                         let m = g.matrix;
                         this.renderPath(path, context);
                         context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
-                        context.fill();
+                        context.fill(rule);
                         context.restore();
                         break;
                     case sys.PathType.Stroke:

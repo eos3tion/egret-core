@@ -45,6 +45,13 @@ namespace egret {
         contentHeight?: number;
         orientation?: string;
         maxTouches?: number;
+        /**
+         * 使用非屏幕大小作为尺寸的画布大小  
+         * 用于降低cpu/gpu消耗  
+         * 如 DPR 超过 3 的那些手机，Canvas的尺寸只要处于接近 屏幕尺寸 2/3 时，即可比较清楚的显示文字  
+         * 但是能降低渲染消耗
+         */
+        lowDPI?: boolean;
     };
 
     /**

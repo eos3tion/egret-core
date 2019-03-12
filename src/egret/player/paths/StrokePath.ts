@@ -60,7 +60,7 @@ namespace egret.sys {
         /**
          * 联接点样式,"bevel":斜角连接,"miter":尖角连接,"round":圆角连接
          */
-        public joints: string;
+        public joints: CanvasLineJoin;
         /**
          * 用于表示剪切斜接的极限值的数字。
          */
