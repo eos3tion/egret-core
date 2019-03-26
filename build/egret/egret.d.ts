@@ -13104,6 +13104,14 @@ declare namespace egret {
         private addEvent;
         private removeEvent;
         private onTapHandler;
+        /**
+         * 文本渐变
+         */
+        setGradients(value: ColorStop[]): void;
+        /**
+         * 设置文本阴影
+         */
+        setShadow(value: TextShadow): void;
     }
     interface TextField {
         addEventListener<Z>(type: "link", listener: (this: Z, e: TextEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number): any;

@@ -2314,6 +2314,19 @@ namespace egret {
                 }
             }
         }
+
+        /**
+         * 文本渐变
+         */
+        setGradients(value: ColorStop[]) {
+            this.textNode.gradients = value;
+        }
+        /**
+         * 设置文本阴影
+         */
+        setShadow(value: TextShadow) {
+            this.textNode.shadow = value;
+        }
     }
 
     export interface TextField {

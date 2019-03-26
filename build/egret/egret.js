@@ -21548,6 +21548,18 @@ var egret;
             }
         };
         /**
+         * 文本渐变
+         */
+        TextField.prototype.setGradients = function (value) {
+            this.textNode.gradients = value;
+        };
+        /**
+         * 设置文本阴影
+         */
+        TextField.prototype.setShadow = function (value) {
+            this.textNode.shadow = value;
+        };
+        /**
          * default fontFamily
          * @version Egret 2.4
          * @platform Web,Native
