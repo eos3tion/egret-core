@@ -97,31 +97,26 @@ namespace egret.web {
          * 
          */
         private _initElement(): void {
-            let point = this.$textfield.localToGlobal(0, 0);
-            let x = point.x;
-            let y = point.y;
+            let node = this.$textfield;
+            let { x, y } = node.localToGlobal(0, 0);
+
             // let m = this.$textfield.$renderNode.renderMatrix;
             // let cX = m.a;
             // let cY = m.d;
 
-            let scaleX = this.htmlInput.$scaleX;
-            let scaleY = this.htmlInput.$scaleY;
+            let { $scaleX, $scaleY } = this.htmlInput;
+            const inputDivStyle = this.inputDiv.style;
 
-            this.inputDiv.style.left = x * scaleX + "px";
-            this.inputDiv.style.top = y * scaleY + "px";
-
-            if (this.$textfield.multiline && this.$textfield.height > this.$textfield.size) {
-                this.inputDiv.style.top = (y) * scaleY + "px";
-
-                this.inputElement.style.top = (-this.$textfield.lineSpacing / 2) * scaleY + "px";
+            inputDivStyle.left = x * $scaleX + "px";
+            inputDivStyle.top = y * $scaleY + "px";
+            let top: string;
+            if (node.multiline && node.height > node.size) {
+                top = (-node.lineSpacing / 2) * $scaleY + "px";
             }
             else {
-                this.inputDiv.style.top = y * scaleY + "px";
-
-                this.inputElement.style.top = 0 + "px";
+                top = 0 + "px";
             }
-
-            let node: any = this.$textfield;
+            this.inputElement.style.top = top;
             let cX = 1;
             let cY = 1;
             let rotation = 0;
@@ -130,14 +125,14 @@ namespace egret.web {
                 cY *= node.scaleY;
                 rotation += node.rotation;
 
-                node = node.parent;
+                node = node.parent as any;
             }
 
             let transformKey = egret.web.getPrefixStyleName("transform");
-            this.inputDiv.style[transformKey] = "rotate(" + rotation + "deg)";
+            inputDivStyle[transformKey] = "rotate(" + rotation + "deg)";
 
-            this._gscaleX = scaleX * cX;
-            this._gscaleY = scaleY * cY;
+            this._gscaleX = $scaleX * cX;
+            this._gscaleY = $scaleY * cY;
         }
 
         /**
@@ -181,26 +176,24 @@ namespace egret.web {
          * 
          */
         private executeShow(): void {
-            let self = this;
+            let inputElement = this.inputElement;
             //打开
-            this.inputElement.value = this.$getText();
+            inputElement.value = this.$getText();
 
-            if (this.inputElement.onblur == null) {
-                this.inputElement.onblur = this.onBlurHandler.bind(this);
+            if (inputElement.onblur == null) {
+                inputElement.onblur = this.onBlurHandler.bind(this);
             }
 
             this.$resetStageText();
 
             if (this.$textfield.maxChars > 0) {
-                this.inputElement.setAttribute("maxlength", this.$textfield.maxChars);
+                inputElement.setAttribute("maxlength", this.$textfield.maxChars);
             }
             else {
-                this.inputElement.removeAttribute("maxlength");
+                inputElement.removeAttribute("maxlength");
             }
 
-            this.inputElement.selectionStart = this.inputElement.value.length;
-            this.inputElement.selectionEnd = this.inputElement.value.length;
-            this.inputElement.focus();
+            inputElement.focus();
         }
 
         /**
@@ -426,10 +419,10 @@ namespace egret.web {
                         this.setElementStyle("padding", top + "px 0px " + bottom + "px 0px");
                     }
                 }
-
-                this.inputDiv.style.clip = "rect(0px " + (textfield.width * this._gscaleX) + "px " + (textfield.height * this._gscaleY) + "px 0px)";
-                this.inputDiv.style.height = textfield.height * this._gscaleY + "px";
-                this.inputDiv.style.width = tw * this._gscaleX + "px";
+                let style = this.inputDiv.style;
+                style.clip = "rect(0px " + (textfield.width * this._gscaleX) + "px " + (textfield.height * this._gscaleY) + "px 0px)";
+                style.height = textfield.height * this._gscaleY + "px";
+                style.width = tw * this._gscaleX + "px";
             }
         }
     }

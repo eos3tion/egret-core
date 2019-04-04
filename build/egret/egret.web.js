@@ -1933,25 +1933,23 @@ var egret;
              *
              */
             HTML5StageText.prototype._initElement = function () {
-                var point = this.$textfield.localToGlobal(0, 0);
-                var x = point.x;
-                var y = point.y;
+                var node = this.$textfield;
+                var _a = node.localToGlobal(0, 0), x = _a.x, y = _a.y;
                 // let m = this.$textfield.$renderNode.renderMatrix;
                 // let cX = m.a;
                 // let cY = m.d;
-                var scaleX = this.htmlInput.$scaleX;
-                var scaleY = this.htmlInput.$scaleY;
-                this.inputDiv.style.left = x * scaleX + "px";
-                this.inputDiv.style.top = y * scaleY + "px";
-                if (this.$textfield.multiline && this.$textfield.height > this.$textfield.size) {
-                    this.inputDiv.style.top = (y) * scaleY + "px";
-                    this.inputElement.style.top = (-this.$textfield.lineSpacing / 2) * scaleY + "px";
+                var _b = this.htmlInput, $scaleX = _b.$scaleX, $scaleY = _b.$scaleY;
+                var inputDivStyle = this.inputDiv.style;
+                inputDivStyle.left = x * $scaleX + "px";
+                inputDivStyle.top = y * $scaleY + "px";
+                var top;
+                if (node.multiline && node.height > node.size) {
+                    top = (-node.lineSpacing / 2) * $scaleY + "px";
                 }
                 else {
-                    this.inputDiv.style.top = y * scaleY + "px";
-                    this.inputElement.style.top = 0 + "px";
+                    top = 0 + "px";
                 }
-                var node = this.$textfield;
+                this.inputElement.style.top = top;
                 var cX = 1;
                 var cY = 1;
                 var rotation = 0;
@@ -1962,9 +1960,9 @@ var egret;
                     node = node.parent;
                 }
                 var transformKey = egret.web.getPrefixStyleName("transform");
-                this.inputDiv.style[transformKey] = "rotate(" + rotation + "deg)";
-                this._gscaleX = scaleX * cX;
-                this._gscaleY = scaleY * cY;
+                inputDivStyle[transformKey] = "rotate(" + rotation + "deg)";
+                this._gscaleX = $scaleX * cX;
+                this._gscaleY = $scaleY * cY;
             };
             /**
              * @private
@@ -2002,22 +2000,20 @@ var egret;
              *
              */
             HTML5StageText.prototype.executeShow = function () {
-                var self = this;
+                var inputElement = this.inputElement;
                 //打开
-                this.inputElement.value = this.$getText();
-                if (this.inputElement.onblur == null) {
-                    this.inputElement.onblur = this.onBlurHandler.bind(this);
+                inputElement.value = this.$getText();
+                if (inputElement.onblur == null) {
+                    inputElement.onblur = this.onBlurHandler.bind(this);
                 }
                 this.$resetStageText();
                 if (this.$textfield.maxChars > 0) {
-                    this.inputElement.setAttribute("maxlength", this.$textfield.maxChars);
+                    inputElement.setAttribute("maxlength", this.$textfield.maxChars);
                 }
                 else {
-                    this.inputElement.removeAttribute("maxlength");
+                    inputElement.removeAttribute("maxlength");
                 }
-                this.inputElement.selectionStart = this.inputElement.value.length;
-                this.inputElement.selectionEnd = this.inputElement.value.length;
-                this.inputElement.focus();
+                inputElement.focus();
             };
             /**
              * @private
@@ -2201,9 +2197,10 @@ var egret;
                             this.setElementStyle("padding", top_2 + "px 0px " + bottom + "px 0px");
                         }
                     }
-                    this.inputDiv.style.clip = "rect(0px " + (textfield.width * this._gscaleX) + "px " + (textfield.height * this._gscaleY) + "px 0px)";
-                    this.inputDiv.style.height = textfield.height * this._gscaleY + "px";
-                    this.inputDiv.style.width = tw * this._gscaleX + "px";
+                    var style = this.inputDiv.style;
+                    style.clip = "rect(0px " + (textfield.width * this._gscaleX) + "px " + (textfield.height * this._gscaleY) + "px 0px)";
+                    style.height = textfield.height * this._gscaleY + "px";
+                    style.width = tw * this._gscaleX + "px";
                 }
             };
             return HTML5StageText;
