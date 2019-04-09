@@ -40,7 +40,7 @@ if (typeof __global == 'undefined') {
     var __global = global;
 }
 
-let __define = this && this.__define || function (o, p, g, s) { Object.defineProperty(o, p, { configurable: true, enumerable: true, get: g, set: s }) };
+let __define = this && (this as any).__define || function (o, p, g, s) { Object.defineProperty(o, p, { configurable: true, enumerable: true, get: g, set: s }) };
 
 namespace egret {
     /**
