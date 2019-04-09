@@ -5894,7 +5894,7 @@ var egret;
              **/
             WebGLRenderContext.prototype.drawRectElements = function (data, offset) {
                 var gl = this.context;
-                gl.bindTexture(gl.TEXTURE_2D, null);
+                // gl.bindTexture(gl.TEXTURE_2D, null);
                 var size = data.count * 3;
                 gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
                 return size;

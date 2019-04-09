@@ -896,7 +896,7 @@ namespace egret.web {
          **/
         private drawRectElements(data: any, offset: number): number {
             let gl: any = this.context;
-            gl.bindTexture(gl.TEXTURE_2D, null);
+            // gl.bindTexture(gl.TEXTURE_2D, null);
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
             return size;
