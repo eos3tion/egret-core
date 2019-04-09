@@ -742,7 +742,7 @@ namespace egret.web {
                     }
 
                     this.activeProgram(gl, program);
-                    this.syncUniforms(program, filter, data.textureWidth, data.textureHeight);
+                    this.syncUniforms(program, filter, data);
 
                     offset += this.drawTextureElements(data, offset);
                     break;
@@ -750,7 +750,7 @@ namespace egret.web {
 
                     program = EgretWebGLProgram.getProgram(gl, EgretShaderLib.default_vert, EgretShaderLib.primitive_frag, "primitive");
                     this.activeProgram(gl, program);
-                    this.syncUniforms(program, filter, data.textureWidth, data.textureHeight);
+                    this.syncUniforms(program, filter, data);
 
                     offset += this.drawRectElements(data, offset);
                     break;
@@ -758,7 +758,7 @@ namespace egret.web {
 
                     program = EgretWebGLProgram.getProgram(gl, EgretShaderLib.default_vert, EgretShaderLib.primitive_frag, "primitive");
                     this.activeProgram(gl, program);
-                    this.syncUniforms(program, filter, data.textureWidth, data.textureHeight);
+                    this.syncUniforms(program, filter, data);
 
                     offset += this.drawPushMaskElements(data, offset);
                     break;
@@ -766,7 +766,7 @@ namespace egret.web {
 
                     program = EgretWebGLProgram.getProgram(gl, EgretShaderLib.default_vert, EgretShaderLib.primitive_frag, "primitive");
                     this.activeProgram(gl, program);
-                    this.syncUniforms(program, filter, data.textureWidth, data.textureHeight);
+                    this.syncUniforms(program, filter, data);
 
                     offset += this.drawPopMaskElements(data, offset);
                     break;
@@ -845,23 +845,36 @@ namespace egret.web {
             }
         }
 
-        private syncUniforms(program: EgretWebGLProgram, filter: Filter, textureWidth: number, textureHeight: number): void {
+        private syncUniforms(program: EgretWebGLProgram, filter: Filter, data): void {
             let uniforms = program.uniforms;
-            let isCustomFilter: boolean = filter && filter.type === "custom";
+            let gl = this.context;
+            const { textureWidth, textureHeight } = data;
             for (let key in uniforms) {
+                let out = null;
                 if (key === "projectionVector") {
-                    uniforms[key].setValue({ x: this.projectionX, y: this.projectionY });
+                    out = { x: this.projectionX, y: this.projectionY };
                 } else if (key === "uTextureSize") {
-                    uniforms[key].setValue({ x: textureWidth, y: textureHeight });
+                    out = { x: textureWidth, y: textureHeight };
                 } else if (key === "uSampler") {
-
-                } else {
-                    let value = filter.$uniforms[key];
-                    if (value !== undefined) {
-                        uniforms[key].setValue(value);
-                    } else {
-                        // egret.warn("filter custom: uniform " + key + " not defined!");
+                    gl.activeTexture(gl.TEXTURE0);
+                    gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                    out = 0;
+                } else if (key[0] == "_") {//纹理
+                    let idx = +key[key.length - 1];//纹理编号
+                    if (idx >= 1) {//索引0给`uSampler`使用
+                        //需要先上传纹理
+                        let v = filter.$uniforms[key] as egret.Texture;
+                        if (v) {
+                            out = idx;
+                            gl.activeTexture(gl.TEXTURE0 + idx);
+                            gl.bindTexture(gl.TEXTURE_2D, this.getWebGLTexture(v.bitmapData));
+                        }
                     }
+                } else {
+                    out = filter.$uniforms[key];
+                }
+                if (out != null) {
+                    uniforms[key].setValue(out);
                 }
             }
         }
@@ -871,7 +884,7 @@ namespace egret.web {
          **/
         private drawTextureElements(data: any, offset: number): number {
             let gl: any = this.context;
-            gl.bindTexture(gl.TEXTURE_2D, data.texture);
+            // gl.bindTexture(gl.TEXTURE_2D, data.texture);
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
             return size;
@@ -883,7 +896,7 @@ namespace egret.web {
          **/
         private drawRectElements(data: any, offset: number): number {
             let gl: any = this.context;
-            // gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindTexture(gl.TEXTURE_2D, null);
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
             return size;
@@ -1066,18 +1079,12 @@ namespace egret.web {
             this.popBuffer();
         }
 
-        public static blendModesForGL: any = null;
-
-        public static initBlendMode(): void {
-            WebGLRenderContext.blendModesForGL = {};
-            WebGLRenderContext.blendModesForGL["source-over"] = [1, 771];
-            WebGLRenderContext.blendModesForGL["lighter"] = [1, 1];
-            WebGLRenderContext.blendModesForGL["lighter-in"] = [770, 771];
-            WebGLRenderContext.blendModesForGL["destination-out"] = [0, 771];
-            WebGLRenderContext.blendModesForGL["destination-in"] = [0, 770];
-        }
+        public static blendModesForGL = {
+            "source-over": [1, 771],
+            "lighter": [1, 1],
+            "lighter-in": [770, 771],
+            "destination-out": [0, 771],
+            "destination-in": [0, 770]
+        };
     }
-
-    WebGLRenderContext.initBlendMode();
-
 }
