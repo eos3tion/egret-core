@@ -179,9 +179,6 @@ namespace egret {
 
             self.$children.splice(index, 0, child);
             child.$setParent(self);
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.addChildAt(child.$nativeDisplayObject.id, index);
-            }
 
             let stage: Stage = self.$stage;
             if (stage) {//当前容器在舞台
@@ -199,24 +196,15 @@ namespace egret {
                     }
                 }
             }
-            if (!egret.nativeRender) {
-                if (child.$maskedObject) {
-                    child.$maskedObject.$updateRenderMode();
-                }
-                if (!self.$cacheDirty) {
-                    self.$cacheDirty = true;
-                    let p = self.$parent;
-                    if (p && !p.$cacheDirty) {
-                        p.$cacheDirty = true;
-                        p.$cacheDirtyUp();
-                    }
-                    let maskedObject = self.$maskedObject;
-                    if (maskedObject && !maskedObject.$cacheDirty) {
-                        maskedObject.$cacheDirty = true;
-                        maskedObject.$cacheDirtyUp();
-                    }
-                }
+
+            if (child.$maskedObject) {
+                child.$maskedObject.$updateRenderMode();
             }
+            if (!self.$cacheDirty) {
+                self.$cacheDirty = true;
+                self.dirty();
+            }
+
 
             this.$childAdded(child, index);
             return child;
@@ -433,26 +421,13 @@ namespace egret {
             if (indexNow != -1) {
                 children.splice(indexNow, 1);
             }
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.removeChild(child.$nativeDisplayObject.id);
+
+            if (child.$maskedObject) {
+                child.$maskedObject.$updateRenderMode();
             }
-            else {
-                if (child.$maskedObject) {
-                    child.$maskedObject.$updateRenderMode();
-                }
-                if (!self.$cacheDirty) {
-                    self.$cacheDirty = true;
-                    let p = self.$parent;
-                    if (p && !p.$cacheDirty) {
-                        p.$cacheDirty = true;
-                        p.$cacheDirtyUp();
-                    }
-                    let maskedObject = self.$maskedObject;
-                    if (maskedObject && !maskedObject.$cacheDirty) {
-                        maskedObject.$cacheDirty = true;
-                        maskedObject.$cacheDirtyUp();
-                    }
-                }
+            if (!self.$cacheDirty) {
+                self.$cacheDirty = true;
+                self.dirty();
             }
             return child;
         }
@@ -490,37 +465,24 @@ namespace egret {
          */
         private doSetChildIndex(child: DisplayObject, index: number): void {
             let self = this;
-            let lastIndex = this.$children.indexOf(child);
+            let $children = self.$children;
+            let lastIndex = $children.indexOf(child);
             if (lastIndex < 0) {
                 DEBUG && $error(1006);
             }
             if (lastIndex == index) {
                 return;
             }
-            this.$childRemoved(child, lastIndex);
+            self.$childRemoved(child, lastIndex);
             //从原来的位置删除
-            this.$children.splice(lastIndex, 1);
+            $children.splice(lastIndex, 1);
             //放到新的位置
-            this.$children.splice(index, 0, child);
-            this.$childAdded(child, index);
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.removeChild(child.$nativeDisplayObject.id);
-                this.$nativeDisplayObject.addChildAt(child.$nativeDisplayObject.id, index);
-            }
-            else {
-                if (!self.$cacheDirty) {
-                    self.$cacheDirty = true;
-                    let p = self.$parent;
-                    if (p && !p.$cacheDirty) {
-                        p.$cacheDirty = true;
-                        p.$cacheDirtyUp();
-                    }
-                    let maskedObject = self.$maskedObject;
-                    if (maskedObject && !maskedObject.$cacheDirty) {
-                        maskedObject.$cacheDirty = true;
-                        maskedObject.$cacheDirtyUp();
-                    }
-                }
+            $children.splice(index, 0, child);
+
+            self.$childAdded(child, index);
+            if (!self.$cacheDirty) {
+                self.$cacheDirty = true;
+                self.dirty();
             }
         }
 
@@ -607,23 +569,9 @@ namespace egret {
             list[index2] = child1;
             this.$childAdded(child2, index1);
             this.$childAdded(child1, index2);
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.swapChild(index1, index2);
-            }
-            else {
-                if (!self.$cacheDirty) {
-                    self.$cacheDirty = true;
-                    let p = self.$parent;
-                    if (p && !p.$cacheDirty) {
-                        p.$cacheDirty = true;
-                        p.$cacheDirtyUp();
-                    }
-                    let maskedObject = self.$maskedObject;
-                    if (maskedObject && !maskedObject.$cacheDirty) {
-                        maskedObject.$cacheDirty = true;
-                        maskedObject.$cacheDirtyUp();
-                    }
-                }
+            if (!self.$cacheDirty) {
+                self.$cacheDirty = true;
+                self.dirty();
             }
         }
 
@@ -678,7 +626,7 @@ namespace egret {
             let length = children.length;
             nestLevel++;
             for (let i = 0; i < length; i++) {
-                let child: DisplayObject = this.$children[i];
+                let child = children[i];
                 child.$onAddToStage(stage, nestLevel);
                 if (child.$maskedObject) {
                     child.$maskedObject.$updateRenderMode();

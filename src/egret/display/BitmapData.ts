@@ -99,7 +99,7 @@ namespace egret {
          * @private
          * @language zh_CN
          */
-        $source: any;
+        $source: TexImageSource;
 
         /**
          * WebGL texture.
@@ -138,12 +138,6 @@ namespace egret {
         $deleteSource: boolean = true;
 
         /**
-         * @private
-         * id
-         */
-        public $nativeBitmapData: egret_native.NativeBitmapData;
-
-        /**
          * Initializes a BitmapData object to refer to the specified source object.
          * @param source The source object being referenced.
          * @version Egret 2.4
@@ -159,25 +153,17 @@ namespace egret {
          */
         constructor(source) {
             super();
-            if (egret.nativeRender) {
-                let nativeBitmapData = new egret_native.NativeBitmapData();
-                nativeBitmapData.$init();
-                this.$nativeBitmapData = nativeBitmapData;
-            }
             this.source = source;
             this.width = source.width;
             this.height = source.height;
         }
 
-        public get source(): any {
+        public get source() {
             return this.$source;
         }
 
-        public set source(value: any) {
+        public set source(value: TexImageSource) {
             this.$source = value;
-            if (egret.nativeRender) {
-                egret_native.NativeDisplayObject.setSourceToNativeBitmapData(this.$nativeBitmapData, value);
-            }
         }
 
         public static create(type: "arraybuffer", data: ArrayBuffer, callback?: (bitmapData: BitmapData) => void): BitmapData;
@@ -219,14 +205,11 @@ namespace egret {
                 egret.WebGLUtils.deleteWebGLTexture(this.webGLTexture);
                 this.webGLTexture = null;
             }
-            //native or WebGLRenderTarget
-            if (this.source && this.source.dispose) {
-                this.source.dispose();
+            let source = this.source as TexImageSource & { dispose?() };
+            if (source && source.dispose) {
+                source.dispose();
             }
             this.source = null;
-            if (egret.nativeRender) {
-                egret_native.NativeDisplayObject.disposeNativeBitmapData(this.$nativeBitmapData);
-            }
             BitmapData.$dispose(this);
         }
 
@@ -281,22 +264,13 @@ namespace egret {
                 return;
             }
             let tempList: Array<DisplayObject> = BitmapData._displayList[hashCode];
-            for (let i: number = 0; i < tempList.length; i++) {
-                if (tempList[i] instanceof egret.Bitmap) {
-                    (<egret.Bitmap>tempList[i]).$refreshImageData();
-                }
+            for (let i = 0; i < tempList.length; i++) {
                 let bitmap = tempList[i];
+                if (bitmap instanceof egret.Bitmap) {
+                    bitmap.$refreshImageData();
+                }
                 bitmap.$renderDirty = true;
-                let p = bitmap.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = bitmap.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+                bitmap.dirty();
             }
         }
 
@@ -317,16 +291,7 @@ namespace egret {
                     node.$bitmapData = null;
                 }
                 node.$renderDirty = true;
-                let p = node.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = node.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+                node.dirty();
             }
             delete BitmapData._displayList[hashCode];
         }

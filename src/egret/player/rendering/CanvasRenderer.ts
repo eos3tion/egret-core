@@ -593,11 +593,11 @@ namespace egret {
                 let destWidth = node.drawH;
                 context.save();
                 context.transform(0, -1, 1, 0, 0, destWidth);
-                context.drawImage(image.source, sourceX, sourceY, sourceWidth, sourceHeight, offsetX + context.$offsetX, offsetY + context.$offsetY, destWidth, destHeight);
+                context.drawImage(image.source as any, sourceX, sourceY, sourceWidth, sourceHeight, offsetX + context.$offsetX, offsetY + context.$offsetY, destWidth, destHeight);
                 context.restore();
             }
             else {
-                context.drawImage(image.source, node.sourceX, node.sourceY, node.sourceW, node.sourceH,
+                context.drawImage(image.source as any, node.sourceX, node.sourceY, node.sourceW, node.sourceH,
                     node.drawX + context.$offsetX, node.drawY + context.$offsetY, node.drawW, node.drawH);
             }
             return 1;
@@ -691,12 +691,12 @@ namespace egret {
                         let destWidth = data[pos++];
                         context.save();
                         context.transform(0, -1, 1, 0, 0, destWidth);
-                        context.drawImage(image.source, sourceX, sourceY, sourceWidth, sourceHeight,
+                        context.drawImage(image.source as any, sourceX, sourceY, sourceWidth, sourceHeight,
                             offsetX + context.$offsetX, offsetY + context.$offsetY, destWidth, destHeight);
                         context.restore();
                     }
                     else {
-                        context.drawImage(image.source, data[pos++], data[pos++], data[pos++], data[pos++],
+                        context.drawImage(image.source as any, data[pos++], data[pos++], data[pos++], data[pos++],
                             data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++], data[pos++]);
                     }
                 }

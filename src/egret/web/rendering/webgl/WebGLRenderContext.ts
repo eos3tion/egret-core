@@ -27,13 +27,21 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+interface WebGLRenderingContext {
+    id: number;
+}
+
+interface WebGLTexture {
+    glContext: WebGLRenderingContext;
+}
+
 namespace egret.web {
 
     /**
      * 创建一个canvas。
      */
-    function createCanvas(width?: number, height?: number): HTMLCanvasElement {
-        let canvas: HTMLCanvasElement = document.createElement("canvas");
+    function createCanvas(width?: number, height?: number) {
+        let canvas = document.createElement("canvas");
         if (!isNaN(width) && !isNaN(height)) {
             canvas.width = width;
             canvas.height = height;
@@ -160,7 +168,7 @@ namespace egret.web {
          * 上传顶点数据
          */
         private uploadVerticesArray(array: any): void {
-            let gl: any = this.context;
+            let gl = this.context;
 
             gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
             // gl.bufferSubData(gl.ARRAY_BUFFER, 0, array);
@@ -170,7 +178,7 @@ namespace egret.web {
          * 上传索引数据
          */
         private uploadIndicesArray(array: any): void {
-            let gl: any = this.context;
+            let gl = this.context;
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, array, gl.STATIC_DRAW);
             this.bindIndices = true;
         }
@@ -181,10 +189,6 @@ namespace egret.web {
         public constructor(width?: number, height?: number) {
 
             this.surface = createCanvas(width, height);
-
-            if (egret.nativeRender) {
-                return;
-            }
 
             this.initWebGL();
 
@@ -282,13 +286,13 @@ namespace egret.web {
                 antialias: WebGLRenderContext.antialias,
                 stencil: true//设置可以使用模板（用于不规则遮罩）
             };
-            let gl: any;
+            let gl: WebGLRenderingContext;
             //todo 是否使用chrome源码names
             //let contextNames = ["moz-webgl", "webkit-3d", "experimental-webgl", "webgl", "3d"];
             let names = ["webgl", "experimental-webgl"];
             for (let i = 0; i < names.length; i++) {
                 try {
-                    gl = this.surface.getContext(names[i], options);
+                    gl = this.surface.getContext(names[i], options) as WebGLRenderingContext;
                 } catch (e) {
                 }
                 if (gl) {
@@ -301,11 +305,11 @@ namespace egret.web {
             this.setContext(gl);
         }
 
-        private setContext(gl: any) {
+        private setContext(gl: WebGLRenderingContext) {
             this.context = gl;
-            gl.id = WebGLRenderContext.glContextId++;
-            this.glID = gl.id;
-
+            let id = WebGLRenderContext.glContextId++;
+            this.glID = id;
+            gl.id = id;
             gl.disable(gl.DEPTH_TEST);
             gl.disable(gl.CULL_FACE);
             gl.enable(gl.BLEND);
@@ -319,7 +323,7 @@ namespace egret.web {
          * 开启模版检测
          */
         public enableStencilTest(): void {
-            let gl: any = this.context;
+            let gl = this.context;
             gl.enable(gl.STENCIL_TEST);
         }
 
@@ -327,7 +331,7 @@ namespace egret.web {
          * 关闭模版检测
          */
         public disableStencilTest(): void {
-            let gl: any = this.context;
+            let gl = this.context;
             gl.disable(gl.STENCIL_TEST);
         }
 
@@ -335,7 +339,7 @@ namespace egret.web {
          * 开启scissor检测
          */
         public enableScissorTest(rect: egret.Rectangle): void {
-            let gl: any = this.context;
+            let gl = this.context;
             gl.enable(gl.SCISSOR_TEST);
             gl.scissor(rect.x, rect.y, rect.width, rect.height);
         }
@@ -344,7 +348,7 @@ namespace egret.web {
          * 关闭scissor检测
          */
         public disableScissorTest(): void {
-            let gl: any = this.context;
+            let gl = this.context;
             gl.disable(gl.SCISSOR_TEST);
         }
 
@@ -352,15 +356,15 @@ namespace egret.web {
          * 获取像素信息
          */
         public getPixels(x, y, width, height, pixels): void {
-            let gl: any = this.context;
+            let gl = this.context;
             gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         }
 
         /**
          * 创建一个WebGLTexture
          */
-        public createTexture(bitmapData: BitmapData): WebGLTexture {
-            let gl: any = this.context;
+        public createTexture(bitmapData: TexImageSource): WebGLTexture {
+            let gl = this.context;
 
             let texture = gl.createTexture();
 
@@ -385,15 +389,11 @@ namespace egret.web {
             return texture;
         }
 
-        private createTextureFromCompressedData(data, width, height, levels, internalFormat): WebGLTexture {
-            return null;
-        }
-
         /**
          * 更新材质的bitmapData
          */
-        public updateTexture(texture: WebGLTexture, bitmapData: BitmapData): void {
-            let gl: any = this.context;
+        public updateTexture(texture: WebGLTexture, bitmapData: TexImageSource): void {
+            let gl = this.context;
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmapData);
         }
@@ -407,15 +407,12 @@ namespace egret.web {
                 if (bitmapData.format == "image") {
                     bitmapData.webGLTexture = this.createTexture(bitmapData.source);
                 }
-                else if (bitmapData.format == "pvr") {//todo 需要支持其他格式
-                    bitmapData.webGLTexture = this.createTextureFromCompressedData(bitmapData.source.pvrtcData, bitmapData.width, bitmapData.height, bitmapData.source.mipmapsCount, bitmapData.source.format);
-                }
                 if (bitmapData.$deleteSource && bitmapData.webGLTexture) {
                     bitmapData.source = null;
                 }
                 if (bitmapData.webGLTexture) {
                     //todo 默认值
-                    bitmapData.webGLTexture["smoothing"] = true;
+                    bitmapData.webGLTexture.smoothing = true;
                 }
             }
             return bitmapData.webGLTexture;
@@ -674,41 +671,44 @@ namespace egret.web {
          */
         public activatedBuffer: WebGLRenderBuffer;
         public $drawWebGL() {
-            if (this.drawCmdManager.drawDataLen == 0 || this.contextLost) {
+            let { drawCmdManager, vao } = this;
+            if (drawCmdManager.drawDataLen == 0 || this.contextLost) {
                 return;
             }
 
-            this.uploadVerticesArray(this.vao.getVertices());
+            this.uploadVerticesArray(vao.getVertices());
 
             // 有mesh，则使用indicesForMesh
-            if (this.vao.isMesh()) {
-                this.uploadIndicesArray(this.vao.getMeshIndices());
+            if (vao.isMesh()) {
+                this.uploadIndicesArray(vao.getMeshIndices());
             }
 
-            let length = this.drawCmdManager.drawDataLen;
+            let length = drawCmdManager.drawDataLen;
+            let drawData = drawCmdManager.drawData;
             let offset = 0;
             for (let i = 0; i < length; i++) {
-                let data = this.drawCmdManager.drawData[i];
+                let data = drawData[i];
                 offset = this.drawData(data, offset);
+                let type = data.type;
                 // 计算draw call
-                if (data.type == DRAWABLE_TYPE.ACT_BUFFER) {
+                if (type == DRAWABLE_TYPE.ACT_BUFFER) {
                     this.activatedBuffer = data.buffer;
-                }
-                if (data.type == DRAWABLE_TYPE.TEXTURE || data.type == DRAWABLE_TYPE.RECT || data.type == DRAWABLE_TYPE.PUSH_MASK || data.type == DRAWABLE_TYPE.POP_MASK) {
-                    if (this.activatedBuffer && this.activatedBuffer.$computeDrawCall) {
-                        this.activatedBuffer.$drawCalls++;
+                } else if (type == DRAWABLE_TYPE.TEXTURE || type == DRAWABLE_TYPE.RECT || type == DRAWABLE_TYPE.PUSH_MASK || type == DRAWABLE_TYPE.POP_MASK) {
+                    let buffer = this.activatedBuffer;
+                    if (buffer && buffer.$computeDrawCall) {
+                        buffer.$drawCalls++;
                     }
                 }
             }
 
             // 切换回默认indices
-            if (this.vao.isMesh()) {
-                this.uploadIndicesArray(this.vao.getIndices());
+            if (vao.isMesh()) {
+                this.uploadIndicesArray(vao.getIndices());
             }
 
             // 清空数据
-            this.drawCmdManager.clear();
-            this.vao.clear();
+            drawCmdManager.clear();
+            vao.clear();
         }
 
         /**

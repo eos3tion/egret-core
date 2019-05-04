@@ -100,35 +100,15 @@ namespace egret {
             this.$bitmapData.width = width;
             this.$bitmapData.height = height;
 
-            if (egret.nativeRender) {
-                egret_native.activateBuffer(this.$renderBuffer);
-                let useClip = false;
-                let clipX = 0;
-                let clipY = 0;
-                let clipW = 0;
-                let clipH = 0;
-                if (clipBounds) {
-                    useClip = true;
-                    clipX = clipBounds.x;
-                    clipY = clipBounds.y;
-                    clipW = clipBounds.width;
-                    clipH = clipBounds.height;
-                }
-                egret_native.updateNativeRender();
-                egret_native.nrRenderDisplayObject(displayObject.$nativeDisplayObject.id, scale, useClip, clipX, clipY, clipW, clipH);
-                egret_native.activateBuffer(null);
+            let matrix = Matrix.create();
+            matrix.identity();
+            matrix.scale(scale, scale);
+            //应用裁切
+            if (clipBounds) {
+                matrix.translate(-clipBounds.x, -clipBounds.y);
             }
-            else {
-                let matrix = Matrix.create();
-                matrix.identity();
-                matrix.scale(scale, scale);
-                //应用裁切
-                if (clipBounds) {
-                    matrix.translate(-clipBounds.x, -clipBounds.y);
-                }
-                sys.systemRenderer.render(displayObject, renderBuffer, matrix, true);
-                Matrix.release(matrix);
-            }
+            sys.systemRenderer.render(displayObject, renderBuffer, matrix, true);
+            Matrix.release(matrix);
 
             //设置纹理参数
             this.$initData(0, 0, width, height, 0, 0, width, height, width, height);

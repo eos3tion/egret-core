@@ -54,10 +54,6 @@ namespace egret.sys {
             this.showFPS = false;
             this.showLog = false;
             this.stageDisplayList = null;
-
-            if (egret.nativeRender) {
-                egret_native.rootWebGLBuffer = buffer;
-            }
         }
 
         /**
@@ -163,12 +159,6 @@ namespace egret.sys {
          * 渲染屏幕
          */
         $render(triggerByFrame: boolean, costTicker: number): void {
-            if (egret.nativeRender) {
-                egret_native.updateNativeRender();
-                egret_native.nrRender();
-                return;
-            }
-
             let stage = this.stage;
             let t1 = egret.getTimer();
             let drawCalls = stage.$displayList.drawToSurface();
@@ -188,13 +178,9 @@ namespace egret.sys {
             let stage = this.stage;
             stage.$stageWidth = stageWidth;
             stage.$stageHeight = stageHeight;
-            if (egret.nativeRender) {
-                egret_native.nrResize(stageWidth, stageHeight);
-            } else {
-                this.screenDisplayList.setClipRect(stageWidth, stageHeight);
-                if (this.stageDisplayList) {
-                    this.stageDisplayList.setClipRect(stageWidth, stageHeight);
-                }
+            this.screenDisplayList.setClipRect(stageWidth, stageHeight);
+            if (this.stageDisplayList) {
+                this.stageDisplayList.setClipRect(stageWidth, stageHeight);
             }
             stage.dispatchEventWith(Event.RESIZE);
         }
@@ -299,7 +285,7 @@ namespace egret.sys {
         updateError(info: string): void;
     }
 
-    declare let FPS: { new (stage: Stage, showFPS: boolean, showLog: boolean, logFilter: string, styles: Object): FPS };
+    declare let FPS: { new(stage: Stage, showFPS: boolean, showLog: boolean, logFilter: string, styles: Object): FPS };
 
     /**
      * @private
@@ -347,7 +333,6 @@ namespace egret.sys {
 
     class FPSImpl {
 
-        private infoLines = [];
         private totalTime = 0;
         private totalTick = 0;
         private lastTime = 0;
@@ -359,7 +344,6 @@ namespace egret.sys {
         private filter: any;
 
         constructor(stage: egret.Stage, private showFPS: boolean, private showLog: boolean, private logFilter: string, private styles?: Object) {
-            this.infoLines = [];
             this.totalTime = 0;
             this.totalTick = 0;
             this.lastTime = 0;
@@ -490,34 +474,4 @@ namespace egret.sys {
     egret.log = function () {
         console.log.apply(console, toArray(arguments));
     };
-}
-
-
-/**
- * @private
- */
-module egret {
-    /**
-     * @private
-     */
-    export var nativeRender: boolean = __global.nativeRender;
-
-    //检测版本是否匹配，不匹配改用非原生加速渲染方式
-    if (nativeRender) {
-        const nrABIVersion = egret_native.nrABIVersion;
-        const nrMinEgretVersion = egret_native.nrMinEgretVersion;
-        const requiredNrABIVersion = 5;
-        if (nrABIVersion < requiredNrABIVersion) {
-            nativeRender = false;
-            const msg = "需要升级微端版本到 0.1.14 才可以开启原生渲染加速";
-            sys.$warnToFPS(msg);
-            egret.warn(msg);
-        }
-        else if (nrABIVersion > requiredNrABIVersion) {
-            nativeRender = false;
-            const msg = `需要升级引擎版本到 ${nrMinEgretVersion} 才可以开启原生渲染加速`;
-            sys.$warnToFPS(msg);
-            egret.warn(msg);
-        }
-    }
 }

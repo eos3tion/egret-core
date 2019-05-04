@@ -77,9 +77,6 @@ namespace egret {
         constructor() {
             super();
             this.$uniforms = {};
-            if (egret.nativeRender) {
-               egret_native.NativeDisplayObject.createFilter(this);
-            }
         }
 
         /**
@@ -96,10 +93,6 @@ namespace egret {
         public onPropertyChange(): void {
             let self = this;
             self.updatePadding();
-            if (egret.nativeRender) {
-                egret_native.NativeDisplayObject.setFilterPadding(self.$id, self.paddingTop, self.paddingBottom, self.paddingLeft, self.paddingRight);
-                egret_native.NativeDisplayObject.setDataToFilter(self);
-            }
         }
     }
 }

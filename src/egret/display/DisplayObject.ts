@@ -124,15 +124,6 @@ namespace egret {
          */
         public constructor() {
             super();
-            if (egret.nativeRender) {
-                this.createNativeDisplayObject();
-            }
-        }
-
-        $nativeDisplayObject: egret_native.NativeDisplayObject;
-
-        protected createNativeDisplayObject(): void {
-            this.$nativeDisplayObject = new egret_native.NativeDisplayObject(egret_native.NativeObjectType.CONTAINER);
         }
 
         /**
@@ -350,9 +341,6 @@ namespace egret {
                 self.$skewYdeg = clampRotation(self.$skewY * 180 / Math.PI);
                 self.$rotation = clampRotation(self.$skewY * 180 / Math.PI);
             }
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setMatrix(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-            }
         }
 
         private $concatenatedMatrix: egret.Matrix;
@@ -451,21 +439,9 @@ namespace egret {
                 return false;
             }
             self.$x = value;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setX(value);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+
+            self.dirty();
+
             return true;
         }
 
@@ -519,21 +495,9 @@ namespace egret {
                 return false;
             }
             self.$y = value;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setY(value);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+
+            self.dirty();
+
             return true;
         }
 
@@ -586,21 +550,18 @@ namespace egret {
             self.$matrixDirty = true;
 
             self.$updateUseTransform();
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setScaleX(value);
+
+            let p = self.$parent;
+            if (p && !p.$cacheDirty) {
+                p.$cacheDirty = true;
+                p.$cacheDirtyUp();
             }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+            let maskedObject = self.$maskedObject;
+            if (maskedObject && !maskedObject.$cacheDirty) {
+                maskedObject.$cacheDirty = true;
+                maskedObject.$cacheDirtyUp();
             }
+
         }
 
         private $scaleY: number = 1;
@@ -651,21 +612,9 @@ namespace egret {
             self.$matrixDirty = true;
 
             self.$updateUseTransform();
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setScaleY(value);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+
+            self.dirty();
+
         }
 
         private $rotation: number = 0;
@@ -719,21 +668,9 @@ namespace egret {
             self.$matrixDirty = true;
 
             self.$updateUseTransform();
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setRotation(value);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+
+            self.dirty();
+
         }
 
         private $skewX: number = 0;
@@ -774,21 +711,9 @@ namespace egret {
             self.$matrixDirty = true;
 
             self.$updateUseTransform();
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setSkewX(self.$skewXdeg);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+
+            self.dirty();
+
         }
 
         private $skewY: number = 0;
@@ -829,20 +754,20 @@ namespace egret {
             self.$matrixDirty = true;
 
             self.$updateUseTransform();
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setSkewY(self.$skewYdeg);
+
+            self.dirty();
+        }
+
+        dirty() {
+            let p = this.$parent;
+            if (p && !p.$cacheDirty) {
+                p.$cacheDirty = true;
+                p.$cacheDirtyUp();
             }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+            let maskedObject = this.$maskedObject;
+            if (maskedObject && !maskedObject.$cacheDirty) {
+                maskedObject.$cacheDirty = true;
+                maskedObject.$cacheDirtyUp();
             }
         }
 
@@ -994,21 +919,7 @@ namespace egret {
                 return;
             }
             self.$anchorOffsetX = value;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setAnchorOffsetX(value);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.dirty();
         }
 
         $anchorOffsetY: number = 0;
@@ -1048,21 +959,7 @@ namespace egret {
                 return;
             }
             self.$anchorOffsetY = value;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setAnchorOffsetY(value);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.dirty();
         }
 
         /**
@@ -1099,22 +996,7 @@ namespace egret {
                 return;
             }
             self.$visible = value;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setVisible(value);
-            }
-            else {
-                self.$updateRenderMode();
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.dirty();
         }
 
         /**
@@ -1154,12 +1036,7 @@ namespace egret {
         public set cacheAsBitmap(value: boolean) {
             let self = this;
             self.$cacheAsBitmap = value;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setCacheAsBitmap(value);
-            }
-            else {
-                self.$setHasDisplayList(value);
-            }
+            self.dirty();
         }
 
         public $setHasDisplayList(value: boolean): void {
@@ -1231,23 +1108,9 @@ namespace egret {
                 return;
             }
             self.$alpha = value;
+            self.$updateRenderMode();
+            self.dirty();
 
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setAlpha(value);
-            }
-            else {
-                self.$updateRenderMode();
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
         }
 
         /**
@@ -1378,29 +1241,12 @@ namespace egret {
                     self.$scrollRect = new egret.Rectangle();
                 }
                 self.$scrollRect.copyFrom(value);
-                if (egret.nativeRender) {
-                    self.$nativeDisplayObject.setScrollRect(value.x, value.y, value.width, value.height);
-                }
             }
             else {
                 self.$scrollRect = null;
-                if (egret.nativeRender) {
-                    self.$nativeDisplayObject.setScrollRect(0, 0, 0, 0);
-                }
             }
-            if (!egret.nativeRender) {
-                self.$updateRenderMode();
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.$updateRenderMode();
+            self.dirty();
         }
 
         /**
@@ -1439,22 +1285,8 @@ namespace egret {
             }
             self.$blendMode = mode;
 
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setBlendMode(mode);
-            }
-            else {
-                self.$updateRenderMode();
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.$updateRenderMode();
+            self.dirty();
         }
 
         /**
@@ -1523,80 +1355,37 @@ namespace egret {
                     value.$maskedObject = self;
 
                     self.$mask = value;
-                    if (!egret.nativeRender) {
-                        value.$updateRenderMode();
-                    }
-                    if (self.$maskRect) {
-                        if (egret.nativeRender) {
-                            self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
-                        }
-                        self.$maskRect = null;
-                    }
-                    if (egret.nativeRender) {
-                        self.$nativeDisplayObject.setMask(value.$nativeDisplayObject.id);
-                    }
+                    value.$updateRenderMode();
+                    self.$maskRect = null;
+
                 }
                 else {
                     if (!self.$maskRect) {
                         self.$maskRect = new egret.Rectangle();
                     }
                     self.$maskRect.copyFrom(value);
-                    if (egret.nativeRender) {
-                        self.$nativeDisplayObject.setMaskRect(value.x, value.y, value.width, value.height);
-                    }
-                    if (self.$mask) {
-                        self.$mask.$maskedObject = null;
-                        if (!egret.nativeRender) {
-                            self.$mask.$updateRenderMode();
-                        }
+                    let $mask = self.$mask;
+                    if ($mask) {
+                        $mask.$maskedObject = null;
+                        $mask.$updateRenderMode();
                     }
                     if (self.mask) {
-                        if (egret.nativeRender) {
-                            self.$nativeDisplayObject.setMask(-1);
-                        }
                         self.$mask = null;
                     }
+
                 }
             }
             else {
                 if (self.$mask) {
                     self.$mask.$maskedObject = null;
-                    if (!egret.nativeRender) {
-                        self.$mask.$updateRenderMode();
-                    }
+                    self.$mask.$updateRenderMode();
                 }
                 if (self.mask) {
-                    if (egret.nativeRender) {
-                        self.$nativeDisplayObject.setMask(-1);
-                    }
                     self.$mask = null;
                 }
-                if (self.$maskRect) {
-                    if (egret.nativeRender) {
-                        self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
-                    }
-                    self.$maskRect = null;
-                }
-            }
-            if (!egret.nativeRender) {
-                self.$updateRenderMode();
-            }
-        }
-
-        private $setMaskRect(value: Rectangle): void {
-            let self = this;
-            if (!value && !self.$maskRect) {
-                return;
-            }
-            if (value) {
-                if (!self.$maskRect) {
-                    self.$maskRect = new egret.Rectangle();
-                }
-                self.$maskRect.copyFrom(value);
-            }
-            else {
                 self.$maskRect = null;
             }
+            self.$updateRenderMode();
         }
 
         public $filters: Array<Filter | CustomFilter>;
@@ -1619,53 +1408,13 @@ namespace egret {
 
         public set filters(value: Array<Filter | CustomFilter>) {
             let self = this;
-            let filters: Filter[] = self.$filters;
-            if (!filters && !value) {
-                self.$filters = value;
-                if (egret.nativeRender) {
-                    self.$nativeDisplayObject.setFilters(null);
-                }
-                else {
-                    self.$updateRenderMode();
-                    let p = self.$parent;
-                    if (p && !p.$cacheDirty) {
-                        p.$cacheDirty = true;
-                        p.$cacheDirtyUp();
-                    }
-                    let maskedObject = self.$maskedObject;
-                    if (maskedObject && !maskedObject.$cacheDirty) {
-                        maskedObject.$cacheDirty = true;
-                        maskedObject.$cacheDirtyUp();
-                    }
-                }
-                return;
-            }
+            let $filters: Filter[];
             if (value && value.length) {
-                value = value.concat();
-                self.$filters = value;
-                if (egret.nativeRender) {
-                    self.$nativeDisplayObject.setFilters(value);
-                }
+                $filters = value.concat();
             }
-            else {
-                self.$filters = value;
-                if (egret.nativeRender) {
-                    self.$nativeDisplayObject.setFilters(null);
-                }
-            }
-            if (!egret.nativeRender) {
-                self.$updateRenderMode();
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.$filters = $filters;
+            self.$updateRenderMode();
+            self.dirty();
         }
 
         /**
@@ -1771,24 +1520,9 @@ namespace egret {
          * @language zh_CN
          */
         public globalToLocal(stageX: number = 0, stageY: number = 0, resultPoint?: Point): Point {
-            if (egret.nativeRender) {
-                egret_native.updateNativeRender();
-                let result = egret_native.nrGlobalToLocal(this.$nativeDisplayObject.id, stageX, stageY);
-                let arr = result.split(",");
-                let x = parseFloat(arr[0]);
-                let y = parseFloat(arr[1]);
-                if (resultPoint) {
-                    resultPoint.setTo(x, y);
-                }
-                else {
-                    resultPoint = new Point(x, y);
-                }
-                return resultPoint;
-            }
-            else {
-                let m = this.$getInvertedConcatenatedMatrix();
-                return m.transformPoint(stageX, stageY, resultPoint);
-            }
+            let m = this.$getInvertedConcatenatedMatrix();
+            return m.transformPoint(stageX, stageY, resultPoint);
+
         }
 
         /**
@@ -1813,24 +1547,8 @@ namespace egret {
          * @language zh_CN
          */
         public localToGlobal(localX: number = 0, localY: number = 0, resultPoint?: Point): Point {
-            if (egret.nativeRender) {
-                egret_native.updateNativeRender();
-                let result = egret_native.nrLocalToGlobal(this.$nativeDisplayObject.id, localX, localY);
-                let arr = result.split(",");
-                let x = parseFloat(arr[0]);
-                let y = parseFloat(arr[1]);
-                if (resultPoint) {
-                    resultPoint.setTo(x, y);
-                }
-                else {
-                    resultPoint = new Point(x, y);
-                }
-                return resultPoint;
-            }
-            else {
-                let m = this.$getConcatenatedMatrix();
-                return m.transformPoint(localX, localY, resultPoint);
-            }
+            let m = this.$getConcatenatedMatrix();
+            return m.transformPoint(localX, localY, resultPoint);
         }
 
         /**
@@ -2049,7 +1767,7 @@ namespace egret {
          */
         $hitTest(stageX: number, stageY: number): DisplayObject {
             let self = this;
-            if ((!egret.nativeRender && !self.$renderNode) || !self.$visible || self.$scaleX == 0 || self.$scaleY == 0) {
+            if (!self.$renderNode || !self.$visible || self.$scaleX == 0 || self.$scaleY == 0) {
                 return null;
             }
             let m = self.$getInvertedConcatenatedMatrix();
@@ -2122,59 +1840,37 @@ namespace egret {
                 let localX = m.a * x + m.c * y + m.tx;
                 let localY = m.b * x + m.d * y + m.ty;
                 let data: number[] | Uint8Array;
-                if (egret.nativeRender) {
-                    let buffer = sys.customHitTestBuffer;
-                    buffer.resize(3, 3);
-                    egret_native.forHitTest = true;
-                    egret_native.activateBuffer(buffer);
-                    egret_native.updateNativeRender();
-                    egret_native.nrRenderDisplayObject2(self.$nativeDisplayObject.id, 1 - localX, 1 - localY, true);
+
+                let displayList = self.$displayList;
+                if (displayList) {
+                    let buffer = displayList.renderBuffer;
                     try {
-                        data = new Uint8Array(4);
-                        egret_native.nrGetPixels(1, 1, 1, 1, data);
+                        data = buffer.getPixels(localX - displayList.offsetX, localY - displayList.offsetY);
                     }
                     catch (e) {
                         throw new Error(sys.tr(1039));
                     }
-                    egret_native.activateBuffer(null);
-                    egret_native.forHitTest = false;
-                    if (data[3] === 0) {
-                        return false;
-                    }
-                    return true;
                 }
                 else {
-                    let displayList = self.$displayList;
-                    if (displayList) {
-                        let buffer = displayList.renderBuffer;
-                        try {
-                            data = buffer.getPixels(localX - displayList.offsetX, localY - displayList.offsetY);
-                        }
-                        catch (e) {
-                            throw new Error(sys.tr(1039));
-                        }
-                    }
-                    else {
-                        let buffer = sys.customHitTestBuffer;
-                        buffer.resize(3, 3);
-                        let matrix = Matrix.create();
-                        matrix.identity();
-                        matrix.translate(1 - localX, 1 - localY);
-                        sys.systemRenderer.render(this, buffer, matrix, true);
-                        Matrix.release(matrix);
+                    let buffer = sys.customHitTestBuffer;
+                    buffer.resize(3, 3);
+                    let matrix = Matrix.create();
+                    matrix.identity();
+                    matrix.translate(1 - localX, 1 - localY);
+                    sys.systemRenderer.render(this, buffer, matrix, true);
+                    Matrix.release(matrix);
 
-                        try {
-                            data = buffer.getPixels(1, 1);
-                        }
-                        catch (e) {
-                            throw new Error(sys.tr(1039));
-                        }
+                    try {
+                        data = buffer.getPixels(1, 1);
                     }
-                    if (data[3] === 0) {
-                        return false;
+                    catch (e) {
+                        throw new Error(sys.tr(1039));
                     }
-                    return true;
                 }
+                if (data[3] === 0) {
+                    return false;
+                }
+                return true;
             }
         }
 

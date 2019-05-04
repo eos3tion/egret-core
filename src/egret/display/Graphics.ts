@@ -256,9 +256,6 @@ namespace egret {
         public beginFill(color: number, alpha: number = 1): void {
             color = +color || 0;
             alpha = +alpha || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setBeginFill(color, alpha);
-            }
             this.fillPath = this.$renderNode.beginFill(color, alpha, this.strokePath);
             if (this.$renderNode.drawData.length > 1) {
                 this.fillPath.moveTo(this.lastX, this.lastY);
@@ -291,10 +288,6 @@ namespace egret {
          * @language zh_CN
          */
         public beginGradientFill(type: string, colors: number[], alphas: number[], ratios: number[], matrix: egret.Matrix = null): void {
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setBeginGradientFill(type, colors, alphas, ratios, matrix);
-            }
-
             this.fillPath = this.$renderNode.beginGradientFill(type, colors, alphas, ratios, matrix, this.strokePath);
             if (this.$renderNode.drawData.length > 1) {
                 this.fillPath.moveTo(this.lastX, this.lastY);
@@ -314,9 +307,6 @@ namespace egret {
          * @language zh_CN
          */
         public endFill(fillRule?: CanvasFillRule): void {
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setEndFill();
-            }
             let fillPath = this.fillPath;
             if (fillPath) {
                 fillPath.fillRule = fillRule || "nonzero";
@@ -360,10 +350,6 @@ namespace egret {
             color = +color || 0;
             alpha = +alpha || 0;
             miterLimit = +miterLimit || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setLineStyle(thickness, color,
-                    alpha, pixelHinting, scaleMode, caps, joints, miterLimit);
-            }
             if (thickness <= 0) {
                 this.strokePath = null;
                 this.setStrokeWidth(0);
@@ -402,9 +388,6 @@ namespace egret {
             y = +y || 0;
             width = +width || 0;
             height = +height || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setDrawRect(x, y, width, height);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.drawRect(x, y, width, height);
@@ -445,9 +428,6 @@ namespace egret {
             height = +height || 0;
             ellipseWidth = +ellipseWidth || 0;
             ellipseHeight = +ellipseHeight || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setDrawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.drawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
@@ -486,9 +466,6 @@ namespace egret {
             x = +x || 0;
             y = +y || 0;
             radius = +radius || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setDrawCircle(x, y, radius);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.drawCircle(x, y, radius);
@@ -526,10 +503,6 @@ namespace egret {
             y = +y || 0;
             width = +width || 0;
             height = +height || 0;
-
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setDrawEllipse(x, y, width, height);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.drawEllipse(x, y, width, height);
@@ -560,9 +533,6 @@ namespace egret {
         public moveTo(x: number, y: number): void {
             x = +x || 0;
             y = +y || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setMoveTo(x, y);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.moveTo(x, y);
@@ -592,9 +562,6 @@ namespace egret {
         public lineTo(x: number, y: number): void {
             x = +x || 0;
             y = +y || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setLineTo(x, y);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.lineTo(x, y);
@@ -632,10 +599,6 @@ namespace egret {
             controlY = +controlY || 0;
             anchorX = +anchorX || 0;
             anchorY = +anchorY || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setCurveTo(controlX, controlY,
-                    anchorX, anchorY);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.curveTo(controlX, controlY, anchorX, anchorY);
@@ -687,10 +650,6 @@ namespace egret {
             controlY2 = +controlY2 || 0;
             anchorX = +anchorX || 0;
             anchorY = +anchorY || 0;
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setCubicCurveTo(controlX1,
-                    controlY1, controlX2, controlY2, anchorX, anchorY);
-            }
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
             fillPath && fillPath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
@@ -747,10 +706,6 @@ namespace egret {
             anticlockwise = !!anticlockwise;
             startAngle = clampAngle(startAngle);
             endAngle = clampAngle(endAngle);
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setDrawArc(x, y, radius,
-                    startAngle, endAngle, anticlockwise);
-            }
 
             let fillPath = this.fillPath;
             let strokePath = this.strokePath;
@@ -779,20 +734,9 @@ namespace egret {
         private dirty(): void {
             let self = this;
             self.$renderNode.dirtyRender = true;
-            if (!egret.nativeRender) {
-                const target = self.$targetDisplay;
-                target.$cacheDirty = true;
-                let p = target.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = target.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            const target = self.$targetDisplay;
+            target.$cacheDirty = true;
+            self.dirty();
         }
 
         /**
@@ -858,9 +802,6 @@ namespace egret {
          * @language zh_CN
          */
         public clear(): void {
-            if (egret.nativeRender) {
-                this.$targetDisplay.$nativeDisplayObject.setGraphicsClear();
-            }
             this.$renderNode.clear();
             this.updatePosition(0, 0);
             this.minX = Infinity;
@@ -992,9 +933,6 @@ namespace egret {
         public $onRemoveFromStage(): void {
             if (this.$renderNode) {
                 this.$renderNode.clean();
-            }
-            if (egret.nativeRender) {
-                egret_native.NativeDisplayObject.disposeGraphicData(this);
             }
         }
     }

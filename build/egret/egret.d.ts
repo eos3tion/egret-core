@@ -330,8 +330,6 @@ declare namespace egret {
          * @language zh_CN
          */
         constructor();
-        $nativeDisplayObject: egret_native.NativeDisplayObject;
-        protected createNativeDisplayObject(): void;
         /**
          * @private
          * 是否添加到舞台上，防止重复发送 removed_from_stage 消息
@@ -653,6 +651,7 @@ declare namespace egret {
          * @param value
          */
         $setSkewY(value: number): void;
+        dirty(): void;
         /**
          * Indicates the width of the display object, in pixels. The width is calculated based on the bounds of the content
          * of the display object.
@@ -1008,7 +1007,6 @@ declare namespace egret {
          * @language zh_CN
          */
         mask: DisplayObject | Rectangle;
-        private $setMaskRect;
         $filters: Array<Filter | CustomFilter>;
         /**
          * An indexed array that contains each filter object currently associated with the display object.
@@ -1397,7 +1395,6 @@ declare namespace egret {
         protected $smoothing: boolean;
         protected $explicitBitmapWidth: number;
         protected $explicitBitmapHeight: number;
-        protected createNativeDisplayObject(): void;
         /**
          * @private
          * 显示对象添加到舞台
@@ -1428,10 +1425,6 @@ declare namespace egret {
          */
         $setTexture(value: Texture): boolean;
         $setBitmapData(value: any): void;
-        /**
-         * @private
-         */
-        protected setBitmapDataToWasm(data?: Texture): void;
         /**
          * @private
          */
@@ -3780,219 +3773,6 @@ declare namespace egret {
      */
     function log(message?: any, ...optionalParams: any[]): void;
 }
-/**
- * @private
- */
-declare namespace egret {
-    /**
-     * @private
-     */
-    let fontMapping: {};
-}
-/**
- * @private
- */
-declare namespace egret_native {
-    function readUpdateFileSync(filePath: any): any;
-    function readResourceFileSync(filePath: any): any;
-    function sendInfoToPlugin(info: string): void;
-    function receivedPluginInfo(info: string): void;
-    function nrInit(): void;
-    function nrDownloadBuffers(callback: (displayCmdBuffer: Float32Array) => void): void;
-    function nrSetRenderMode(mode: number): void;
-    function nrRenderDisplayObject(id: number, scale: number, useClip: boolean, clipX: number, clipY: number, clipW: number, clipH: number): void;
-    function nrRenderDisplayObject2(id: number, offsetX: number, offsetY: number, forHitTest: boolean): void;
-    function nrLocalToGlobal(id: number, localX: number, localY: number): string;
-    function nrGlobalToLocal(id: number, globalX: number, globalY: number): string;
-    function nrGetTextFieldWidth(id: number): number;
-    function nrGetTextFieldHeight(id: number): number;
-    function nrGetTextWidth(id: number): number;
-    function nrGetTextHeight(id: number): number;
-    function nrResize(width: number, height: number): void;
-    function nrSetCanvasScaleFactor(factor: number, scalex: number, scaley: number): void;
-    function nrUpdate(): void;
-    function nrRender(): void;
-    function nrSendTextFieldData(textFieldId: number, strData: string): void;
-    function nrUpdateCallbackList(dt: number): void;
-    function nrActiveBuffer(id: number, width: number, height: number): void;
-    function nrGetPixels(x: number, y: number, width: number, height: number, pixels: Uint8Array): void;
-    function nrGetCustomImageId(type: number): number;
-    function nrSetCustomImageData(customImageId: number, pvrtcData: any, width: any, height: any, mipmapsCount: any, format: any): void;
-    class NrNode {
-        constructor(id: number, type: number);
-    }
-}
-/**
- * @private
- */
-declare namespace egret_native {
-    let rootWebGLBuffer: egret.sys.RenderBuffer;
-    let forHitTest: boolean;
-    let addModuleCallback: (callback: Function, thisObj: any) => void;
-    let initNativeRender: () => void;
-    let updateNativeRender: () => void;
-    let activateBuffer: (buffer: egret.sys.RenderBuffer) => void;
-    let getJsCustomFilterVertexSrc: (key: any) => any;
-    let getJsCustomFilterFragSrc: (key: any) => any;
-    let getJsCustomFilterUniforms: (key: any) => any;
-    let nrABIVersion: number;
-    let nrMinEgretVersion: string;
-}
-declare namespace egret_native {
-    /**
-     * @private
-     */
-    class NativeRenderSurface {
-        width: number;
-        height: number;
-        constructor(currRenderBuffer: any, w?: number, h?: number, root?: boolean);
-        resize(w: number, h: number): void;
-    }
-    /**
-     * @private
-     */
-    class NativeBitmapData {
-        $init(): any;
-        $id: any;
-    }
-    /**
-     * @private
-     */
-    class NativeDisplayObject {
-        id: number;
-        constructor(type: number);
-        addChildAt(childId: number, index: number): void;
-        removeChild(childId: number): void;
-        swapChild(index1: number, index2: number): void;
-        setX(value: number): void;
-        setY(value: number): void;
-        setRotation(value: number): void;
-        setScaleX(value: number): void;
-        setScaleY(value: number): void;
-        setSkewX(value: number): void;
-        setSkewY(value: number): void;
-        setAlpha(value: number): void;
-        setAnchorOffsetX(value: number): void;
-        setAnchorOffsetY(value: number): void;
-        setVisible(value: boolean): void;
-        setBlendMode(value: number): void;
-        setMaskRect(x: number, y: number, w: number, h: number): void;
-        setScrollRect(x: number, y: number, w: number, h: number): void;
-        setFilters(filters: Array<egret.Filter>): void;
-        static createFilter(filter: egret.Filter): void;
-        static setFilterPadding(filterId: number, paddingTop: number, paddingBottom: number, paddingLeft: number, paddingRight: number): void;
-        setMask(value: number): void;
-        static setSourceToNativeBitmapData(nativeBitmapData: egret_native.NativeBitmapData, source: any): any;
-        setTexture(texture: egret.Texture): void;
-        setBitmapDataToMesh(texture: egret.Texture): void;
-        setBitmapDataToParticle(texture: egret.Texture): void;
-        setWidth(value: number): void;
-        setHeight(value: number): void;
-        setCacheAsBitmap(value: boolean): void;
-        setBitmapFillMode(fillMode: string): void;
-        setScale9Grid(x: number, y: number, w: number, h: number): void;
-        setMatrix(a: number, b: number, c: number, d: number, tx: number, ty: number): void;
-        setIsTyping(value: boolean): void;
-        setDataToBitmapNode(id: number, texture: egret.Texture, arr: number[]): void;
-        setDataToMesh(vertexArr: number[], indiceArr: number[], uvArr: number[]): void;
-        static setDataToFilter(currFilter: egret.Filter): void;
-        static disposeNativeBitmapData(nativeBitmapData: egret_native.NativeBitmapData): void;
-        static disposeTextData(node: egret.TextField): void;
-        static disposeGraphicData(graphic: egret.Graphics): void;
-        setFontSize(value: number): void;
-        setLineSpacing(value: number): void;
-        setTextColor(value: number): void;
-        setTextFieldWidth(value: number): void;
-        setTextFieldHeight(value: number): void;
-        setFontFamily(value: string): void;
-        setTextFlow(textArr: Array<egret.ITextElement>): void;
-        setTextAlign(value: string): void;
-        setVerticalAlign(value: string): void;
-        setText(value: string): void;
-        setBold(value: boolean): void;
-        setItalic(value: boolean): void;
-        setWordWrap(value: boolean): void;
-        setMaxChars(value: number): void;
-        setType(value: string): void;
-        setStrokeColor(value: number): void;
-        setStroke(value: number): void;
-        setScrollV(value: number): void;
-        setMultiline(value: boolean): void;
-        setBorder(value: boolean): void;
-        setBorderColor(value: number): void;
-        setBackground(value: boolean): void;
-        setBackgroundColor(value: number): void;
-        setInputType(value: string): void;
-        setBeginFill(color: number, alpha?: number): void;
-        setBeginGradientFill(type: string, colors: number[], alphas: number[], ratios: number[], matrix: egret.Matrix): void;
-        setEndFill(): void;
-        setLineStyle(thickness?: number, color?: number, alpha?: number, pixelHinting?: boolean, scaleMode?: string, caps?: string, joints?: string, miterLimit?: number, lineDash?: number[]): void;
-        setDrawRect(x: number, y: number, width: number, height: number): void;
-        setDrawRoundRect(x: number, y: number, width: number, height: number, ellipseWidth: number, ellipseHeight?: number): void;
-        setDrawCircle(x: number, y: number, radius: number): void;
-        setDrawEllipse(x: number, y: number, width: number, height: number): void;
-        setMoveTo(x: number, y: number): void;
-        setLineTo(x: number, y: number): void;
-        setCurveTo(controlX: number, controlY: number, anchorX: number, anchorY: number): void;
-        setCubicCurveTo(controlX1: number, controlY1: number, controlX2: number, controlY2: number, anchorX: number, anchorY: number): void;
-        setDrawArc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean): void;
-        setGraphicsClear(): void;
-    }
-}
-/**
- * @private
- */
-declare namespace egret_native {
-    /**
-     * @private
-     */
-    const enum NativeObjectType {
-        /**
-         * 容器
-         */
-        CONTAINER = 0,
-        /**
-         * 位图
-         */
-        BITMAP = 1,
-        /**
-         * 位图数据
-         */
-        BITMAP_DATA = 2,
-        /**
-         * 滤镜
-         */
-        FILTER = 6,
-        /**
-         * 文本
-         */
-        TEXT = 7,
-        /**
-         * 矢量绘图
-         */
-        GRAPHICS = 8,
-        /**
-         * 含一个适量绘图的容器
-         */
-        SPRITE = 9,
-        /**
-         * 粒子系统
-         */
-        PARTICLE_SYSTEM = 10,
-        /**
-         * 位图文本
-         */
-        BITMAP_TEXT = 11,
-        /**
-         * 网格
-         */
-        MESH = 12,
-        /**
-         * 舞台（根容器）
-         */
-        STAGE = 13
-    }
-}
 declare namespace egret {
     /**
      * @private
@@ -4076,7 +3856,7 @@ declare namespace egret {
          * @private
          * @language zh_CN
          */
-        $source: any;
+        $source: TexImageSource;
         /**
          * WebGL texture.
          * @version Egret 2.4
@@ -4111,11 +3891,6 @@ declare namespace egret {
          */
         $deleteSource: boolean;
         /**
-         * @private
-         * id
-         */
-        $nativeBitmapData: egret_native.NativeBitmapData;
-        /**
          * Initializes a BitmapData object to refer to the specified source object.
          * @param source The source object being referenced.
          * @version Egret 2.4
@@ -4130,7 +3905,7 @@ declare namespace egret {
          * @language zh_CN
          */
         constructor(source: any);
-        source: any;
+        source: TexImageSource;
         static create(type: "arraybuffer", data: ArrayBuffer, callback?: (bitmapData: BitmapData) => void): BitmapData;
         static create(type: "base64", data: string, callback?: (bitmapData: BitmapData) => void): BitmapData;
         $dispose(): void;
@@ -4885,11 +4660,6 @@ declare namespace egret {
      */
     class Mesh extends Bitmap {
         constructor(value?: Texture);
-        protected createNativeDisplayObject(): void;
-        /**
-         * @private
-         */
-        protected setBitmapDataToWasm(data?: Texture): void;
         /**
          * @private
          */
@@ -4913,24 +4683,24 @@ declare namespace egret {
     /**
      * OrientationMode 类为舞台初始旋转模式提供值。
      */
-    const OrientationMode: {
+    const enum OrientationMode {
         /**
          * 适配屏幕
          */
-        AUTO: string;
+        AUTO = "auto",
         /**
          * 默认竖屏
          */
-        PORTRAIT: string;
+        PORTRAIT = "portrait",
         /**
          * 默认横屏，舞台顺时针旋转90度
          */
-        LANDSCAPE: string;
+        LANDSCAPE = "landscape",
         /**
          * 默认横屏，舞台逆时针旋转90度
          */
-        LANDSCAPE_FLIPPED: string;
-    };
+        LANDSCAPE_FLIPPED = "landscapeFlipped"
+    }
 }
 declare namespace egret {
     /**
@@ -5013,7 +4783,6 @@ declare namespace egret {
          * @language zh_CN
          */
         constructor();
-        protected createNativeDisplayObject(): void;
         /**
          * @private
          */
@@ -5071,7 +4840,6 @@ declare namespace egret {
          * @language zh_CN
          */
         constructor();
-        protected createNativeDisplayObject(): void;
         /**
          * @private
          */
@@ -5134,7 +4902,6 @@ declare namespace egret {
          * @platform Web,Native
          */
         constructor();
-        protected createNativeDisplayObject(): void;
         /**
          * Gets and sets the frame rate of the stage. The frame rate is defined as frames per second. Valid range for the
          * frame rate is from 0.01 to 1000 frames per second.<br/>
@@ -7112,7 +6879,6 @@ declare namespace egret {
          * @language zh_CN
          */
         constructor(vertexSrc: string, fragmentSrc: string, uniforms?: any);
-        onPropertyChange(): void;
     }
 }
 declare namespace egret {
@@ -9416,15 +9182,6 @@ declare namespace egret.sys {
 /**
  * @private
  */
-declare module egret {
-    /**
-     * @private
-     */
-    var nativeRender: boolean;
-}
-/**
- * @private
- */
 interface PlayerOption {
     /**
      * 入口类完整类名
@@ -9669,7 +9426,7 @@ declare namespace egret {
      * @includeExample egret/player/StageScaleMode.ts
      * @language zh_CN
      */
-    class StageScaleMode {
+    const enum StageScaleMode {
         /**
          * Do not scale application content. Even when you change the player viewport size, it remains unchanged. If the player is smaller than the viewport content, possibly with some cropping.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) always with the player viewport size consistent.
@@ -9680,7 +9437,7 @@ declare namespace egret {
          * 在此模式下，舞台尺寸（Stage.stageWidth,Stage.stageHeight）始终跟播放器视口大小保持一致。
          * @language zh_CN
          */
-        static NO_SCALE: string;
+        NO_SCALE = "noScale",
         /**
          * Keep the original aspect ratio scaling application content, after scaling a wide directions application content to fill the viewport players on both sides in the other direction may not be wide enough and left black bars.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) is always equal to the initialization incoming external application content size.
@@ -9691,7 +9448,7 @@ declare namespace egret {
          * 在此模式下，舞台尺寸(Stage.stageWidth,Stage.stageHeight)始终等于初始化时外部传入的应用程序内容尺寸。
          * @language zh_CN
          */
-        static SHOW_ALL: string;
+        SHOW_ALL = "showAll",
         /**
          * Keep the original aspect ratio scaling application content, after scaling a narrow direction of application content to fill the viewport players on both sides in the other direction may exceed the viewport and the player is cut.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) is always equal to the initialization incoming external application content size.
@@ -9702,7 +9459,7 @@ declare namespace egret {
          * 在此模式下，舞台尺寸(Stage.stageWidth,Stage.stageHeight)始终等于初始化时外部传入的应用程序内容尺寸。
          * @language zh_CN
          */
-        static NO_BORDER: string;
+        NO_BORDER = "noBorder",
         /**
          * Do not keep the original aspect ratio scaling application content, after scaling application content just fill the player viewport.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) is always equal to the initialization incoming external application content size.
@@ -9713,7 +9470,7 @@ declare namespace egret {
          * 在此模式下，舞台尺寸(Stage.stageWidth,Stage.stageHeight)始终等于初始化时外部传入的应用程序内容尺寸。
          * @language zh_CN
          */
-        static EXACT_FIT: string;
+        EXACT_FIT = "exactFit",
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player, but only to keep the contents of the original application constant width, height may change.<br/>
          * In this mode, the stage width (Stage.stageWidth) is always equal to initialize external incoming application content width. Stage height (Stage.stageHeight) by the current scale with the player viewport height decision.
@@ -9724,7 +9481,7 @@ declare namespace egret {
          * 在此模式下，舞台宽度(Stage.stageWidth)始终等于初始化时外部传入的应用程序内容宽度。舞台高度(Stage.stageHeight)由当前的缩放比例与播放器视口高度决定。
          * @language zh_CN
          */
-        static FIXED_WIDTH: string;
+        FIXED_WIDTH = "fixedWidth",
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player, but only to keep the contents of the original application constant height, width may change.<br/>
          * In this mode, the stage height (Stage.stageHeight) is always equal to initialize external incoming application content height. Stage width (Stage.stageWidth) by the current scale with the player viewport width decision.
@@ -9735,7 +9492,7 @@ declare namespace egret {
          * 在此模式下，舞台高度(Stage.stageHeight)始终等于初始化时外部传入的应用程序内容高度。舞台宽度(Stage.stageWidth)由当前的缩放比例与播放器视口宽度决定。
          * @language zh_CN
          */
-        static FIXED_HEIGHT: string;
+        FIXED_HEIGHT = "fixedHeight",
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player,a narrow direction may not be wide enough and fill.<br/>
          * In this mode, the stage height (Stage.stageHeight) and the stage width (Stage.stageWidth) by the current scale with the player viewport size.
@@ -9746,7 +9503,7 @@ declare namespace egret {
          * 在此模式下，舞台高度(Stage.stageHeight)和舞台宽度(Stage.stageWidth)由当前的缩放比例与播放器视口宽高决定。
          * @language zh_CN
          */
-        static FIXED_NARROW: string;
+        FIXED_NARROW = "fixedNarrow",
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player, a wide direction may exceed the viewport and the player is cut.<br/>
          * In this mode, the stage height (Stage.stageHeight) and the stage width (Stage.stageWidth) by the current scale with the player viewport size.
@@ -9757,7 +9514,7 @@ declare namespace egret {
          * 在此模式下，舞台高度(Stage.stageHeight)和舞台宽度(Stage.stageWidth)由当前的缩放比例与播放器视口宽高决定。
          * @language zh_CN
          */
-        static FIXED_WIDE: string;
+        FIXED_WIDE = "fixedWide"
     }
 }
 declare namespace egret.sys {
@@ -10906,7 +10663,7 @@ declare namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    namespace RuntimeType {
+    const enum RuntimeType {
         /**
          * Running on Web
          * @version Egret 2.4
@@ -10919,7 +10676,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        const WEB = "web";
+        WEB = "web",
         /**
          * Running on NATIVE
          * @version Egret 2.4
@@ -10934,7 +10691,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        const NATIVE = "native";
+        NATIVE = "native",
         /**
          * Running on Runtime2.0
          * @version Egret 5.1.5
@@ -10947,7 +10704,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        const RUNTIME2 = "runtime2";
+        RUNTIME2 = "runtime2",
         /**
          * Running on WeChat mini game
          * @version Egret 5.1.5
@@ -10960,7 +10717,7 @@ declare namespace egret {
          * @platform All
          * @language zh_CN
          */
-        const WXGAME = "wxgame";
+        WXGAME = "wxgame",
         /**
          * Running on Baidu mini game
          * @version Egret 5.2.13
@@ -10973,7 +10730,7 @@ declare namespace egret {
          * @platform All
          * @language zh_CN
          */
-        const BAIDUGAME = "baidugame";
+        BAIDUGAME = "baidugame",
         /**
          * Running on Xiaomi quick game
          * @version Egret 5.2.14
@@ -10986,7 +10743,7 @@ declare namespace egret {
          * @platform All
          * @language zh_CN
          */
-        const QGAME = "qgame";
+        QGAME = "qgame"
     }
     /**
      * The Capabilities class provides properties that describe the system and runtime that are hosting the application.
@@ -11321,7 +11078,6 @@ declare namespace egret {
          * @language zh_CN
          */
         constructor();
-        protected createNativeDisplayObject(): void;
         private $smoothing;
         /**
          * Whether or not is smoothed when scaled.
@@ -11568,7 +11324,7 @@ declare namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    class HorizontalAlign {
+    const enum HorizontalAlign {
         /**
          * Horizontally align content to the left of the container.
          * @version Egret 2.4
@@ -11581,7 +11337,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static LEFT: string;
+        LEFT = "left",
         /**
          * Horizontally align content to the right of the container.
          * @version Egret 2.4
@@ -11594,7 +11350,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static RIGHT: string;
+        RIGHT = "right",
         /**
          * Horizontally align content in the center of the container.
          * @version Egret 2.4
@@ -11607,7 +11363,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static CENTER: string;
+        CENTER = "center",
         /**
          * Horizontal alignment with both edges.
          * Note: TextFiled does not support this alignment method.
@@ -11624,7 +11380,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static JUSTIFY: string;
+        JUSTIFY = "justify",
         /**
          * Align the content of the child items, relative to the container. This operation will adjust uniformly the size of all the child items to be the Content Width \" of the container \".
          * The Content Width \" of the container \" is the size of the max. child item. If the size of all child items are less than the width of the container, they will be adjusted to the width of the container.
@@ -11643,7 +11399,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static CONTENT_JUSTIFY: string;
+        CONTENT_JUSTIFY = "contentJustify"
     }
 }
 declare namespace egret {
@@ -12404,7 +12160,6 @@ declare namespace egret {
          * @platform Web,Native
          */
         constructor();
-        protected createNativeDisplayObject(): void;
         /**
          * @private
          */
@@ -13082,12 +12837,6 @@ declare namespace egret {
          */
         private linesArr;
         $getLinesArr(): Array<egret.ILineElement>;
-        /**
-         * @private
-         *
-         * @returns
-         */
-        $getLinesArr2(): Array<egret.ILineElement>;
         /**
          * @private
          */

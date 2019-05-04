@@ -65,17 +65,6 @@ namespace egret.web {
             // 获取webglRenderContext
             this.context = WebGLRenderContext.getInstance(width, height);
 
-            if (egret.nativeRender) {
-                if(root) {
-                    this.surface = this.context.surface;
-                }
-                else {
-                    this.surface = new egret_native.NativeRenderSurface(this, width, height, root);
-                }
-                this.rootRenderTarget = null;
-                return;
-            }
-
             // buffer 对应的 render target
             this.rootRenderTarget = new WebGLRenderTarget(this.context.context, 3, 3);
             if (width && height) {
@@ -170,12 +159,7 @@ namespace egret.web {
          * @readOnly
          */
         public get width(): number {
-            if (egret.nativeRender) {
-                return this.surface.width;
-            }
-            else {
-                return this.rootRenderTarget.width;
-            }
+            return this.rootRenderTarget.width;
         }
 
         /**
@@ -183,12 +167,7 @@ namespace egret.web {
          * @readOnly
          */
         public get height(): number {
-            if (egret.nativeRender) {
-                return this.surface.height;
-            }
-            else {
-                return this.rootRenderTarget.height;
-            }
+            return this.rootRenderTarget.height;
         }
 
         /**
@@ -200,10 +179,7 @@ namespace egret.web {
         public resize(width: number, height: number, useMaxSize?: boolean): void {
             width = width || 1;
             height = height || 1;
-            if (egret.nativeRender) {
-                this.surface.resize(width, height);
-                return;
-            }
+
             this.context.pushBuffer(this);
             // render target 尺寸重置
             if (width != this.rootRenderTarget.width || height != this.rootRenderTarget.height) {
@@ -226,21 +202,16 @@ namespace egret.web {
         public getPixels(x: number, y: number, width: number = 1, height: number = 1): number[] {
             let pixels = new Uint8Array(4 * width * height);
 
-            if (egret.nativeRender) {
-                egret_native.activateBuffer(this);
-                egret_native.nrGetPixels(x, y, width, height, pixels);
-                egret_native.activateBuffer(null);
-            }
-            else {
-                let useFrameBuffer = this.rootRenderTarget.useFrameBuffer;
-                this.rootRenderTarget.useFrameBuffer = true;
-                this.rootRenderTarget.activate();
 
-                this.context.getPixels(x, y, width, height, pixels);
+            let useFrameBuffer = this.rootRenderTarget.useFrameBuffer;
+            this.rootRenderTarget.useFrameBuffer = true;
+            this.rootRenderTarget.activate();
 
-                this.rootRenderTarget.useFrameBuffer = useFrameBuffer;
-                this.rootRenderTarget.activate();
-            }
+            this.context.getPixels(x, y, width, height, pixels);
+
+            this.rootRenderTarget.useFrameBuffer = useFrameBuffer;
+            this.rootRenderTarget.activate();
+
             //图像反转
             let result = new Uint8Array(4 * width * height);
             for (let i = 0; i < height; i++) {

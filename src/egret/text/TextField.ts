@@ -331,10 +331,6 @@ namespace egret {
             };
         }
 
-        protected createNativeDisplayObject(): void {
-            this.$nativeDisplayObject = new egret_native.NativeDisplayObject(egret_native.NativeObjectType.TEXT);
-        }
-
         /**
          * @private
          */
@@ -386,10 +382,6 @@ namespace egret {
             }
             values[sys.TextKeys.fontFamily] = value;
             this.invalidateFontString();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setFontFamily(value);
-            }
-
             return true;
         }
 
@@ -422,10 +414,6 @@ namespace egret {
             }
             values[sys.TextKeys.fontSize] = value;
             this.invalidateFontString();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setFontSize(value);
-            }
-
             return true;
         }
 
@@ -458,10 +446,6 @@ namespace egret {
             }
             values[sys.TextKeys.bold] = value;
             this.invalidateFontString();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setBold(value);
-            }
-
             return true;
         }
 
@@ -494,10 +478,6 @@ namespace egret {
             }
             values[sys.TextKeys.italic] = value;
             this.invalidateFontString();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setItalic(value);
-            }
-
             return true;
         }
 
@@ -539,10 +519,6 @@ namespace egret {
             }
             values[sys.TextKeys.textAlign] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setTextAlign(value);
-            }
-
             return true;
         }
 
@@ -575,10 +551,6 @@ namespace egret {
             }
             values[sys.TextKeys.verticalAlign] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setVerticalAlign(value);
-            }
-
             return true;
         }
 
@@ -611,10 +583,6 @@ namespace egret {
             }
             values[sys.TextKeys.lineSpacing] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setLineSpacing(value);
-            }
-
             return true;
         }
 
@@ -650,9 +618,6 @@ namespace egret {
                 this.inputUtils._setColor(this.$TextField[sys.TextKeys.textColor]);
             }
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setTextColor(value);
-            }
             return true;
         }
 
@@ -690,9 +655,6 @@ namespace egret {
             }
             values[sys.TextKeys.wordWrap] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setWordWrap(value);
-            }
         }
 
         /**
@@ -725,9 +687,6 @@ namespace egret {
             let values = this.$TextField;
             if (values[sys.TextKeys.type] != value) {
                 values[sys.TextKeys.type] = value;
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setType(value);
-                }
                 if (value == TextFieldType.INPUT) {//input，如果没有设置过宽高，则设置默认值为100，30
                     if (isNaN(values[sys.TextKeys.textFieldWidth])) {
                         this.$setWidth(100);
@@ -786,9 +745,6 @@ namespace egret {
                 return;
             }
             this.$TextField[sys.TextKeys.inputType] = value;
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setInputType(value);
-            }
         }
 
         /**
@@ -857,11 +813,6 @@ namespace egret {
                 else {
                     text = value;
                 }
-
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setText(text);
-                }
-
                 this.setMiddleStyle([<egret.ITextElement>{ text: text }]);
                 return true;
             }
@@ -924,10 +875,6 @@ namespace egret {
                 else {
                     text = values[sys.TextKeys.text];
                 }
-
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setText(text);
-                }
                 this.setMiddleStyle([<egret.ITextElement>{ text: text }]);
 
                 return true;
@@ -969,9 +916,6 @@ namespace egret {
             if (values[sys.TextKeys.strokeColor] != value) {
                 this.$invalidateTextField();
                 values[sys.TextKeys.strokeColor] = value;
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setStrokeColor(value);
-                }
                 values[sys.TextKeys.strokeColorString] = toColorString(value);
 
                 return true;
@@ -1014,10 +958,6 @@ namespace egret {
             if (this.$TextField[sys.TextKeys.stroke] != value) {
                 this.$invalidateTextField();
                 this.$TextField[sys.TextKeys.stroke] = value;
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setStroke(value);
-                }
-
                 return true;
             }
             return false;
@@ -1052,10 +992,6 @@ namespace egret {
         $setMaxChars(value: number): boolean {
             if (this.$TextField[sys.TextKeys.maxChars] != value) {
                 this.$TextField[sys.TextKeys.maxChars] = value;
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setMaxChars(value);
-                }
-
                 return true;
             }
 
@@ -1080,9 +1016,6 @@ namespace egret {
                 return;
             }
             this.$TextField[sys.TextKeys.scrollV] = value;
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setScrollV(value);
-            }
             this.$invalidateTextField();
         }
 
@@ -1201,9 +1134,6 @@ namespace egret {
             }
             this.$TextField[sys.TextKeys.multiline] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setMultiline(value);
-            }
             return true;
         }
 
@@ -1304,9 +1234,6 @@ namespace egret {
          * @param value
          */
         $setWidth(value: number): boolean {
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setTextFieldWidth(value);
-            }
             let values = this.$TextField;
             if (isNaN(value)) {
                 if (isNaN(values[sys.TextKeys.textFieldWidth])) {
@@ -1338,9 +1265,6 @@ namespace egret {
          * @param value
          */
         $setHeight(value: number): boolean {
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setTextFieldHeight(value);
-            }
             let values = this.$TextField;
             if (isNaN(value)) {
                 if (isNaN(values[sys.TextKeys.textFieldHeight])) {
@@ -1421,9 +1345,6 @@ namespace egret {
             }
             this.$TextField[sys.TextKeys.border] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setBorder(value);
-            }
         }
 
         /**
@@ -1460,9 +1381,6 @@ namespace egret {
             }
             this.$TextField[sys.TextKeys.borderColor] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setBorderColor(value);
-            }
         }
 
         /**
@@ -1500,9 +1418,6 @@ namespace egret {
             }
             this.$TextField[sys.TextKeys.background] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setBackground(value);
-            }
         }
 
         /**
@@ -1538,9 +1453,6 @@ namespace egret {
             }
             this.$TextField[sys.TextKeys.backgroundColor] = value;
             this.$invalidateTextField();
-            if (egret.nativeRender) {
-                this.$nativeDisplayObject.setBackgroundColor(value);
-            }
         }
 
         /**
@@ -1564,15 +1476,10 @@ namespace egret {
             if (values[sys.TextKeys.background] || values[sys.TextKeys.border] || (lines && lines.length > 0)) {
                 if (!graphics) {
                     graphics = this.$graphicsNode = new sys.GraphicsNode();
-                    if (!egret.nativeRender) {
-                        let groupNode = new sys.GroupNode();
-                        groupNode.addNode(graphics);
-                        groupNode.addNode(this.textNode);
-                        this.$renderNode = groupNode;
-                    }
-                    else {
-                        this.$renderNode = this.textNode;
-                    }
+                    let groupNode = new sys.GroupNode();
+                    groupNode.addNode(graphics);
+                    groupNode.addNode(this.textNode);
+                    this.$renderNode = groupNode;
                 }
                 let fillPath: sys.Path2D;
                 let strokePath: sys.Path2D;
@@ -1649,9 +1556,6 @@ namespace egret {
 
             if (this.textNode) {
                 this.textNode.clean();
-                if (egret.nativeRender) {
-                    egret_native.NativeDisplayObject.disposeTextData(this);
-                }
             }
 
         }
@@ -1677,21 +1581,7 @@ namespace egret {
             self.$renderDirty = true;
             self.$TextField[sys.TextKeys.textLinesChanged] = true;
             self.$TextField[sys.TextKeys.textLinesChangedForNativeRender] = true;
-            if (egret.nativeRender) {
-                // egret_native.dirtyTextField(this);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.dirty();
         }
 
         $getRenderBounds(): Rectangle {
@@ -1721,14 +1611,8 @@ namespace egret {
             this.$getLinesArr();
             let w: number = 0;
             let h: number = 0;
-            if (nativeRender) {
-                w = egret_native.nrGetTextFieldWidth(this.$nativeDisplayObject.id);
-                h = egret_native.nrGetTextFieldHeight(this.$nativeDisplayObject.id);
-            }
-            else {
-                w = !isNaN(this.$TextField[sys.TextKeys.textFieldWidth]) ? this.$TextField[sys.TextKeys.textFieldWidth] : this.$TextField[sys.TextKeys.textWidth];
-                h = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this);
-            }
+            w = !isNaN(this.$TextField[sys.TextKeys.textFieldWidth]) ? this.$TextField[sys.TextKeys.textFieldWidth] : this.$TextField[sys.TextKeys.textWidth];
+            h = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this);
             bounds.setTo(0, 0, w, h);
         }
 
@@ -1790,9 +1674,6 @@ namespace egret {
             else {
                 this.$TextField[sys.TextKeys.text] = text;
                 this.setMiddleStyle(textArr);
-                if (egret.nativeRender) {
-                    this.$nativeDisplayObject.setTextFlow(textArr);
-                }
             }
         }
 
@@ -1860,9 +1741,6 @@ namespace egret {
          */
         public get textWidth(): number {
             this.$getLinesArr();
-            if (nativeRender) {
-                return egret_native.nrGetTextWidth(this.$nativeDisplayObject.id);
-            }
             return this.$TextField[sys.TextKeys.textWidth];
         }
 
@@ -1880,9 +1758,6 @@ namespace egret {
          */
         public get textHeight(): number {
             this.$getLinesArr();
-            if (nativeRender) {
-                return egret_native.nrGetTextHeight(this.$nativeDisplayObject.id);
-            }
             return TextFieldUtils.$getTextHeight(this);
         }
 
@@ -1904,16 +1779,6 @@ namespace egret {
          */
         public appendElement(element: egret.ITextElement): void {
             const text: string = this.$TextField[sys.TextKeys.text] + element.text;
-
-            if (egret.nativeRender) {
-                this.textArr.push(element);
-                this.$TextField[sys.TextKeys.text] = text;
-                this.$TextField[sys.TextKeys.textLinesChanged] = true;
-                this.$TextField[sys.TextKeys.textLinesChangedForNativeRender] = true;
-                this.$nativeDisplayObject.setTextFlow(this.textArr);
-                return;
-            }
-
             if (this.$TextField[sys.TextKeys.displayAsPassword]) {
                 this.$setBaseText(text);
             }
@@ -1931,23 +1796,6 @@ namespace egret {
         private linesArr: Array<egret.ILineElement> = [];
 
         $getLinesArr(): Array<egret.ILineElement> {
-            let values = this.$TextField;
-            if (nativeRender && values[sys.TextKeys.textLinesChangedForNativeRender]) {
-                egret_native.updateNativeRender();
-                values[sys.TextKeys.textLinesChangedForNativeRender] = false;
-                return;
-            }
-            else {
-                return this.$getLinesArr2();
-            }
-        }
-
-        /**
-         * @private
-         *
-         * @returns
-         */
-        $getLinesArr2(): Array<egret.ILineElement> {
             let values = this.$TextField;
 
             if (!values[sys.TextKeys.textLinesChanged]) {
@@ -2204,9 +2052,6 @@ namespace egret {
         public $setIsTyping(value: boolean): void {
             this.$isTyping = value;
             this.$invalidateTextField();
-            if (nativeRender) {
-                this.$nativeDisplayObject.setIsTyping(value);
-            }
         }
 
         /**

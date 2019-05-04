@@ -180,13 +180,5 @@ namespace egret {
 
             this.type = "custom";
         }
-
-        public onPropertyChange(): void {
-            if (egret.nativeRender) {
-                let self = this;
-                egret_native.NativeDisplayObject.setFilterPadding(self.$id, self.$padding, self.$padding, self.$padding, self.$padding);
-                egret_native.NativeDisplayObject.setDataToFilter(self);
-            }
-        }
     }
 }

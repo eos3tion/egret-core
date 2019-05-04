@@ -68,8 +68,9 @@ namespace egret {
          */
         public init(text: TextField): void {
             this._text = text;
-            this.stageText = new egret.StageText();
-            this.stageText.$setTextField(this._text);
+            let stageText = new egret.StageText();
+            this.stageText = stageText
+            stageText.$setTextField(this._text);
         }
 
         /**
@@ -80,19 +81,20 @@ namespace egret {
             if (this.stageTextAdded) {
                 return;
             }
-            if (!this._text.$inputEnabled) {
-                this._text.$touchEnabled = true;
+            let { _text, stageText } = this;
+            if (!_text.$inputEnabled) {
+                _text.$touchEnabled = true;
             }
 
-            this.tempStage = this._text.stage;
+            this.tempStage = _text.stage;
 
-            this.stageText.$addToStage();
+            stageText.$addToStage();
 
-            this.stageText.addEventListener("updateText", this.updateTextHandler, this);
-            this._text.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
+            stageText.addEventListener("updateText", this.updateTextHandler, this);
+            _text.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
 
-            this.stageText.addEventListener("blur", this.blurHandler, this);
-            this.stageText.addEventListener("focus", this.focusHandler, this);
+            stageText.addEventListener("blur", this.blurHandler, this);
+            stageText.addEventListener("focus", this.focusHandler, this);
 
             this.stageTextAdded = true;
         }
@@ -105,18 +107,19 @@ namespace egret {
             if (!this.stageTextAdded) {
                 return;
             }
-            if (!this._text.$inputEnabled) {
-                this._text.$touchEnabled = false;
+            let { _text, stageText } = this;
+            if (!_text.$inputEnabled) {
+                _text.$touchEnabled = false;
             }
 
-            this.stageText.$removeFromStage();
+            stageText.$removeFromStage();
 
-            this.stageText.removeEventListener("updateText", this.updateTextHandler, this);
-            this._text.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
+            stageText.removeEventListener("updateText", this.updateTextHandler, this);
+            _text.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
             this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
 
-            this.stageText.removeEventListener("blur", this.blurHandler, this);
-            this.stageText.removeEventListener("focus", this.focusHandler, this);
+            stageText.removeEventListener("blur", this.blurHandler, this);
+            stageText.removeEventListener("focus", this.focusHandler, this);
 
             this.stageTextAdded = false;
         }
@@ -201,10 +204,6 @@ namespace egret {
             egret.callLater(() => {
                 this.tempStage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
             }, this);
-
-            if(egret.nativeRender) {
-                this.stageText.$setText(this._text.$TextField[egret.sys.TextKeys.text]);
-            }
 
             //强制更新输入框位置
             this.stageText.$show();

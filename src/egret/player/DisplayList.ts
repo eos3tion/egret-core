@@ -29,9 +29,6 @@
 
 namespace egret.sys {
 
-    let displayListPool: DisplayList[] = [];
-    let blendModes = ["source-over", "lighter", "destination-out"];
-    let defaultCompositeOp = "source-over";
 
     /**
      * @private
@@ -161,7 +158,6 @@ namespace egret.sys {
          * 改变画布的尺寸，由于画布尺寸修改会清空原始画布。所以这里将原始画布绘制到一个新画布上，再与原始画布交换。
          */
         public changeSurfaceSize(): void {
-            let root = this.root;
             let oldOffsetX = this.offsetX;
             let oldOffsetY = this.offsetY;
             let bounds = this.root.$getOriginalBounds();
@@ -197,9 +193,6 @@ namespace egret.sys {
         public static $setCanvasScale(x: number, y: number): void {
             DisplayList.$canvasScaleX = x;
             DisplayList.$canvasScaleY = y;
-            if (egret.nativeRender) {
-                egret_native.nrSetCanvasScaleFactor(DisplayList.$canvasScaleFactor, x, y);
-            }
         }
     }
 }

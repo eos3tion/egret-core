@@ -38,17 +38,6 @@ namespace egret {
             this.$renderNode = new sys.MeshNode();
         }
 
-        protected createNativeDisplayObject(): void {
-            this.$nativeDisplayObject = new egret_native.NativeDisplayObject(egret_native.NativeObjectType.MESH);
-        }
-
-        /**
-         * @private
-         */
-        protected setBitmapDataToWasm(data?: Texture): void {
-            this.$nativeDisplayObject.setBitmapDataToMesh(data);
-        }
-
         /**
          * @private
          */
@@ -92,22 +81,7 @@ namespace egret {
             let self = this;
             self._verticesDirty = true;
             self.$renderDirty = true;
-            if (egret.nativeRender) {
-                let renderNode = <sys.MeshNode>(this.$renderNode);
-                this.$nativeDisplayObject.setDataToMesh(renderNode.vertices, renderNode.indices, renderNode.uvs);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.dirty();
         }
 
         /**

@@ -41,7 +41,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export namespace RuntimeType {
+    export const enum RuntimeType {
         /**
          * Running on Web
          * @version Egret 2.4
@@ -54,7 +54,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        export const WEB = "web";
+        WEB = "web",
 
         /**
          * Running on NATIVE
@@ -70,7 +70,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        export const NATIVE = "native";
+        NATIVE = "native",
 
         /**
          * Running on Runtime2.0
@@ -84,7 +84,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        export const RUNTIME2 = "runtime2";
+        RUNTIME2 = "runtime2",
 
         /**
          * Running on WeChat mini game
@@ -98,7 +98,7 @@ namespace egret {
          * @platform All
          * @language zh_CN
          */
-        export const WXGAME = "wxgame";
+        WXGAME = "wxgame",
 
         /**
          * Running on Baidu mini game
@@ -112,7 +112,7 @@ namespace egret {
          * @platform All
          * @language zh_CN
          */
-        export const BAIDUGAME = "baidugame";
+        BAIDUGAME = "baidugame",
         /**
          * Running on Xiaomi quick game
          * @version Egret 5.2.14
@@ -125,7 +125,7 @@ namespace egret {
          * @platform All
          * @language zh_CN
          */
-        export const QGAME = "qgame";
+        QGAME = "qgame",
 
     }
 

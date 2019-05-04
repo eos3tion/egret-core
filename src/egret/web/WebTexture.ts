@@ -95,7 +95,7 @@ namespace egret.web {
             let offsetY: number = Math.round(bitmapData.$offsetY);
             let bitmapWidth: number = bitmapData.$bitmapWidth;
             let bitmapHeight: number = bitmapData.$bitmapHeight;
-            sharedContext.drawImage(bitmapData.$bitmapData.source, bitmapData.$bitmapX + rect.x / $TextureScaleFactor, bitmapData.$bitmapY + rect.y / $TextureScaleFactor,
+            sharedContext.drawImage(bitmapData.$bitmapData.source as any, bitmapData.$bitmapX + rect.x / $TextureScaleFactor, bitmapData.$bitmapY + rect.y / $TextureScaleFactor,
                 bitmapWidth * rect.width / w, bitmapHeight * rect.height / h, offsetX, offsetY, rect.width, rect.height);
             return surface;
         }

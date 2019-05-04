@@ -54,11 +54,9 @@ namespace egret.web {
          * @param forRenderTexture 绘制目标是RenderTexture的标志
          * @returns drawCall触发绘制的次数
          */
-        public render(displayObject: DisplayObject, buffer: sys.RenderBuffer, matrix: Matrix, forRenderTexture?: boolean): number {
+        public render(displayObject: DisplayObject, webglBuffer: WebGLRenderBuffer, matrix: Matrix): number {
             this.nestLevel++;
-            let webglBuffer: WebGLRenderBuffer = <WebGLRenderBuffer>buffer;
-            let webglBufferContext: WebGLRenderContext = webglBuffer.context;
-            let root: DisplayObject = forRenderTexture ? displayObject : null;
+            let webglBufferContext = webglBuffer.context;
 
             webglBufferContext.pushBuffer(webglBuffer);
 
@@ -900,11 +898,11 @@ namespace egret.web {
                 // 拷贝canvas到texture
                 let texture = node.$texture;
                 if (!texture) {
-                    texture = buffer.context.createTexture(<BitmapData><any>surface);
+                    texture = buffer.context.createTexture(surface);
                     node.$texture = texture;
                 } else {
                     // 重新拷贝新的图像
-                    buffer.context.updateTexture(texture, <BitmapData><any>surface);
+                    buffer.context.updateTexture(texture, surface);
                 }
                 // 保存材质尺寸
                 node.$textureWidth = surface.width;
@@ -984,11 +982,11 @@ namespace egret.web {
                     // 拷贝canvas到texture
                     let texture: WebGLTexture = node.$texture;
                     if (!texture) {
-                        texture = buffer.context.createTexture(<BitmapData><any>surface);
+                        texture = buffer.context.createTexture(surface);
                         node.$texture = texture;
                     } else {
                         // 重新拷贝新的图像
-                        buffer.context.updateTexture(texture, <BitmapData><any>surface);
+                        buffer.context.updateTexture(texture, surface);
                     }
                     // 保存材质尺寸
                     node.$textureWidth = surface.width;

@@ -43,7 +43,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export class HorizontalAlign{
+    export const enum HorizontalAlign {
         /**
          * Horizontally align content to the left of the container.
          * @version Egret 2.4
@@ -56,7 +56,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static LEFT:string = "left";
+        LEFT = "left",
 
         /**
          * Horizontally align content to the right of the container.
@@ -70,7 +70,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static RIGHT:string = "right";
+        RIGHT = "right",
 
         /**
          * Horizontally align content in the center of the container.
@@ -84,7 +84,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static CENTER: string = "center";
+        CENTER = "center",
 
         /**
          * Horizontal alignment with both edges.
@@ -102,7 +102,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static JUSTIFY:string = "justify";
+        JUSTIFY = "justify",
 
         /**
          * Align the content of the child items, relative to the container. This operation will adjust uniformly the size of all the child items to be the Content Width \" of the container \".
@@ -122,7 +122,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static CONTENT_JUSTIFY:string = "contentJustify";
+        CONTENT_JUSTIFY = "contentJustify",
 
     }
 }

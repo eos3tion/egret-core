@@ -47,7 +47,7 @@ namespace egret {
      * @includeExample egret/display/BitmapFillMode.ts
      * @language zh_CN
      */
-    export const BitmapFillMode = {
+    export const enum BitmapFillMode {
 
         /**
          * Repeat the bitmap to fill area.
@@ -61,7 +61,7 @@ namespace egret {
          * @platform Web
          * @language zh_CN
          */
-        REPEAT: "repeat",
+        REPEAT = "repeat",
         /**
          * Scale bitmap fill to fill area.
          * @version Egret 2.4
@@ -74,7 +74,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        SCALE: "scale",
+        SCALE = "scale",
 
         /**
          * The bitmap ends at the edge of the region.
@@ -88,6 +88,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        CLIP: "clip"
+        CLIP = "clip"
     }
 }

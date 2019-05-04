@@ -43,7 +43,7 @@ namespace egret {
      * @includeExample egret/player/StageScaleMode.ts
      * @language zh_CN
      */
-    export class StageScaleMode {
+    export const enum StageScaleMode {
         /**
          * Do not scale application content. Even when you change the player viewport size, it remains unchanged. If the player is smaller than the viewport content, possibly with some cropping.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) always with the player viewport size consistent.
@@ -54,7 +54,7 @@ namespace egret {
          * 在此模式下，舞台尺寸（Stage.stageWidth,Stage.stageHeight）始终跟播放器视口大小保持一致。
          * @language zh_CN
          */
-        public static NO_SCALE:string = "noScale";
+        NO_SCALE = "noScale",
         /**
          * Keep the original aspect ratio scaling application content, after scaling a wide directions application content to fill the viewport players on both sides in the other direction may not be wide enough and left black bars.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) is always equal to the initialization incoming external application content size.
@@ -65,7 +65,7 @@ namespace egret {
          * 在此模式下，舞台尺寸(Stage.stageWidth,Stage.stageHeight)始终等于初始化时外部传入的应用程序内容尺寸。
          * @language zh_CN
          */
-        public static SHOW_ALL:string = "showAll";
+        SHOW_ALL = "showAll",
         /**
          * Keep the original aspect ratio scaling application content, after scaling a narrow direction of application content to fill the viewport players on both sides in the other direction may exceed the viewport and the player is cut.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) is always equal to the initialization incoming external application content size.
@@ -76,7 +76,7 @@ namespace egret {
          * 在此模式下，舞台尺寸(Stage.stageWidth,Stage.stageHeight)始终等于初始化时外部传入的应用程序内容尺寸。
          * @language zh_CN
          */
-        public static NO_BORDER:string = "noBorder";
+        NO_BORDER = "noBorder",
         /**
          * Do not keep the original aspect ratio scaling application content, after scaling application content just fill the player viewport.<br/>
          * In this mode, the stage size (Stage.stageWidth, Stage.stageHeight) is always equal to the initialization incoming external application content size.
@@ -87,7 +87,7 @@ namespace egret {
          * 在此模式下，舞台尺寸(Stage.stageWidth,Stage.stageHeight)始终等于初始化时外部传入的应用程序内容尺寸。
          * @language zh_CN
          */
-        public static EXACT_FIT:string = "exactFit";
+        EXACT_FIT = "exactFit",
 
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player, but only to keep the contents of the original application constant width, height may change.<br/>
@@ -99,7 +99,7 @@ namespace egret {
          * 在此模式下，舞台宽度(Stage.stageWidth)始终等于初始化时外部传入的应用程序内容宽度。舞台高度(Stage.stageHeight)由当前的缩放比例与播放器视口高度决定。
          * @language zh_CN
          */
-        public static FIXED_WIDTH:string = "fixedWidth";
+        FIXED_WIDTH = "fixedWidth",
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player, but only to keep the contents of the original application constant height, width may change.<br/>
          * In this mode, the stage height (Stage.stageHeight) is always equal to initialize external incoming application content height. Stage width (Stage.stageWidth) by the current scale with the player viewport width decision.
@@ -110,7 +110,7 @@ namespace egret {
          * 在此模式下，舞台高度(Stage.stageHeight)始终等于初始化时外部传入的应用程序内容高度。舞台宽度(Stage.stageWidth)由当前的缩放比例与播放器视口宽度决定。
          * @language zh_CN
          */
-        public static FIXED_HEIGHT:string = "fixedHeight";
+        FIXED_HEIGHT = "fixedHeight",
 
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player,a narrow direction may not be wide enough and fill.<br/>
@@ -122,7 +122,7 @@ namespace egret {
          * 在此模式下，舞台高度(Stage.stageHeight)和舞台宽度(Stage.stageWidth)由当前的缩放比例与播放器视口宽高决定。
          * @language zh_CN
          */
-        public static FIXED_NARROW:string = "fixedNarrow";
+        FIXED_NARROW = "fixedNarrow",
 
         /**
          * Keep the original aspect ratio scaling application content, after scaling application content in the horizontal and vertical directions to fill the viewport player, a wide direction may exceed the viewport and the player is cut.<br/>
@@ -134,6 +134,6 @@ namespace egret {
          * 在此模式下，舞台高度(Stage.stageHeight)和舞台宽度(Stage.stageWidth)由当前的缩放比例与播放器视口宽高决定。
          * @language zh_CN
          */
-        public static FIXED_WIDE:string = "fixedWide";
+        FIXED_WIDE = "fixedWide"
     }
 }

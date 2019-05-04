@@ -877,9 +877,6 @@ var egret;
                 }
                 return _this;
             }
-            WebVideo.prototype.createNativeDisplayObject = function () {
-                this.$nativeDisplayObject = new egret_native.NativeDisplayObject(1 /* BITMAP */);
-            };
             /**
              * @inheritDoc
              */
@@ -1198,11 +1195,6 @@ var egret;
                     _this.$renderDirty = true;
                     _this.posterData.width = _this.getPlayWidth();
                     _this.posterData.height = _this.getPlayHeight();
-                    if (egret.nativeRender) {
-                        var texture = new egret.Texture();
-                        texture._setBitmapData(_this.posterData);
-                        _this.$nativeDisplayObject.setTexture(texture);
-                    }
                 }, this);
                 imageLoader.load(poster);
             };
@@ -3299,112 +3291,61 @@ var egret;
                 options = {};
             }
             var ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf("egretnative") >= 0 && ua.indexOf("egretwebview") == -1) {
-                egret.Capabilities["runtimeType" + ""] = egret.RuntimeType.RUNTIME2;
+            web.Html5Capatibility._audioType = options.audioType;
+            web.Html5Capatibility.$init();
+            var renderMode = options.renderMode;
+            // WebGL上下文参数自定义
+            if (renderMode == "webgl") {
+                // WebGL抗锯齿默认关闭，提升PC及某些平台性能
+                var antialias = options.antialias;
+                web.WebGLRenderContext.antialias = !!antialias;
+                // WebGLRenderContext.antialias = (typeof antialias == undefined) ? true : antialias;
             }
-            if (ua.indexOf("egretnative") >= 0 && egret.nativeRender) { // Egret Native
-                egret_native.addModuleCallback(function () {
-                    web.Html5Capatibility.$init();
-                    // WebGL上下文参数自定义
-                    if (options.renderMode == "webgl") {
-                        // WebGL抗锯齿默认关闭，提升PC及某些平台性能
-                        var antialias = options.antialias;
-                        web.WebGLRenderContext.antialias = !!antialias;
-                    }
-                    egret.sys.CanvasRenderBuffer = web.CanvasRenderBuffer;
-                    setRenderMode(options.renderMode);
-                    egret_native.nrSetRenderMode(2);
-                    var canvasScaleFactor;
-                    if (options.canvasScaleFactor) {
-                        canvasScaleFactor = options.canvasScaleFactor;
-                    }
-                    else if (options.calculateCanvasScaleFactor) {
-                        canvasScaleFactor = options.calculateCanvasScaleFactor(egret.sys.canvasHitTestBuffer.context);
-                    }
-                    else {
-                        canvasScaleFactor = window.devicePixelRatio;
-                    }
-                    egret.sys.DisplayList.$canvasScaleFactor = canvasScaleFactor;
-                    var ticker = egret.ticker;
-                    startTicker(ticker);
-                    if (options.screenAdapter) {
-                        egret.sys.screenAdapter = options.screenAdapter;
-                    }
-                    else if (!egret.sys.screenAdapter) {
-                        egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
-                    }
-                    var list = document.querySelectorAll(".egret-player");
-                    var length = list.length;
-                    for (var i = 0; i < length; i++) {
-                        var container = list[i];
-                        var player = new web.WebPlayer(container, options);
-                        container["egret-player"] = player;
-                    }
-                    window.addEventListener("resize", function () {
-                        if (isNaN(resizeTimer)) {
-                            resizeTimer = window.setTimeout(doResize, 300);
-                        }
-                    });
-                }, null);
-                egret_native.initNativeRender();
+            egret.sys.CanvasRenderBuffer = web.CanvasRenderBuffer;
+            if (ua.indexOf("egretnative") >= 0 && renderMode != "webgl") {
+                egret.$warn(1051);
+                renderMode = "webgl";
+            }
+            setRenderMode(renderMode);
+            var canvasScaleFactor;
+            if (options.canvasScaleFactor) {
+                canvasScaleFactor = options.canvasScaleFactor;
+            }
+            else if (options.calculateCanvasScaleFactor) {
+                canvasScaleFactor = options.calculateCanvasScaleFactor(egret.sys.canvasHitTestBuffer.context);
             }
             else {
-                web.Html5Capatibility._audioType = options.audioType;
-                web.Html5Capatibility.$init();
-                var renderMode = options.renderMode;
-                // WebGL上下文参数自定义
-                if (renderMode == "webgl") {
-                    // WebGL抗锯齿默认关闭，提升PC及某些平台性能
-                    var antialias = options.antialias;
-                    web.WebGLRenderContext.antialias = !!antialias;
-                    // WebGLRenderContext.antialias = (typeof antialias == undefined) ? true : antialias;
-                }
-                egret.sys.CanvasRenderBuffer = web.CanvasRenderBuffer;
-                if (ua.indexOf("egretnative") >= 0 && renderMode != "webgl") {
-                    egret.$warn(1051);
-                    renderMode = "webgl";
-                }
-                setRenderMode(renderMode);
-                var canvasScaleFactor = void 0;
-                if (options.canvasScaleFactor) {
-                    canvasScaleFactor = options.canvasScaleFactor;
-                }
-                else if (options.calculateCanvasScaleFactor) {
-                    canvasScaleFactor = options.calculateCanvasScaleFactor(egret.sys.canvasHitTestBuffer.context);
-                }
-                else {
-                    //based on : https://github.com/jondavidjohn/hidpi-canvas-polyfill
-                    var context = egret.sys.canvasHitTestBuffer.context;
-                    var backingStore = context.backingStorePixelRatio ||
-                        context.webkitBackingStorePixelRatio ||
-                        context.mozBackingStorePixelRatio ||
-                        context.msBackingStorePixelRatio ||
-                        context.oBackingStorePixelRatio ||
-                        context.backingStorePixelRatio || 1;
-                    canvasScaleFactor = (window.devicePixelRatio || 1) / backingStore;
-                }
-                egret.sys.DisplayList.$canvasScaleFactor = canvasScaleFactor;
-                var ticker_1 = egret.ticker;
-                startTicker(ticker_1);
-                if (options.screenAdapter) {
-                    egret.sys.screenAdapter = options.screenAdapter;
-                }
-                else if (!egret.sys.screenAdapter) {
-                    egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
-                }
-                var list = document.querySelectorAll(".egret-player");
-                var length_1 = list.length;
-                for (var i = 0; i < length_1; i++) {
-                    var container = list[i];
-                    var player = new web.WebPlayer(container, options);
-                    container["egret-player"] = player;
-                }
-                window.addEventListener("resize", function () {
-                    if (isNaN(resizeTimer)) {
-                        resizeTimer = window.setTimeout(doResize, 300);
-                    }
-                });
+                //based on : https://github.com/jondavidjohn/hidpi-canvas-polyfill
+                var context = egret.sys.canvasHitTestBuffer.context;
+                var backingStore = context.backingStorePixelRatio ||
+                    context.webkitBackingStorePixelRatio ||
+                    context.mozBackingStorePixelRatio ||
+                    context.msBackingStorePixelRatio ||
+                    context.oBackingStorePixelRatio ||
+                    context.backingStorePixelRatio || 1;
+                canvasScaleFactor = (window.devicePixelRatio || 1) / backingStore;
             }
+            egret.sys.DisplayList.$canvasScaleFactor = canvasScaleFactor;
+            var ticker = egret.ticker;
+            startTicker(ticker);
+            if (options.screenAdapter) {
+                egret.sys.screenAdapter = options.screenAdapter;
+            }
+            else if (!egret.sys.screenAdapter) {
+                egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
+            }
+            var list = document.querySelectorAll(".egret-player");
+            var length = list.length;
+            for (var i = 0; i < length; i++) {
+                var container = list[i];
+                var player = new web.WebPlayer(container, options);
+                container["egret-player"] = player;
+            }
+            window.addEventListener("resize", function () {
+                if (isNaN(resizeTimer)) {
+                    resizeTimer = window.setTimeout(doResize, 300);
+                }
+            });
         }
         /**
          * 设置渲染模式。"auto","webgl","canvas"
@@ -3873,8 +3814,8 @@ var egret;
                 }
                 search = search.slice(1);
                 var searchArr = search.split("&");
-                var length_2 = searchArr.length;
-                for (var i = 0; i < length_2; i++) {
+                var length_1 = searchArr.length;
+                for (var i = 0; i < length_1; i++) {
                     var str = searchArr[i];
                     var arr = str.split("=");
                     if (arr[0] == key) {
@@ -3949,9 +3890,7 @@ var egret;
                 egret.lifecycle.addLifecycleListener(web.WebLifeCycleHandler);
                 var webInput = new web.HTMLInput();
                 if (option.showFPS || option.showLog) {
-                    if (!egret.nativeRender) {
-                        player.displayFPS(option.showFPS, option.showLog, option.logFilter, option.fpsStyles);
-                    }
+                    player.displayFPS(option.showFPS, option.showLog, option.logFilter, option.fpsStyles);
                 }
                 this.playerOption = option;
                 this.container = container;
@@ -3979,11 +3918,11 @@ var egret;
             WebPlayer.prototype.readOption = function (container, options) {
                 var option = {};
                 option.entryClassName = container.getAttribute("data-entry-class");
-                option.scaleMode = container.getAttribute("data-scale-mode") || egret.StageScaleMode.NO_SCALE;
+                option.scaleMode = container.getAttribute("data-scale-mode") || "noScale" /* NO_SCALE */;
                 option.frameRate = +container.getAttribute("data-frame-rate") || 30;
                 option.contentWidth = +container.getAttribute("data-content-width") || 480;
                 option.contentHeight = +container.getAttribute("data-content-height") || 800;
-                option.orientation = container.getAttribute("data-orientation") || egret.OrientationMode.AUTO;
+                option.orientation = container.getAttribute("data-orientation") || "auto" /* AUTO */;
                 option.maxTouches = +container.getAttribute("data-multi-fingered") || 2;
                 option.textureScaleFactor = +container.getAttribute("texture-scale-factor") || 1;
                 option.showFPS = container.getAttribute("data-show-fps") == "true";
@@ -4039,9 +3978,9 @@ var egret;
                 }
                 var shouldRotate = false;
                 var orientation = this.stage.$orientation;
-                if (orientation != egret.OrientationMode.AUTO) {
-                    shouldRotate = orientation != egret.OrientationMode.PORTRAIT && boundingClientHeight > boundingClientWidth
-                        || orientation == egret.OrientationMode.PORTRAIT && boundingClientWidth > boundingClientHeight;
+                if (orientation != "auto" /* AUTO */) {
+                    shouldRotate = orientation != "portrait" /* PORTRAIT */ && boundingClientHeight > boundingClientWidth
+                        || orientation == "portrait" /* PORTRAIT */ && boundingClientWidth > boundingClientHeight;
                 }
                 var screenWidth = shouldRotate ? boundingClientHeight : boundingClientWidth;
                 var screenHeight = shouldRotate ? boundingClientWidth : boundingClientHeight;
@@ -4061,7 +4000,7 @@ var egret;
                 }
                 var rotation = 0;
                 if (shouldRotate) {
-                    if (orientation == egret.OrientationMode.LANDSCAPE) { //
+                    if (orientation == "landscape" /* LANDSCAPE */) { //
                         rotation = 90;
                         canvas.style.top = top + (boundingClientHeight - displayWidth) / 2 + "px";
                         canvas.style.left = (boundingClientWidth + displayHeight) / 2 + "px";
@@ -4099,11 +4038,6 @@ var egret;
                 this.webTouchHandler.updateScaleMode(scalex, scaley, rotation);
                 this.webInput.$updateSize();
                 this.player.updateStageSize(stageWidth, stageHeight); //不要在这个方法后面修改属性
-                // todo
-                if (egret.nativeRender) {
-                    canvas.width = stageWidth * canvasScaleX;
-                    canvas.height = stageHeight * canvasScaleY;
-                }
             };
             WebPlayer.prototype.setContentSize = function (width, height) {
                 var option = this.playerOption;
@@ -5217,9 +5151,6 @@ var egret;
                 this.$scissorState = false;
                 this.vertSize = 5;
                 this.surface = createCanvas(width, height);
-                if (egret.nativeRender) {
-                    return;
-                }
                 this.initWebGL();
                 this.$bufferStack = [];
                 var gl = this.context;
@@ -5379,8 +5310,9 @@ var egret;
             };
             WebGLRenderContext.prototype.setContext = function (gl) {
                 this.context = gl;
-                gl.id = WebGLRenderContext.glContextId++;
-                this.glID = gl.id;
+                var id = WebGLRenderContext.glContextId++;
+                this.glID = id;
+                gl.id = id;
                 gl.disable(gl.DEPTH_TEST);
                 gl.disable(gl.CULL_FACE);
                 gl.enable(gl.BLEND);
@@ -5445,9 +5377,6 @@ var egret;
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
                 return texture;
             };
-            WebGLRenderContext.prototype.createTextureFromCompressedData = function (data, width, height, levels, internalFormat) {
-                return null;
-            };
             /**
              * 更新材质的bitmapData
              */
@@ -5465,15 +5394,12 @@ var egret;
                     if (bitmapData.format == "image") {
                         bitmapData.webGLTexture = this.createTexture(bitmapData.source);
                     }
-                    else if (bitmapData.format == "pvr") { //todo 需要支持其他格式
-                        bitmapData.webGLTexture = this.createTextureFromCompressedData(bitmapData.source.pvrtcData, bitmapData.width, bitmapData.height, bitmapData.source.mipmapsCount, bitmapData.source.format);
-                    }
                     if (bitmapData.$deleteSource && bitmapData.webGLTexture) {
                         bitmapData.source = null;
                     }
                     if (bitmapData.webGLTexture) {
                         //todo 默认值
-                        bitmapData.webGLTexture["smoothing"] = true;
+                        bitmapData.webGLTexture.smoothing = true;
                     }
                 }
                 return bitmapData.webGLTexture;
@@ -5686,36 +5612,40 @@ var egret;
                 buffer.$hasScissor = false;
             };
             WebGLRenderContext.prototype.$drawWebGL = function () {
-                if (this.drawCmdManager.drawDataLen == 0 || this.contextLost) {
+                var _a = this, drawCmdManager = _a.drawCmdManager, vao = _a.vao;
+                if (drawCmdManager.drawDataLen == 0 || this.contextLost) {
                     return;
                 }
-                this.uploadVerticesArray(this.vao.getVertices());
+                this.uploadVerticesArray(vao.getVertices());
                 // 有mesh，则使用indicesForMesh
-                if (this.vao.isMesh()) {
-                    this.uploadIndicesArray(this.vao.getMeshIndices());
+                if (vao.isMesh()) {
+                    this.uploadIndicesArray(vao.getMeshIndices());
                 }
-                var length = this.drawCmdManager.drawDataLen;
+                var length = drawCmdManager.drawDataLen;
+                var drawData = drawCmdManager.drawData;
                 var offset = 0;
                 for (var i = 0; i < length; i++) {
-                    var data = this.drawCmdManager.drawData[i];
+                    var data = drawData[i];
                     offset = this.drawData(data, offset);
+                    var type = data.type;
                     // 计算draw call
-                    if (data.type == 7 /* ACT_BUFFER */) {
+                    if (type == 7 /* ACT_BUFFER */) {
                         this.activatedBuffer = data.buffer;
                     }
-                    if (data.type == 0 /* TEXTURE */ || data.type == 1 /* RECT */ || data.type == 2 /* PUSH_MASK */ || data.type == 3 /* POP_MASK */) {
-                        if (this.activatedBuffer && this.activatedBuffer.$computeDrawCall) {
-                            this.activatedBuffer.$drawCalls++;
+                    else if (type == 0 /* TEXTURE */ || type == 1 /* RECT */ || type == 2 /* PUSH_MASK */ || type == 3 /* POP_MASK */) {
+                        var buffer = this.activatedBuffer;
+                        if (buffer && buffer.$computeDrawCall) {
+                            buffer.$drawCalls++;
                         }
                     }
                 }
                 // 切换回默认indices
-                if (this.vao.isMesh()) {
-                    this.uploadIndicesArray(this.vao.getIndices());
+                if (vao.isMesh()) {
+                    this.uploadIndicesArray(vao.getIndices());
                 }
                 // 清空数据
-                this.drawCmdManager.clear();
-                this.vao.clear();
+                drawCmdManager.clear();
+                vao.clear();
             };
             /**
              * 执行绘制命令
@@ -6112,16 +6042,6 @@ var egret;
                 _this.$offsetY = 0;
                 // 获取webglRenderContext
                 _this.context = web.WebGLRenderContext.getInstance(width, height);
-                if (egret.nativeRender) {
-                    if (root) {
-                        _this.surface = _this.context.surface;
-                    }
-                    else {
-                        _this.surface = new egret_native.NativeRenderSurface(_this, width, height, root);
-                    }
-                    _this.rootRenderTarget = null;
-                    return _this;
-                }
                 // buffer 对应的 render target
                 _this.rootRenderTarget = new web.WebGLRenderTarget(_this.context.context, 3, 3);
                 if (width && height) {
@@ -6195,12 +6115,7 @@ var egret;
                  * @readOnly
                  */
                 get: function () {
-                    if (egret.nativeRender) {
-                        return this.surface.width;
-                    }
-                    else {
-                        return this.rootRenderTarget.width;
-                    }
+                    return this.rootRenderTarget.width;
                 },
                 enumerable: true,
                 configurable: true
@@ -6211,12 +6126,7 @@ var egret;
                  * @readOnly
                  */
                 get: function () {
-                    if (egret.nativeRender) {
-                        return this.surface.height;
-                    }
-                    else {
-                        return this.rootRenderTarget.height;
-                    }
+                    return this.rootRenderTarget.height;
                 },
                 enumerable: true,
                 configurable: true
@@ -6230,10 +6140,6 @@ var egret;
             WebGLRenderBuffer.prototype.resize = function (width, height, useMaxSize) {
                 width = width || 1;
                 height = height || 1;
-                if (egret.nativeRender) {
-                    this.surface.resize(width, height);
-                    return;
-                }
                 this.context.pushBuffer(this);
                 // render target 尺寸重置
                 if (width != this.rootRenderTarget.width || height != this.rootRenderTarget.height) {
@@ -6256,19 +6162,12 @@ var egret;
                 if (width === void 0) { width = 1; }
                 if (height === void 0) { height = 1; }
                 var pixels = new Uint8Array(4 * width * height);
-                if (egret.nativeRender) {
-                    egret_native.activateBuffer(this);
-                    egret_native.nrGetPixels(x, y, width, height, pixels);
-                    egret_native.activateBuffer(null);
-                }
-                else {
-                    var useFrameBuffer = this.rootRenderTarget.useFrameBuffer;
-                    this.rootRenderTarget.useFrameBuffer = true;
-                    this.rootRenderTarget.activate();
-                    this.context.getPixels(x, y, width, height, pixels);
-                    this.rootRenderTarget.useFrameBuffer = useFrameBuffer;
-                    this.rootRenderTarget.activate();
-                }
+                var useFrameBuffer = this.rootRenderTarget.useFrameBuffer;
+                this.rootRenderTarget.useFrameBuffer = true;
+                this.rootRenderTarget.activate();
+                this.context.getPixels(x, y, width, height, pixels);
+                this.rootRenderTarget.useFrameBuffer = useFrameBuffer;
+                this.rootRenderTarget.activate();
                 //图像反转
                 var result = new Uint8Array(4 * width * height);
                 for (var i = 0; i < height; i++) {
@@ -6498,11 +6397,9 @@ var egret;
              * @param forRenderTexture 绘制目标是RenderTexture的标志
              * @returns drawCall触发绘制的次数
              */
-            WebGLRenderer.prototype.render = function (displayObject, buffer, matrix, forRenderTexture) {
+            WebGLRenderer.prototype.render = function (displayObject, webglBuffer, matrix) {
                 this.nestLevel++;
-                var webglBuffer = buffer;
                 var webglBufferContext = webglBuffer.context;
-                var root = forRenderTexture ? displayObject : null;
                 webglBufferContext.pushBuffer(webglBuffer);
                 //绘制显示对象
                 webglBuffer.transform(matrix.a, matrix.b, matrix.c, matrix.d, 0, 0);
@@ -6521,8 +6418,8 @@ var egret;
                     if (renderBufferPool.length > 6) {
                         renderBufferPool.length = 6;
                     }
-                    var length_3 = renderBufferPool.length;
-                    for (var i = 0; i < length_3; i++) {
+                    var length_2 = renderBufferPool.length;
+                    for (var i = 0; i < length_2; i++) {
                         renderBufferPool[i].resize(0, 0);
                     }
                 }
@@ -6585,8 +6482,8 @@ var egret;
                 }
                 var children = displayObject.$children;
                 if (children) {
-                    var length_4 = children.length;
-                    for (var i = 0; i < length_4; i++) {
+                    var length_3 = children.length;
+                    for (var i = 0; i < length_3; i++) {
                         var child = children[i];
                         var offsetX2 = void 0;
                         var offsetY2 = void 0;
@@ -7033,8 +6930,8 @@ var egret;
                 }
                 var children = displayObject.$children;
                 if (children) {
-                    var length_5 = children.length;
-                    for (var i = 0; i < length_5; i++) {
+                    var length_4 = children.length;
+                    for (var i = 0; i < length_4; i++) {
                         var child = children[i];
                         switch (child.$renderMode) {
                             case 1 /* NONE */:

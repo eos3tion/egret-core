@@ -43,7 +43,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export const JointStyle = {
+    export const enum JointStyle {
         /**
          * Specifies beveled joints in the joints parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -56,7 +56,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        BEVEL: "bevel",
+        BEVEL = "bevel",
         /**
          * Specifies mitered joints in the joints parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -69,7 +69,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-         MITER : "miter",
+        MITER = "miter",
         /**
          * Specifies round joints in the joints parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -82,6 +82,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        ROUND:"round"
+        ROUND = "round"
     }
 }
