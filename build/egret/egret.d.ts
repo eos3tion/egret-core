@@ -3935,7 +3935,7 @@ declare namespace egret {
      * @includeExample egret/display/BitmapFillMode.ts
      * @language zh_CN
      */
-    const BitmapFillMode: {
+    const enum BitmapFillMode {
         /**
          * Repeat the bitmap to fill area.
          * @version Egret 2.4
@@ -3948,7 +3948,7 @@ declare namespace egret {
          * @platform Web
          * @language zh_CN
          */
-        REPEAT: string;
+        REPEAT = "repeat",
         /**
          * Scale bitmap fill to fill area.
          * @version Egret 2.4
@@ -3961,7 +3961,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        SCALE: string;
+        SCALE = "scale",
         /**
          * The bitmap ends at the edge of the region.
          * @version Egret 2.4
@@ -3974,8 +3974,8 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        CLIP: string;
-    };
+        CLIP = "clip"
+    }
 }
 declare namespace egret {
     /**
@@ -4612,7 +4612,7 @@ declare namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    const JointStyle: {
+    const enum JointStyle {
         /**
          * Specifies beveled joints in the joints parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -4625,7 +4625,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        BEVEL: string;
+        BEVEL = "bevel",
         /**
          * Specifies mitered joints in the joints parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -4638,7 +4638,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        MITER: string;
+        MITER = "miter",
         /**
          * Specifies round joints in the joints parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -4651,8 +4651,8 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        ROUND: string;
-    };
+        ROUND = "round"
+    }
 }
 declare namespace egret {
     /**

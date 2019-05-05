@@ -1745,20 +1745,11 @@ var egret;
             },
             set: function (value) {
                 var self = this;
-                var filters = self.$filters;
-                if (!filters && !value) {
-                    self.$filters = value;
-                    self.$updateRenderMode();
-                    self.dirty();
-                    return;
-                }
+                var $filters;
                 if (value && value.length) {
-                    value = value.concat();
-                    self.$filters = value;
+                    $filters = value.concat();
                 }
-                else {
-                    self.$filters = value;
-                }
+                self.$filters = $filters;
                 self.$updateRenderMode();
                 self.dirty();
             },
@@ -2685,16 +2676,7 @@ var egret;
                 }
                 self.setImageData(null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
                 self.$renderDirty = true;
-                var p_1 = self.$parent;
-                if (p_1 && !p_1.$cacheDirty) {
-                    p_1.$cacheDirty = true;
-                    p_1.$cacheDirtyUp();
-                }
-                var maskedObject_1 = self.$maskedObject;
-                if (maskedObject_1 && !maskedObject_1.$cacheDirty) {
-                    maskedObject_1.$cacheDirty = true;
-                    maskedObject_1.$cacheDirtyUp();
-                }
+                self.dirty();
                 return true;
             }
             if (self.$stage) {
@@ -2703,15 +2685,15 @@ var egret;
                     var newHashCode = value.$bitmapData ? value.$bitmapData.hashCode : -1;
                     if (oldHashCode == newHashCode) {
                         self.$renderDirty = true;
-                        var p_2 = self.$parent;
-                        if (p_2 && !p_2.$cacheDirty) {
-                            p_2.$cacheDirty = true;
-                            p_2.$cacheDirtyUp();
+                        var p_1 = self.$parent;
+                        if (p_1 && !p_1.$cacheDirty) {
+                            p_1.$cacheDirty = true;
+                            p_1.$cacheDirtyUp();
                         }
-                        var maskedObject_2 = self.$maskedObject;
-                        if (maskedObject_2 && !maskedObject_2.$cacheDirty) {
-                            maskedObject_2.$cacheDirty = true;
-                            maskedObject_2.$cacheDirtyUp();
+                        var maskedObject_1 = self.$maskedObject;
+                        if (maskedObject_1 && !maskedObject_1.$cacheDirty) {
+                            maskedObject_1.$cacheDirty = true;
+                            maskedObject_1.$cacheDirtyUp();
                         }
                         return true;
                     }
@@ -2984,7 +2966,7 @@ var egret;
                     egret.sys.BitmapNode.$updateTextureDataWithScale9Grid(this.$renderNode, this.$bitmapData, scale9Grid, this.$bitmapX, this.$bitmapY, this.$bitmapWidth, this.$bitmapHeight, this.$offsetX, this.$offsetY, this.$textureWidth, this.$textureHeight, destW, destH, this.$sourceWidth, this.$sourceHeight, this.$smoothing);
                 }
                 else {
-                    if (this.fillMode == egret.BitmapFillMode.REPEAT && this.$renderNode instanceof egret.sys.NormalBitmapNode) {
+                    if (this.fillMode == "repeat" /* REPEAT */ && this.$renderNode instanceof egret.sys.NormalBitmapNode) {
                         this.$renderNode = new egret.sys.BitmapNode();
                     }
                     egret.sys.BitmapNode.$updateTextureData(this.$renderNode, this.$bitmapData, this.$bitmapX, this.$bitmapY, this.$bitmapWidth, this.$bitmapHeight, this.$offsetX, this.$offsetY, this.$textureWidth, this.$textureHeight, destW, destH, this.$sourceWidth, this.$sourceHeight, this.$fillMode, this.$smoothing);
@@ -6507,21 +6489,12 @@ var egret;
             }
             var tempList = BitmapData._displayList[hashCode];
             for (var i = 0; i < tempList.length; i++) {
-                if (tempList[i] instanceof egret.Bitmap) {
-                    tempList[i].$refreshImageData();
-                }
                 var bitmap = tempList[i];
+                if (bitmap instanceof egret.Bitmap) {
+                    bitmap.$refreshImageData();
+                }
                 bitmap.$renderDirty = true;
-                var p = bitmap.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                var maskedObject = bitmap.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+                bitmap.dirty();
             }
         };
         BitmapData.$dispose = function (bitmapData) {
@@ -6542,16 +6515,7 @@ var egret;
                     node.$bitmapData = null;
                 }
                 node.$renderDirty = true;
-                var p = node.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                var maskedObject = node.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+                node.dirty();
             }
             delete BitmapData._displayList[hashCode];
         };
@@ -6589,68 +6553,6 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * The BitmapFillMode class defines the image fill mode of Bitmap.
-     * The BitmapFillMode class defines a pattern enumeration for adjusting size. These patterns determine how Bitmap fill the size designated by the layout system.
-     * @see http://edn.egret.com/cn/docs/page/134 Texture filling way
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/BitmapFillMode.ts
-     * @language en_US
-     */
-    /**
-     * BitmapFillMode 类定义Bitmap的图像填充方式。
-     * BitmapFillMode 类定义了调整大小模式的一个枚举，这些模式确定 Bitmap 如何填充由布局系统指定的尺寸。
-     * @see http://edn.egret.com/cn/docs/page/134 纹理的填充方式
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/BitmapFillMode.ts
-     * @language zh_CN
-     */
-    egret.BitmapFillMode = {
-        /**
-         * Repeat the bitmap to fill area.
-         * @version Egret 2.4
-         * @platform Web
-         * @language en_US
-         */
-        /**
-         * 重复位图以填充区域。
-         * @version Egret 2.4
-         * @platform Web
-         * @language zh_CN
-         */
-        REPEAT: "repeat",
-        /**
-         * Scale bitmap fill to fill area.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 位图填充拉伸以填充区域。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        SCALE: "scale",
-        /**
-         * The bitmap ends at the edge of the region.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在区域的边缘处截断不显示位图。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        CLIP: "clip"
-    };
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -7649,7 +7551,7 @@ var egret;
             self.$renderNode.dirtyRender = true;
             var target = self.$targetDisplay;
             target.$cacheDirty = true;
-            self.dirty();
+            target.dirty();
         };
         /**
          * @private
@@ -7845,65 +7747,6 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * The JointStyle class is an enumeration of constant values that specify the joint style to use in drawing lines.
-     * These constants are provided for use as values in the joints parameter of the egret.Graphics.lineStyle() method.
-     * @see egret.Graphics#lineStyle()
-     * @version Egret 2.5
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * JointStyle 类是指定要在绘制线条中使用的联接点样式的常量值枚举。提供的这些常量用作 egret.Graphics.lineStyle() 方法的 joints 参数中的值。
-     * @see egret.Graphics#lineStyle()
-     * @version Egret 2.5
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    egret.JointStyle = {
-        /**
-         * Specifies beveled joints in the joints parameter of the egret.Graphics.lineStyle() method.
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在 egret.Graphics.lineStyle() 方法的 joints 参数中指定斜角连接。
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        BEVEL: "bevel",
-        /**
-         * Specifies mitered joints in the joints parameter of the egret.Graphics.lineStyle() method.
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在 egret.Graphics.lineStyle() 方法的 joints 参数中指定尖角连接。
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        MITER: "miter",
-        /**
-         * Specifies round joints in the joints parameter of the egret.Graphics.lineStyle() method.
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在 egret.Graphics.lineStyle() 方法的 joints 参数中指定圆角连接。
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        ROUND: "round"
-    };
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -14648,12 +14491,12 @@ var egret;
                 node.image = image;
                 node.imageWidth = sourceWidth;
                 node.imageHeight = sourceHeight;
-                if (fillMode == egret.BitmapFillMode.SCALE) {
+                if (fillMode == "scale" /* SCALE */) {
                     var tsX = destW / textureWidth * scale;
                     var tsY = destH / textureHeight * scale;
                     node.drawImage(bitmapX, bitmapY, bitmapWidth, bitmapHeight, tsX * offsetX, tsY * offsetY, tsX * bitmapWidth, tsY * bitmapHeight);
                 }
-                else if (fillMode == egret.BitmapFillMode.CLIP) {
+                else if (fillMode == "clip" /* CLIP */) {
                     var displayW = Math.min(textureWidth, destW);
                     var displayH = Math.min(textureHeight, destH);
                     var scaledBitmapW = bitmapWidth * scale;

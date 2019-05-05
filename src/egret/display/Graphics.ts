@@ -736,7 +736,7 @@ namespace egret {
             self.$renderNode.dirtyRender = true;
             const target = self.$targetDisplay;
             target.$cacheDirty = true;
-            self.dirty();
+            target.dirty();
         }
 
         /**
