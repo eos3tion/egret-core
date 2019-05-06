@@ -656,7 +656,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public deltaTransformPoint(point: Point): Point {
+        public deltaTransformPoint(point: Point2): Point {
             let self = this;
             let x = self.a * point.x + self.c * point.y;
             let y = self.b * point.x + self.d * point.y;
@@ -754,7 +754,7 @@ namespace egret {
         /**
          * @private
          */
-        $transformBounds(bounds: Rectangle): void {
+        $transformBounds(bounds: Rect): void {
             let a = this.a;
             let b = this.b;
             let c = this.c;
@@ -854,7 +854,7 @@ namespace egret {
          * @private
          */
         $getSkewY(): number {
-            if(this.a < 0) {
+            if (this.a < 0) {
                 return Math.atan2(this.b, this.a) - PI;
             }
             else {

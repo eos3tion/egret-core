@@ -30,7 +30,25 @@
 
 namespace egret {
 
-    let rectanglePool:Rectangle[] = [];
+    export interface Rect extends Point2 {
+        width: number;
+        height: number;
+    }
+
+    let rectanglePool: Rectangle[] = [];
+
+    function getRight(rect: Rect) {
+        return rect.x + rect.width;
+    }
+
+    function getBottom(rect: Rect) {
+        return rect.y + rect.height;
+    }
+
+    function isEmpty(rect: Rect) {
+        return rect.width <= 0 || rect.height <= 0;
+    }
+
     /**
      * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its
      * width and its height.<br/>
@@ -67,7 +85,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static release(rect:Rectangle):void {
+        public static release(rect: Rectangle): void {
             if (!rect) {
                 return;
             }
@@ -86,7 +104,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static create():Rectangle {
+        public static create(): Rectangle {
             let rect = rectanglePool.pop();
             if (!rect) {
                 rect = new Rectangle();
@@ -115,7 +133,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(x:number = 0, y:number = 0, width:number = 0, height:number = 0) {
+        public constructor(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
             super();
             this.x = x;
             this.y = y;
@@ -137,7 +155,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public x:number;
+        public x: number;
         /**
          * The y coordinate of the top-left corner of the rectangle.
          * @default 0
@@ -152,7 +170,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public y:number;
+        public y: number;
         /**
          * The width of the rectangle, in pixels.
          * @default 0
@@ -167,7 +185,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public width:number;
+        public width: number;
         /**
          * 矩形的高度（以像素为单位）。
          * @default 0
@@ -182,7 +200,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public height:number;
+        public height: number;
 
         /**
          * The sum of the x and width properties.
@@ -196,11 +214,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get right():number {
-            return this.x + this.width;
+        public get right(): number {
+            return getRight(this);
         }
 
-        public set right(value:number) {
+        public set right(value: number) {
             this.width = value - this.x;
         }
 
@@ -216,11 +234,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get bottom():number {
-            return this.y + this.height;
+        public get bottom(): number {
+            return getBottom(this);
         }
 
-        public set bottom(value:number) {
+        public set bottom(value: number) {
             this.height = value - this.y;
         }
 
@@ -240,11 +258,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get left():number {
+        public get left(): number {
             return this.x;
         }
 
-        public set left(value:number) {
+        public set left(value: number) {
             this.width += this.x - value;
             this.x = value;
         }
@@ -265,11 +283,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get top():number {
+        public get top(): number {
             return this.y;
         }
 
-        public set top(value:number) {
+        public set top(value: number) {
             this.height += this.y - value;
             this.y = value;
         }
@@ -286,11 +304,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get topLeft():Point {
+        public get topLeft(): Point {
             return new Point(this.left, this.top);
         }
 
-        public set topLeft(value:Point) {
+        public set topLeft(value: Point) {
             this.top = value.y;
             this.left = value.x;
         }
@@ -307,11 +325,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get bottomRight():Point {
+        public get bottomRight(): Point {
             return new Point(this.right, this.bottom);
         }
 
-        public set bottomRight(value:Point) {
+        public set bottomRight(value: Point) {
             this.bottom = value.y;
             this.right = value.x;
         }
@@ -330,7 +348,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public copyFrom(sourceRect:Rectangle):Rectangle {
+        public copyFrom(sourceRect: Rect): Rectangle {
             this.x = sourceRect.x;
             this.y = sourceRect.y;
             this.width = sourceRect.width;
@@ -358,7 +376,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public setTo(x:number, y:number, width:number, height:number):Rectangle {
+        public setTo(x: number, y: number, width: number, height: number): Rectangle {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -384,7 +402,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public contains(x:number, y:number):boolean {
+        public contains(x: number, y: number): boolean {
             return this.x <= x &&
                 this.x + this.width >= x &&
                 this.y <= y &&
@@ -412,7 +430,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public intersection(toIntersect: Rectangle): Rectangle {
+        public intersection(toIntersect: Rect): Rectangle {
             return this.clone().$intersectInPlace(toIntersect);
         }
 
@@ -434,7 +452,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public inflate(dx:number, dy:number):void {
+        public inflate(dx: number, dy: number): void {
             this.x -= dx;
             this.width += 2 * dx;
             this.y -= dy;
@@ -444,7 +462,7 @@ namespace egret {
         /**
          * @private
          */
-        $intersectInPlace(clipRect: Rectangle): Rectangle {
+        $intersectInPlace(clipRect: Rect): Rectangle {
             let x0 = this.x;
             let y0 = this.y;
             let x1 = clipRect.x;
@@ -482,9 +500,9 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public intersects(toIntersect:Rectangle):boolean {
-            return Math.max(this.x, toIntersect.x) <= Math.min(this.right, toIntersect.right)
-                && Math.max(this.y, toIntersect.y) <= Math.min(this.bottom, toIntersect.bottom);
+        public intersects(toIntersect: Rect): boolean {
+            return Math.max(this.x, toIntersect.x) <= Math.min(this.right, getRight(toIntersect))
+                && Math.max(this.y, toIntersect.y) <= Math.min(this.bottom, getBottom(toIntersect));
         }
 
         /**
@@ -501,8 +519,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public isEmpty():boolean {
-            return this.width <= 0 || this.height <= 0;
+        public isEmpty(): boolean {
+            return isEmpty(this);
         }
 
         /**
@@ -517,7 +535,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public setEmpty():void {
+        public setEmpty(): void {
             this.x = 0;
             this.y = 0;
             this.width = 0;
@@ -538,7 +556,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public clone():Rectangle {
+        public clone(): Rectangle {
             return new Rectangle(this.x, this.y, this.width, this.height);
         }
 
@@ -560,7 +578,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public containsPoint(point:Point):boolean {
+        public containsPoint(point: Point2): boolean {
             if (this.x <= point.x
                 && this.x + this.width > point.x
                 && this.y <= point.y
@@ -588,7 +606,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public containsRect(rect:egret.Rectangle):boolean {
+        public containsRect(rect: Rect): boolean {
             let r1 = rect.x + rect.width;
             let b1 = rect.y + rect.height;
             let r2 = this.x + this.width;
@@ -614,7 +632,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public equals(toCompare:Rectangle):boolean {
+        public equals(toCompare: Rect): boolean {
             if (this === toCompare) {
                 return true;
             }
@@ -636,7 +654,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public inflatePoint(point:Point):void {
+        public inflatePoint(point: Point2): void {
             this.inflate(point.x, point.y);
         }
 
@@ -656,7 +674,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public offset(dx:number, dy:number):void {
+        public offset(dx: number, dy: number): void {
             this.x += dx;
             this.y += dy;
         }
@@ -675,7 +693,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public offsetPoint(point:Point):void {
+        public offsetPoint(point: Point2): void {
             this.offset(point.x, point.y);
         }
 
@@ -693,7 +711,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public toString():string {
+        public toString(): string {
             return "(x=" + this.x + ", y=" + this.y + ", width=" + this.width + ", height=" + this.height + ")";
         }
 
@@ -713,9 +731,9 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public union(toUnion:Rectangle):Rectangle {
+        public union(toUnion: Rect): Rectangle {
             let result = this.clone();
-            if (toUnion.isEmpty()) {
+            if (isEmpty(toUnion)) {
                 return result;
             }
             if (result.isEmpty()) {
@@ -725,15 +743,15 @@ namespace egret {
             let l: number = Math.min(result.x, toUnion.x);
             let t: number = Math.min(result.y, toUnion.y);
             result.setTo(l, t,
-                Math.max(result.right, toUnion.right) - l,
-                Math.max(result.bottom, toUnion.bottom) - t);
+                Math.max(result.right, getRight(toUnion)) - l,
+                Math.max(result.bottom, getBottom(toUnion)) - t);
             return result;
         }
 
         /**
          * @private
          */
-        $getBaseWidth(angle:number):number {
+        $getBaseWidth(angle: number): number {
             let u = Math.abs(Math.cos(angle));
             let v = Math.abs(Math.sin(angle));
             return u * this.width + v * this.height;
@@ -742,7 +760,7 @@ namespace egret {
         /**
          * @private
          */
-        $getBaseHeight(angle:number):number {
+        $getBaseHeight(angle: number): number {
             let u = Math.abs(Math.cos(angle));
             let v = Math.abs(Math.sin(angle));
             return v * this.width + u * this.height;

@@ -29,9 +29,13 @@
 
 
 namespace egret {
+    export interface Point2 {
+        x: number;
+        y: number;
+    }
 
-    let pointPool:Point[] = [];
-    let DEG_TO_RAD:number = Math.PI / 180;
+    let pointPool: Point[] = [];
+    let DEG_TO_RAD: number = Math.PI / 180;
 
     /**
      * The Point object represents a location in a two-dimensional coordinate system, where x represents the horizontal
@@ -62,8 +66,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static release(point:Point):void {
-            if(!point){
+        public static release(point: Point): void {
+            if (!point) {
                 return;
             }
             pointPool.push(point);
@@ -85,12 +89,12 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static create(x:number,y:number):Point {
+        public static create(x: number, y: number): Point {
             let point = pointPool.pop();
             if (!point) {
                 point = new Point();
             }
-            return point.setTo(x,y);
+            return point.setTo(x, y);
         }
         /**
          * Creates a new point. If you pass no parameters to this method, a point is created at (0,0).
@@ -108,7 +112,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(x:number = 0, y:number = 0) {
+        public constructor(x: number = 0, y: number = 0) {
             super();
             this.x = x;
             this.y = y;
@@ -128,7 +132,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public x:number;
+        public x: number;
         /**
          * The vertical coordinate.
          * @default 0
@@ -143,7 +147,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public y:number;
+        public y: number;
 
         /**
          * The length of the line segment from (0,0) to this point.
@@ -157,8 +161,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get length():number{
-            return Math.sqrt(this.x*this.x+this.y*this.y);
+        public get length(): number {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
         }
         /**
          * Sets the members of Point to the specified values
@@ -176,7 +180,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public setTo(x:number, y:number):Point {
+        public setTo(x: number, y: number): Point {
             this.x = x;
             this.y = y;
             return this;
@@ -194,7 +198,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public clone():Point {
+        public clone(): Point {
             return new Point(this.x, this.y);
         }
 
@@ -215,7 +219,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public equals(toCompare:Point):boolean {
+        public equals(toCompare: Point2): boolean {
             return this.x == toCompare.x && this.y == toCompare.y;
         }
 
@@ -237,7 +241,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static distance(p1:Point, p2:Point):number {
+        public static distance(p1: Point2, p2: Point2): number {
             return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
         }
 
@@ -255,7 +259,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public copyFrom(sourcePoint:Point):void {
+        public copyFrom(sourcePoint: Point2): void {
             this.x = sourcePoint.x;
             this.y = sourcePoint.y;
         }
@@ -276,7 +280,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public add(v:Point):Point {
+        public add(v: Point2): Point {
             return new Point(this.x + v.x, this.y + v.y);
         }
 
@@ -302,8 +306,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static interpolate(pt1:Point, pt2:Point, f:number):Point {
-            let f1:number = 1 - f;
+        public static interpolate(pt1: Point2, pt2: Point2, f: number): Point {
+            let f1: number = 1 - f;
             return new Point(pt1.x * f + pt2.x * f1, pt1.y * f + pt2.y * f1);
         }
 
@@ -321,9 +325,9 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public normalize(thickness:number):void {
+        public normalize(thickness: number): void {
             if (this.x != 0 || this.y != 0) {
-                let relativeThickness:number = thickness / this.length;
+                let relativeThickness: number = thickness / this.length;
                 this.x *= relativeThickness;
                 this.y *= relativeThickness;
             }
@@ -345,7 +349,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public offset(dx:number, dy:number):void {
+        public offset(dx: number, dy: number): void {
             this.x += dx;
             this.y += dy;
         }
@@ -366,7 +370,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static polar(len:number, angle:number):Point {
+        public static polar(len: number, angle: number): Point {
             return new Point(len * NumberUtils.cos(angle / DEG_TO_RAD), len * NumberUtils.sin(angle / DEG_TO_RAD));
         }
 
@@ -386,7 +390,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public subtract(v:Point):Point {
+        public subtract(v: Point2): Point {
             return new Point(this.x - v.x, this.y - v.y);
         }
 
@@ -404,7 +408,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public toString():string {
+        public toString(): string {
             return "(x=" + this.x + ", y=" + this.y + ")";
         }
     }
