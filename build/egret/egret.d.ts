@@ -2986,6 +2986,10 @@ declare namespace egret {
     }
 }
 declare namespace egret {
+    interface Point2 {
+        x: number;
+        y: number;
+    }
     /**
      * The Point object represents a location in a two-dimensional coordinate system, where x represents the horizontal
      * axis and y represents the vertical axis.
@@ -3138,7 +3142,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        equals(toCompare: Point): boolean;
+        equals(toCompare: Point2): boolean;
         /**
          * Returns the distance between pt1 and pt2.
          * @param p1 The first point.
@@ -3157,7 +3161,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static distance(p1: Point, p2: Point): number;
+        static distance(p1: Point2, p2: Point2): number;
         /**
          * Copies all of the point data from the source Point object into the calling Point object.
          * @param sourcePoint The Point object from which to copy the data.
@@ -3172,7 +3176,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        copyFrom(sourcePoint: Point): void;
+        copyFrom(sourcePoint: Point2): void;
         /**
          * Adds the coordinates of another point to the coordinates of this point to create a new point.
          * @param v The point to be added.
@@ -3189,7 +3193,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        add(v: Point): Point;
+        add(v: Point2): Point;
         /**
          * Determines a point between two specified points.
          * The parameter f determines where the new interpolated point is located relative to the two end points specified by parameters pt1 and pt2. The closer the value of the parameter f is to 1.0, the closer the interpolated point is to the first point (parameter pt1). The closer the value of the parameter f is to 0, the closer the interpolated point is to the second point (parameter pt2).
@@ -3212,7 +3216,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        static interpolate(pt1: Point, pt2: Point, f: number): Point;
+        static interpolate(pt1: Point2, pt2: Point2, f: number): Point;
         /**
          * Scales the line segment between (0,0) and the current point to a set length.
          * @param thickness The scaling value. For example, if the current point is (0,5), and you normalize it to 1, the point returned is at (0,1).
@@ -3278,7 +3282,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        subtract(v: Point): Point;
+        subtract(v: Point2): Point;
         /**
          * Returns a string that contains the values of the x and y coordinates. The string has the form "(x=x, y=y)", so calling the toString() method for a point at 23,17 would return "(x=23, y=17)".
          * @returns The string representation of the coordinates.
@@ -7418,7 +7422,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        deltaTransformPoint(point: Point): Point;
+        deltaTransformPoint(point: Point2): Point;
         /**
          * Returns a text value listing the properties of the Matrix object.
          * @returns A string containing the values of the properties of the Matrix object: a, b, c, d, tx, and ty.
@@ -7485,7 +7489,7 @@ declare namespace egret {
         /**
          * @private
          */
-        $transformBounds(bounds: Rectangle): void;
+        $transformBounds(bounds: Rect): void;
         /**
          * @private
          */
@@ -7523,6 +7527,10 @@ declare namespace egret {
     let $TempMatrix: Matrix;
 }
 declare namespace egret {
+    interface Rect extends Point2 {
+        width: number;
+        height: number;
+    }
     /**
      * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its
      * width and its height.<br/>
@@ -7754,7 +7762,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        copyFrom(sourceRect: Rectangle): Rectangle;
+        copyFrom(sourceRect: Rect): Rectangle;
         /**
          * Sets the members of Rectangle to the specified values
          * @param x The x coordinate of the top-left corner of the rectangle.
@@ -7816,7 +7824,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        intersection(toIntersect: Rectangle): Rectangle;
+        intersection(toIntersect: Rect): Rectangle;
         /**
          * Increases the size of the Rectangle object by the specified amounts, in pixels.
          * The center point of the Rectangle object stays the same, and its size increases to the left and right by the dx value, and to the top and the bottom by the dy value.
@@ -7839,7 +7847,7 @@ declare namespace egret {
         /**
          * @private
          */
-        $intersectInPlace(clipRect: Rectangle): Rectangle;
+        $intersectInPlace(clipRect: Rect): Rectangle;
         /**
          * Determines whether the object specified in the toIntersect parameter intersects with this Rectangle object.
          * This method checks the x, y, width, and height properties of the specified Rectangle object to see if it
@@ -7859,7 +7867,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        intersects(toIntersect: Rectangle): boolean;
+        intersects(toIntersect: Rect): boolean;
         /**
          * Determines whether or not this Rectangle object is empty.
          * @returns A value of true if the Rectangle object's width or height is less than or equal to 0; otherwise false.
@@ -7921,7 +7929,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        containsPoint(point: Point): boolean;
+        containsPoint(point: Point2): boolean;
         /**
          * Determines whether the Rectangle object specified by the rect parameter is contained within this Rectangle object.
          * A Rectangle object is said to contain another if the second Rectangle object falls entirely within the boundaries of the first.
@@ -7940,7 +7948,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        containsRect(rect: egret.Rectangle): boolean;
+        containsRect(rect: Rect): boolean;
         /**
          * Determines whether the object specified in the toCompare parameter is equal to this Rectangle object.
          * This method compares the x, y, width, and height properties of an object against the same properties of this Rectangle object.
@@ -7959,7 +7967,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        equals(toCompare: Rectangle): boolean;
+        equals(toCompare: Rect): boolean;
         /**
          * Increases the size of the Rectangle object. This method is similar to the Rectangle.inflate() method except it takes a Point object as a parameter.
          * @param point 此 Point 对象的 x 属性用于增加 Rectangle 对象的水平尺寸。y 属性用于增加 Rectangle 对象的垂直尺寸。
@@ -7974,7 +7982,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        inflatePoint(point: Point): void;
+        inflatePoint(point: Point2): void;
         /**
          * Adjusts the location of the Rectangle object, as determined by its top-left corner, by the specified amounts.
          * @param dx Moves the x value of the Rectangle object by this amount.
@@ -8006,7 +8014,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        offsetPoint(point: Point): void;
+        offsetPoint(point: Point2): void;
         /**
          * Builds and returns a string that lists the horizontal and vertical positions and the width and height of the Rectangle object.
          * @returns A string listing the value of each of the following properties of the Rectangle object: x, y, width, and height.
@@ -8038,7 +8046,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        union(toUnion: Rectangle): Rectangle;
+        union(toUnion: Rect): Rectangle;
         /**
          * @private
          */

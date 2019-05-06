@@ -11772,6 +11772,15 @@ var egret;
 var egret;
 (function (egret) {
     var rectanglePool = [];
+    function getRight(rect) {
+        return rect.x + rect.width;
+    }
+    function getBottom(rect) {
+        return rect.y + rect.height;
+    }
+    function isEmpty(rect) {
+        return rect.width <= 0 || rect.height <= 0;
+    }
     /**
      * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its
      * width and its height.<br/>
@@ -11880,7 +11889,7 @@ var egret;
              * @language zh_CN
              */
             get: function () {
-                return this.x + this.width;
+                return getRight(this);
             },
             set: function (value) {
                 this.width = value - this.x;
@@ -11902,7 +11911,7 @@ var egret;
              * @language zh_CN
              */
             get: function () {
-                return this.y + this.height;
+                return getBottom(this);
             },
             set: function (value) {
                 this.height = value - this.y;
@@ -12171,8 +12180,8 @@ var egret;
          * @language zh_CN
          */
         Rectangle.prototype.intersects = function (toIntersect) {
-            return Math.max(this.x, toIntersect.x) <= Math.min(this.right, toIntersect.right)
-                && Math.max(this.y, toIntersect.y) <= Math.min(this.bottom, toIntersect.bottom);
+            return Math.max(this.x, toIntersect.x) <= Math.min(this.right, getRight(toIntersect))
+                && Math.max(this.y, toIntersect.y) <= Math.min(this.bottom, getBottom(toIntersect));
         };
         /**
          * Determines whether or not this Rectangle object is empty.
@@ -12189,7 +12198,7 @@ var egret;
          * @language zh_CN
          */
         Rectangle.prototype.isEmpty = function () {
-            return this.width <= 0 || this.height <= 0;
+            return isEmpty(this);
         };
         /**
          * Sets all of the Rectangle object's properties to 0. A Rectangle object is empty if its width or height is less than or equal to 0.
@@ -12392,7 +12401,7 @@ var egret;
          */
         Rectangle.prototype.union = function (toUnion) {
             var result = this.clone();
-            if (toUnion.isEmpty()) {
+            if (isEmpty(toUnion)) {
                 return result;
             }
             if (result.isEmpty()) {
@@ -12401,7 +12410,7 @@ var egret;
             }
             var l = Math.min(result.x, toUnion.x);
             var t = Math.min(result.y, toUnion.y);
-            result.setTo(l, t, Math.max(result.right, toUnion.right) - l, Math.max(result.bottom, toUnion.bottom) - t);
+            result.setTo(l, t, Math.max(result.right, getRight(toUnion)) - l, Math.max(result.bottom, getBottom(toUnion)) - t);
             return result;
         };
         /**
