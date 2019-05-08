@@ -550,17 +550,7 @@ namespace egret {
             self.$matrixDirty = true;
 
             self.$updateUseTransform();
-
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
 
         }
 
@@ -996,6 +986,7 @@ namespace egret {
                 return;
             }
             self.$visible = value;
+            self.$updateRenderMode();
             self.dirty();
         }
 
@@ -1036,7 +1027,7 @@ namespace egret {
         public set cacheAsBitmap(value: boolean) {
             let self = this;
             self.$cacheAsBitmap = value;
-            self.dirty();
+            self.$setHasDisplayList(value);
         }
 
         public $setHasDisplayList(value: boolean): void {
@@ -1376,9 +1367,10 @@ namespace egret {
                 }
             }
             else {
-                if (self.$mask) {
-                    self.$mask.$maskedObject = null;
-                    self.$mask.$updateRenderMode();
+                let $mask = self.$mask;
+                if ($mask) {
+                    $mask.$maskedObject = null;
+                    $mask.$updateRenderMode();
                 }
                 if (self.mask) {
                     self.$mask = null;

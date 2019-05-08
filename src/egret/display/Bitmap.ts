@@ -282,16 +282,7 @@ namespace egret {
             let self = this;
             self.$scale9Grid = value;
             self.$renderDirty = true;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
         }
 
         /**
@@ -337,16 +328,7 @@ namespace egret {
             }
             self.$fillMode = value;
             self.$renderDirty = true;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         }
 
@@ -391,16 +373,7 @@ namespace egret {
             }
             this.$smoothing = value;
             (<sys.BitmapNode>this.$renderNode).smoothing = value;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
         }
 
         /**
@@ -415,16 +388,7 @@ namespace egret {
             }
             self.$explicitBitmapWidth = value;
             self.$renderDirty = true;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         }
 
@@ -440,16 +404,7 @@ namespace egret {
             }
             self.$explicitBitmapHeight = value;
             self.$renderDirty = true;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         }
 
