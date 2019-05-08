@@ -448,6 +448,12 @@ var egret;
         }
         return value;
     }
+    function cacheDirtyUp(p) {
+        if (p && !p.$cacheDirty) {
+            p.$cacheDirty = true;
+            p.$cacheDirtyUp();
+        }
+    }
     /**
      * The DisplayObject class is the base class for all objects that can be placed on the display list. The display list
      * manages all objects displayed in the runtime. Use the DisplayObjectContainer class to arrange the display
@@ -980,16 +986,7 @@ var egret;
             self.$scaleX = value;
             self.$matrixDirty = true;
             self.$updateUseTransform();
-            var p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
         };
         Object.defineProperty(DisplayObject.prototype, "scaleY", {
             /**
@@ -1163,16 +1160,8 @@ var egret;
             self.dirty();
         };
         DisplayObject.prototype.dirty = function () {
-            var p = this.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = this.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            cacheDirtyUp(this);
+            cacheDirtyUp(this.$maskedObject);
         };
         Object.defineProperty(DisplayObject.prototype, "width", {
             /**
@@ -1395,6 +1384,7 @@ var egret;
                 return;
             }
             self.$visible = value;
+            self.$updateRenderMode();
             self.dirty();
         };
         Object.defineProperty(DisplayObject.prototype, "cacheAsBitmap", {
@@ -1426,7 +1416,7 @@ var egret;
             set: function (value) {
                 var self = this;
                 self.$cacheAsBitmap = value;
-                self.dirty();
+                self.$setHasDisplayList(value);
             },
             enumerable: true,
             configurable: true
@@ -1449,11 +1439,7 @@ var egret;
             }
         };
         DisplayObject.prototype.$cacheDirtyUp = function () {
-            var p = this.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
+            cacheDirtyUp(this.$parent);
         };
         Object.defineProperty(DisplayObject.prototype, "alpha", {
             /**
@@ -1713,9 +1699,10 @@ var egret;
                     }
                 }
                 else {
-                    if (self.$mask) {
-                        self.$mask.$maskedObject = null;
-                        self.$mask.$updateRenderMode();
+                    var $mask = self.$mask;
+                    if ($mask) {
+                        $mask.$maskedObject = null;
+                        $mask.$updateRenderMode();
                     }
                     if (self.mask) {
                         self.$mask = null;
@@ -2685,16 +2672,7 @@ var egret;
                     var newHashCode = value.$bitmapData ? value.$bitmapData.hashCode : -1;
                     if (oldHashCode == newHashCode) {
                         self.$renderDirty = true;
-                        var p_1 = self.$parent;
-                        if (p_1 && !p_1.$cacheDirty) {
-                            p_1.$cacheDirty = true;
-                            p_1.$cacheDirtyUp();
-                        }
-                        var maskedObject_1 = self.$maskedObject;
-                        if (maskedObject_1 && !maskedObject_1.$cacheDirty) {
-                            maskedObject_1.$cacheDirty = true;
-                            maskedObject_1.$cacheDirtyUp();
-                        }
+                        self.dirty();
                         return true;
                     }
                     egret.BitmapData.$removeDisplayObject(self, oldTexture.$bitmapData);
@@ -2702,16 +2680,7 @@ var egret;
                 egret.BitmapData.$addDisplayObject(self, value.$bitmapData);
             }
             self.$renderDirty = true;
-            var p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         };
         Bitmap.prototype.$setBitmapData = function (value) {
@@ -2773,16 +2742,7 @@ var egret;
             var self = this;
             self.$scale9Grid = value;
             self.$renderDirty = true;
-            var p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
         };
         Object.defineProperty(Bitmap.prototype, "fillMode", {
             /**
@@ -2825,16 +2785,7 @@ var egret;
             }
             self.$fillMode = value;
             self.$renderDirty = true;
-            var p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         };
         Object.defineProperty(Bitmap.prototype, "smoothing", {
@@ -2860,16 +2811,7 @@ var egret;
                 }
                 this.$smoothing = value;
                 this.$renderNode.smoothing = value;
-                var p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                var maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
+                self.dirty();
             },
             enumerable: true,
             configurable: true
@@ -2886,16 +2828,7 @@ var egret;
             }
             self.$explicitBitmapWidth = value;
             self.$renderDirty = true;
-            var p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         };
         /**
@@ -2910,16 +2843,7 @@ var egret;
             }
             self.$explicitBitmapHeight = value;
             self.$renderDirty = true;
-            var p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            var maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         };
         /**
