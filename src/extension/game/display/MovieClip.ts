@@ -573,27 +573,7 @@ namespace egret {
 
             self.displayedKeyFrameNum = currentFrameNum;
             self.$renderDirty = true;
-            if (egret.nativeRender) {
-                self.$nativeDisplayObject.setDataToBitmapNode(self.$nativeDisplayObject.id, texture,
-                    [texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight,
-                    self.offsetPoint.x, self.offsetPoint.y, texture.$getScaleBitmapWidth(), texture.$getScaleBitmapHeight(),
-                    texture.$sourceWidth, texture.$sourceHeight]);
-                //todo 负数offsetPoint
-                self.$nativeDisplayObject.setWidth(texture.$getTextureWidth() + self.offsetPoint.x);
-                self.$nativeDisplayObject.setHeight(texture.$getTextureHeight() + self.offsetPoint.y);
-            }
-            else {
-                let p = self.$parent;
-                if (p && !p.$cacheDirty) {
-                    p.$cacheDirty = true;
-                    p.$cacheDirtyUp();
-                }
-                let maskedObject = self.$maskedObject;
-                if (maskedObject && !maskedObject.$cacheDirty) {
-                    maskedObject.$cacheDirty = true;
-                    maskedObject.$cacheDirtyUp();
-                }
-            }
+            self.dirty();            
         }
 
         /**
@@ -604,16 +584,7 @@ namespace egret {
             let self = this;
             self.$texture = self.$movieClipData.getTextureByFrame(self.$currentFrameNum);
             self.$renderDirty = true;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
         }
 
         /**

@@ -53,6 +53,13 @@ namespace egret {
         return value;
     }
 
+    function cacheDirtyUp(p: DisplayObject) {
+        if (p && !p.$cacheDirty) {
+            p.$cacheDirty = true;
+            p.$cacheDirtyUp();
+        }
+    }
+
     /**
      * The DisplayObject class is the base class for all objects that can be placed on the display list. The display list
      * manages all objects displayed in the runtime. Use the DisplayObjectContainer class to arrange the display
@@ -749,16 +756,8 @@ namespace egret {
         }
 
         dirty() {
-            let p = this.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = this.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            cacheDirtyUp(this);
+            cacheDirtyUp(this.$maskedObject);
         }
 
         /**
@@ -1051,11 +1050,7 @@ namespace egret {
         $cacheDirty: boolean = false;
 
         $cacheDirtyUp(): void {
-            let p = this.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
+            cacheDirtyUp(this.$parent);
         }
 
         /**

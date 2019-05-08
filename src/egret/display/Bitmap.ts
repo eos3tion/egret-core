@@ -180,16 +180,7 @@ namespace egret {
                     let newHashCode: number = value.$bitmapData ? value.$bitmapData.hashCode : -1;
                     if (oldHashCode == newHashCode) {
                         self.$renderDirty = true;
-                        let p = self.$parent;
-                        if (p && !p.$cacheDirty) {
-                            p.$cacheDirty = true;
-                            p.$cacheDirtyUp();
-                        }
-                        let maskedObject = self.$maskedObject;
-                        if (maskedObject && !maskedObject.$cacheDirty) {
-                            maskedObject.$cacheDirty = true;
-                            maskedObject.$cacheDirtyUp();
-                        }
+                        self.dirty();
                         return true;
                     }
                     BitmapData.$removeDisplayObject(self, oldTexture.$bitmapData);
@@ -198,16 +189,7 @@ namespace egret {
             }
 
             self.$renderDirty = true;
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+            self.dirty();
             return true;
         }
 
