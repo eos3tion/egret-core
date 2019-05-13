@@ -36,8 +36,8 @@ namespace egret {
      *
      * @param url URL of the media to play, Video will start to load if the url is not empty
      *
-     * @event egret.Event.COMPLETE Dispatch when the video resource is loaded and ready to play
-     * @event egret.Event.ENDED Dispatch when the video playback ended
+     * @event egret.EventType.COMPLETE Dispatch when the video resource is loaded and ready to play
+     * @event egret.EventType.ENDED Dispatch when the video playback ended
      * @event egret.IOErrorEvent.IO_ERROR when the video is failed to load
      * @version Egret 2.4
      * @platform Web
@@ -51,8 +51,8 @@ namespace egret {
      *
      * @param url 要播放的视频的URL，如果url不为空，Video会立即加载这个视频
      *
-     * @event egret.Event.COMPLETE 视频加载完成时抛出
-     * @event egret.Event.ENDED 视频播放完成时抛出
+     * @event egret.EventType.COMPLETE 视频加载完成时抛出
+     * @event egret.EventType.ENDED 视频播放完成时抛出
      * @event egret.IOErrorEvent.IO_ERROR 视频加载失败时触发
      * @version Egret 2.4
      * @platform Web

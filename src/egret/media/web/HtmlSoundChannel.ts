@@ -103,7 +103,7 @@ namespace egret.web {
             if (this.$loops == 1) {
                 this.stop();
 
-                this.dispatchEventWith(egret.Event.SOUND_COMPLETE);
+                this.dispatchEventWith(egret.EventType.SOUND_COMPLETE);
                 return;
             }
 

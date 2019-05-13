@@ -90,11 +90,11 @@ namespace egret {
 
             stageText.$addToStage();
 
-            stageText.addEventListener("updateText", this.updateTextHandler, this);
-            _text.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
+            stageText.on("updateText", this.updateTextHandler, this);
+            _text.on(egret.EventType.TOUCH_BEGIN, this.onMouseDownHandler, this);
 
-            stageText.addEventListener("blur", this.blurHandler, this);
-            stageText.addEventListener("focus", this.focusHandler, this);
+            stageText.on("blur", this.blurHandler, this);
+            stageText.on("focus", this.focusHandler, this);
 
             this.stageTextAdded = true;
         }
@@ -114,12 +114,12 @@ namespace egret {
 
             stageText.$removeFromStage();
 
-            stageText.removeEventListener("updateText", this.updateTextHandler, this);
-            _text.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
-            this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
+            stageText.off("updateText", this.updateTextHandler, this);
+            _text.off(egret.EventType.TOUCH_BEGIN, this.onMouseDownHandler, this);
+            this.tempStage.off(egret.EventType.TOUCH_BEGIN, this.onStageDownHandler, this);
 
-            stageText.removeEventListener("blur", this.blurHandler, this);
-            stageText.removeEventListener("focus", this.focusHandler, this);
+            stageText.off("blur", this.blurHandler, this);
+            stageText.off("focus", this.focusHandler, this);
 
             this.stageTextAdded = false;
         }
@@ -161,7 +161,7 @@ namespace egret {
                     this._text.$setIsTyping(true);
                 }
 
-                this._text.dispatchEvent(new egret.FocusEvent(egret.FocusEvent.FOCUS_IN, true));
+                this._text.dispatchEventWith(egret.EventType.FOCUS_IN, true);
             }
         }
 
@@ -174,13 +174,13 @@ namespace egret {
             if (this._isFocus) {
                 //不再显示竖线，并且输入框显示最开始
                 this._isFocus = false;
-                this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
+                this.tempStage.off(egret.EventType.TOUCH_BEGIN, this.onStageDownHandler, this);
 
                 this._text.$setIsTyping(false);
                 //失去焦点后调用
                 this.stageText.$onBlur();
 
-                this._text.dispatchEvent(new egret.FocusEvent(egret.FocusEvent.FOCUS_OUT, true));
+                this._text.dispatchEventWith(egret.EventType.FOCUS_OUT, true);
             }
         }
 
@@ -200,9 +200,9 @@ namespace egret {
                 return;
             }
 
-            this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
+            this.tempStage.off(egret.EventType.TOUCH_BEGIN, this.onStageDownHandler, this);
             egret.callLater(() => {
-                this.tempStage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
+                this.tempStage.on(egret.EventType.TOUCH_BEGIN, this.onStageDownHandler, this);
             }, this);
 
             //强制更新输入框位置
@@ -256,7 +256,7 @@ namespace egret {
             this.resetText();
 
             //抛出change事件
-            this._text.dispatchEvent(new egret.Event(egret.Event.CHANGE, true));
+            this._text.dispatchEvent(new egret.Event(egret.EventType.CHANGE, true));
         }
 
         /**

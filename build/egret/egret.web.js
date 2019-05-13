@@ -111,11 +111,11 @@ var egret;
                         document.body.appendChild(audio);
                     }
                     self.loaded = true;
-                    self.dispatchEventWith(egret.Event.COMPLETE);
+                    self.dispatchEventWith("complete" /* COMPLETE */);
                 }
                 function onAudioError() {
                     removeListeners();
-                    self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                    self.dispatchEventWith("ioError" /* IO_ERROR */);
                 }
                 function removeListeners() {
                     audio.removeEventListener("canplaythrough", onAudioLoaded);
@@ -184,32 +184,6 @@ var egret;
                 }
                 array.push(audio);
             };
-            /**
-             * Background music
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 背景音乐
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            HtmlSound.MUSIC = "music";
-            /**
-             * EFFECT
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 音效
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            HtmlSound.EFFECT = "effect";
             /**
              * @private
              */
@@ -291,7 +265,7 @@ var egret;
                 _this.onPlayEnd = function () {
                     if (_this.$loops == 1) {
                         _this.stop();
-                        _this.dispatchEventWith(egret.Event.SOUND_COMPLETE);
+                        _this.dispatchEventWith("soundComplete" /* SOUND_COMPLETE */);
                         return;
                     }
                     if (_this.$loops > 0) {
@@ -451,7 +425,7 @@ var egret;
                     WebAudioDecode.isDecoding = false;
                     WebAudioDecode.decodeAudios();
                 }, function () {
-                    alert("sound decode error: " + decodeInfo["url"] + "！\nsee http://edn.egret.com/cn/docs/page/156");
+                    console.log("sound decode error: " + decodeInfo["url"] + "！\nsee http://edn.egret.com/cn/docs/page/156");
                     if (decodeInfo["fail"]) {
                         decodeInfo["fail"]();
                     }
@@ -523,15 +497,15 @@ var egret;
                     WebAudioDecode.decodeAudios();
                 });
                 request.addEventListener("error", function () {
-                    self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                    self.dispatchEventWith("ioError" /* IO_ERROR */);
                 });
                 request.send();
                 function onAudioLoaded() {
                     self.loaded = true;
-                    self.dispatchEventWith(egret.Event.COMPLETE);
+                    self.dispatchEventWith("complete" /* COMPLETE */);
                 }
                 function onAudioError() {
-                    self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                    self.dispatchEventWith("ioError" /* IO_ERROR */);
                 }
             };
             /**
@@ -557,32 +531,6 @@ var egret;
              */
             WebAudioSound.prototype.close = function () {
             };
-            /**
-             * Background music
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 背景音乐
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            WebAudioSound.MUSIC = "music";
-            /**
-             * EFFECT
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 音效
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            WebAudioSound.EFFECT = "effect";
             return WebAudioSound;
         }(egret.EventDispatcher));
         web.WebAudioSound = WebAudioSound;
@@ -660,7 +608,7 @@ var egret;
                 _this.onPlayEnd = function () {
                     if (_this.$loops == 1) {
                         _this.stop();
-                        _this.dispatchEventWith(egret.Event.SOUND_COMPLETE);
+                        _this.dispatchEventWith("soundComplete" /* SOUND_COMPLETE */);
                         return;
                     }
                     if (_this.$loops > 0) {
@@ -866,12 +814,12 @@ var egret;
                     video.width = video.videoWidth;
                     video.height = video.videoHeight;
                     window.setTimeout(function () {
-                        _this.dispatchEventWith(egret.Event.COMPLETE);
+                        _this.dispatchEventWith("complete" /* COMPLETE */);
                     }, 200);
                 };
                 _this.$renderNode = new egret.sys.BitmapNode();
                 _this.src = url;
-                _this.once(egret.Event.ADDED_TO_STAGE, _this.loadPoster, _this);
+                _this.once("addedToStage" /* ADDED_TO_STAGE */, _this.loadPoster, _this);
                 if (url) {
                     _this.load();
                 }
@@ -942,7 +890,7 @@ var egret;
                 if (loop === void 0) { loop = false; }
                 if (this.loaded == false) {
                     this.load(this.src);
-                    this.once(egret.Event.COMPLETE, function (e) { return _this.play(startTime, loop); }, this);
+                    this.once("complete" /* COMPLETE */, function (e) { return _this.play(startTime, loop); }, this);
                     return;
                 }
                 this.isPlayed = true;
@@ -1063,14 +1011,14 @@ var egret;
             WebVideo.prototype.onVideoEnded = function () {
                 this.pause();
                 this.isPlayed = false;
-                this.dispatchEventWith(egret.Event.ENDED);
+                this.dispatchEventWith("ended" /* ENDED */);
             };
             /**
              * @private
              *
              */
             WebVideo.prototype.onVideoError = function () {
-                this.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                this.dispatchEventWith("ioError" /* IO_ERROR */);
             };
             /**
              * @inheritDoc
@@ -1189,7 +1137,7 @@ var egret;
                 if (!poster)
                     return;
                 var imageLoader = new egret.ImageLoader();
-                imageLoader.once(egret.Event.COMPLETE, function (e) {
+                imageLoader.once("complete" /* COMPLETE */, function (e) {
                     var posterData = imageLoader.data;
                     _this.posterData = imageLoader.data;
                     _this.$renderDirty = true;
@@ -1551,7 +1499,7 @@ var egret;
                 if (true) {
                     egret.$warn(1052, this._url);
                 }
-                this.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                this.dispatchEventWith("ioError" /* IO_ERROR */);
             };
             /**
              * @private
@@ -1564,13 +1512,13 @@ var egret;
                     var self_3 = this;
                     window.setTimeout(function () {
                         if (ioError_1) { //请求错误
-                            if (true && !self_3.hasEventListener(egret.IOErrorEvent.IO_ERROR)) {
+                            if (true && !self_3.hasListen("ioError" /* IO_ERROR */)) {
                                 egret.$error(1011, url_1);
                             }
-                            self_3.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                            self_3.dispatchEventWith("ioError" /* IO_ERROR */);
                         }
                         else {
-                            self_3.dispatchEventWith(egret.Event.COMPLETE);
+                            self_3.dispatchEventWith("complete" /* COMPLETE */);
                         }
                     }, 0);
                 }
@@ -1580,7 +1528,7 @@ var egret;
              */
             WebHttpRequest.prototype.updateProgress = function (event) {
                 if (event.lengthComputable) {
-                    egret.ProgressEvent.dispatchProgressEvent(this, egret.ProgressEvent.PROGRESS, event.loaded, event.total);
+                    egret.ProgressEvent.dispatchProgressEvent(this, "progress" /* PROGRESS */, event.loaded, event.total);
                 }
             };
             /**
@@ -1589,7 +1537,7 @@ var egret;
             WebHttpRequest.prototype.onload = function () {
                 var self = this;
                 window.setTimeout(function () {
-                    self.dispatchEventWith(egret.Event.COMPLETE);
+                    self.dispatchEventWith("complete" /* COMPLETE */);
                 }, 0);
             };
             /**
@@ -1599,10 +1547,10 @@ var egret;
                 var url = this._url;
                 var self = this;
                 window.setTimeout(function () {
-                    if (true && !self.hasEventListener(egret.IOErrorEvent.IO_ERROR)) {
+                    if (true && !self.hasListen("ioError" /* IO_ERROR */)) {
                         egret.$error(1011, url);
                     }
-                    self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                    self.dispatchEventWith("ioError" /* IO_ERROR */);
                 }, 0);
             };
             return WebHttpRequest;
@@ -1704,8 +1652,8 @@ var egret;
                     var request = this.request;
                     if (!request) {
                         request = this.request = new egret.web.WebHttpRequest();
-                        request.addEventListener(egret.Event.COMPLETE, this.onBlobLoaded, this);
-                        request.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onBlobError, this);
+                        request.on("complete" /* COMPLETE */, this.onBlobLoaded, this);
+                        request.on("ioError" /* IO_ERROR */, this.onBlobError, this);
                         request.responseType = "blob";
                     }
                     if (true) {
@@ -1770,7 +1718,7 @@ var egret;
                 this.data = new egret.BitmapData(image);
                 var self = this;
                 window.setTimeout(function () {
-                    self.dispatchEventWith(egret.Event.COMPLETE);
+                    self.dispatchEventWith("complete" /* COMPLETE */);
                 }, 0);
             };
             /**
@@ -1786,10 +1734,10 @@ var egret;
             WebImageLoader.prototype.dispatchIOError = function (url) {
                 var self = this;
                 window.setTimeout(function () {
-                    if (true && !self.hasEventListener(egret.IOErrorEvent.IO_ERROR)) {
+                    if (true && !self.hasListen("ioError" /* IO_ERROR */)) {
                         egret.$error(1011, url);
                     }
-                    self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                    self.dispatchEventWith("ioError" /* IO_ERROR */);
                 }, 0);
             };
             /**
@@ -3908,7 +3856,7 @@ var egret;
                 var self = this;
                 window.addEventListener("orientationchange", function () {
                     window.setTimeout(function () {
-                        egret.StageOrientationEvent.dispatchStageOrientationEvent(self.stage, egret.StageOrientationEvent.ORIENTATION_CHANGE);
+                        self.stage.dispatchEventWith("orientationChange" /* ORIENTATION_CHANGE */);
                     }, 350);
                 });
             };
@@ -4234,7 +4182,7 @@ var egret;
                  * @private
                  */
                 _this.onChange = function (e) {
-                    var event = new egret.OrientationEvent(egret.Event.CHANGE);
+                    var event = new egret.OrientationEvent("change" /* CHANGE */);
                     event.beta = e.beta;
                     event.gamma = e.gamma;
                     event.alpha = e.alpha;
@@ -4281,7 +4229,7 @@ var egret;
                  * @private
                  */
                 _this.onUpdate = function (position) {
-                    var event = new egret.GeolocationEvent(egret.Event.CHANGE);
+                    var event = new egret.GeolocationEvent("change" /* CHANGE */);
                     var coords = position.coords;
                     event.altitude = coords.altitude;
                     event.heading = coords.heading;
@@ -4296,10 +4244,10 @@ var egret;
                  * @private
                  */
                 _this.onError = function (error) {
-                    var errorType = egret.GeolocationEvent.UNAVAILABLE;
+                    var errorType = "unavailable" /* UNAVAILABLE */;
                     if (error.code == error.PERMISSION_DENIED)
-                        errorType = egret.GeolocationEvent.PERMISSION_DENIED;
-                    var event = new egret.GeolocationEvent(egret.IOErrorEvent.IO_ERROR);
+                        errorType = "permissionDenied" /* PERMISSION_DENIED */;
+                    var event = new egret.GeolocationEvent("ioError" /* IO_ERROR */);
                     event.errorType = errorType;
                     event.errorMessage = error.message;
                     _this.dispatchEvent(event);
@@ -4353,7 +4301,7 @@ var egret;
                  * @private
                  */
                 _this.onChange = function (e) {
-                    var event = new egret.MotionEvent(egret.Event.CHANGE);
+                    var event = new egret.MotionEvent("change" /* CHANGE */);
                     var acceleration = {
                         x: e.acceleration.x,
                         y: e.acceleration.y,
@@ -5054,7 +5002,7 @@ var egret;
             WebGLRenderTarget.prototype.createTexture = function () {
                 var gl = this.gl;
                 var texture = gl.createTexture();
-                texture["glContext"] = gl;
+                texture.glContext = gl;
                 gl.bindTexture(gl.TEXTURE_2D, texture);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);

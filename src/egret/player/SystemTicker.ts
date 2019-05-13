@@ -34,7 +34,7 @@ namespace egret.sys {
 
     /**
      * @private
-     * 是否要广播Event.RENDER事件的标志。
+     * 是否要广播EventType.RENDER事件的标志。
      */
     export let $invalidateRenderFlag: boolean = false;
     /**
@@ -327,7 +327,7 @@ namespace egret.sys {
             }
             list = list.concat();
             for (let i = 0; i < length; i++) {
-                list[i].dispatchEventWith(Event.ENTER_FRAME);
+                list[i].dispatchEventWith(EventType.ENTER_FRAME);
             }
         }
 
@@ -343,7 +343,7 @@ namespace egret.sys {
             }
             list = list.concat();
             for (let i = 0; i < length; i++) {
-                list[i].dispatchEventWith(Event.RENDER);
+                list[i].dispatchEventWith(EventType.RENDER);
             }
         }
 
@@ -420,7 +420,7 @@ module egret {
             pause() {
                 if (isActivate) {
                     isActivate = false;
-                    stage.dispatchEvent(new Event(Event.DEACTIVATE));
+                    stage.dispatchEvent(new Event(EventType.DEACTIVATE));
                     if (onPause) {
                         onPause();
                     }
@@ -430,7 +430,7 @@ module egret {
             resume() {
                 if (!isActivate) {
                     isActivate = true;
-                    stage.dispatchEvent(new Event(Event.ACTIVATE));
+                    stage.dispatchEvent(new Event(EventType.ACTIVATE));
                     if (onResume) {
                         onResume();
                     }

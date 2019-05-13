@@ -71,7 +71,7 @@ namespace eui {
      *
      * @event eui.UIEvent.CHANGE_START Dispatched when the scroll position is going to change
      * @event eui.UIEvent.CHANGE_END Dispatched when the scroll position changed complete
-     * @event egret.Event.CHANGE Dispatched when the scroll position is changing
+     * @event egret.EventType.CHANGE Dispatched when the scroll position is changing
      * @event egret.TouchEvent.TOUCH_CANCEL canceled the touch
      *
      * @defaultProperty viewport
@@ -96,7 +96,7 @@ namespace eui {
      *
      * @event eui.UIEvent.CHANGE_START 滚动位置改变开始
      * @event eui.UIEvent.CHANGE_END 滚动位置改变结束
-     * @event egret.Event.CHANGE 滚动位置改变的时候
+     * @event egret.EventType.CHANGE 滚动位置改变的时候
      * @event egret.TouchEvent.TOUCH_CANCEL 取消触摸事件
      *
      * @defaultProperty viewport
@@ -440,10 +440,10 @@ namespace eui {
             if (viewport) {
                 this.addChildAt(viewport, 0);
                 viewport.scrollEnabled = true;
-                viewport.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBeginCapture, this, true);
-                viewport.addEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEndCapture, this, true);
-                viewport.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTouchTapCapture, this, true);
-                viewport.addEventListener(egret.Event.REMOVED, this.onViewPortRemove, this);
+                viewport.on(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBeginCapture, this, true);
+                viewport.on(egret.TouchEvent.TOUCH_END, this.onTouchEndCapture, this, true);
+                viewport.on(egret.TouchEvent.TOUCH_TAP, this.onTouchTapCapture, this, true);
+                viewport.on(egret.EventType.REMOVED, this.onViewPortRemove, this);
             }
             if (this.horizontalScrollBar) {
                 this.horizontalScrollBar.viewport = viewport;
@@ -467,10 +467,10 @@ namespace eui {
             let viewport = this.viewport;
             if (viewport) {
                 viewport.scrollEnabled = false;
-                viewport.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBeginCapture, this, true);
-                viewport.removeEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEndCapture, this, true);
-                viewport.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTouchTapCapture, this, true);
-                viewport.removeEventListener(egret.Event.REMOVED, this.onViewPortRemove, this);
+                viewport.off(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBeginCapture, this, true);
+                viewport.off(egret.TouchEvent.TOUCH_END, this.onTouchEndCapture, this, true);
+                viewport.off(egret.TouchEvent.TOUCH_TAP, this.onTouchTapCapture, this, true);
+                viewport.off(egret.EventType.REMOVED, this.onViewPortRemove, this);
                 if (this.$Scroller[Keys.viewprotRemovedEvent] == false) {
                     this.removeChild(viewport);
                 }
@@ -629,10 +629,10 @@ namespace eui {
                 values[Keys.touchScrollV].start(event.$stageY);
             }
             let stage = this.$stage;
-            this.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
-            stage.addEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this, true);
-            this.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancel, this);
-            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onRemoveListeners, this);
+            this.on(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+            stage.on(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this, true);
+            this.on(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancel, this);
+            this.on(egret.EventType.REMOVED_FROM_STAGE, this.onRemoveListeners, this);
             this.tempStage = stage;
         }
 
@@ -685,7 +685,7 @@ namespace eui {
                     values[Keys.autoHideTimer].reset();
                 }
                 UIEvent.dispatchUIEvent(this, UIEvent.CHANGE_START);
-                this.$stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+                this.$stage.on(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
             }
 
             event.preventDefault();
@@ -800,11 +800,11 @@ namespace eui {
          */
         private onRemoveListeners():void {
             let stage = this.tempStage || this.$stage;
-            this.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
-            stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this, true);
-            stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
-            this.removeEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancel, this);
-            this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onRemoveListeners, this);
+            this.off(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+            stage.off(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this, true);
+            stage.off(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+            this.off(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancel, this);
+            this.off(egret.EventType.REMOVED_FROM_STAGE, this.onRemoveListeners, this);
         }
 
         /**
@@ -817,7 +817,7 @@ namespace eui {
             if (viewport) {
                 viewport.scrollH = scrollPos;
             }
-            this.dispatchEventWith(egret.Event.CHANGE);
+            this.dispatchEventWith(egret.EventType.CHANGE);
         }
 
         /**
@@ -830,7 +830,7 @@ namespace eui {
             if (viewport) {
                 viewport.scrollV = scrollPos;
             }
-            this.dispatchEventWith(egret.Event.CHANGE);
+            this.dispatchEventWith(egret.EventType.CHANGE);
         }
 
         /**
@@ -864,7 +864,7 @@ namespace eui {
             if (horizontalBar && horizontalBar.visible || verticalBar && verticalBar.visible) {
                 if (!values[Keys.autoHideTimer]) {
                     values[Keys.autoHideTimer] = new egret.Timer(200, 1);
-                    values[Keys.autoHideTimer].addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.onAutoHideTimer, this);
+                    values[Keys.autoHideTimer].on(egret.TimerEvent.TIMER_COMPLETE, this.onAutoHideTimer, this);
                 }
                 values[Keys.autoHideTimer].reset();
                 values[Keys.autoHideTimer].start();

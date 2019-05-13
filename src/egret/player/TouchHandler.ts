@@ -83,7 +83,7 @@ namespace egret.sys {
                 this.touchDownTarget[touchPointID] = target;
                 this.useTouchesCount++;
             }
-            TouchEvent.dispatchTouchEvent(target, TouchEvent.TOUCH_BEGIN, true, true, x, y, touchPointID, true);
+            TouchEvent.dispatchTouchEvent(target, EventType.TOUCH_BEGIN, true, true, x, y, touchPointID, true);
         }
 
         /**
@@ -115,7 +115,7 @@ namespace egret.sys {
             this.lastTouchY = y;
 
             let target = this.findTarget(x, y);
-            TouchEvent.dispatchTouchEvent(target, TouchEvent.TOUCH_MOVE, true, true, x, y, touchPointID, true);
+            TouchEvent.dispatchTouchEvent(target, EventType.TOUCH_MOVE, true, true, x, y, touchPointID, true);
         }
 
         /**
@@ -135,12 +135,12 @@ namespace egret.sys {
             delete this.touchDownTarget[touchPointID];
             this.useTouchesCount--;
 
-            TouchEvent.dispatchTouchEvent(target, TouchEvent.TOUCH_END, true, true, x, y, touchPointID, false);
+            TouchEvent.dispatchTouchEvent(target, EventType.TOUCH_END, true, true, x, y, touchPointID, false);
             if (oldTarget == target) {
-                TouchEvent.dispatchTouchEvent(target, TouchEvent.TOUCH_TAP, true, true, x, y, touchPointID, false);
+                TouchEvent.dispatchTouchEvent(target, EventType.TOUCH_TAP, true, true, x, y, touchPointID, false);
             }
             else {
-                TouchEvent.dispatchTouchEvent(oldTarget, TouchEvent.TOUCH_RELEASE_OUTSIDE, true, true, x, y, touchPointID, false);
+                TouchEvent.dispatchTouchEvent(oldTarget, EventType.TOUCH_RELEASE_OUTSIDE, true, true, x, y, touchPointID, false);
             }
         }
 

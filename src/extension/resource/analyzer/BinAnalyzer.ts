@@ -78,8 +78,8 @@ namespace RES {
             let request:egret.HttpRequest = this.recycler.pop();
             if (!request) {
                 request = new egret.HttpRequest();
-                request.addEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-                request.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+                request.on(egret.EventType.COMPLETE, this.onLoadFinish, this);
+                request.on(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
             }
             request.responseType = this._dataFormat;
             return request;
@@ -94,7 +94,7 @@ namespace RES {
             delete this.resItemDic[request.hashCode];
             let resItem:ResourceItem = data.item;
             let compFunc:Function = data.func;
-            resItem.loaded = (event.type == egret.Event.COMPLETE);
+            resItem.loaded = (event.type == egret.EventType.COMPLETE);
             if (resItem.loaded) {
                 this.analyzeData(resItem, request.response)
             }

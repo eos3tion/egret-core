@@ -185,14 +185,14 @@ namespace egret {
                 child.$onAddToStage(stage, self.$nestLevel + 1);
             }
             if (notifyListeners) {
-                child.dispatchEventWith(Event.ADDED, true);
+                child.dispatchEventWith(EventType.ADDED, true);
             }
             if (stage) {
                 let list = DisplayObjectContainer.$EVENT_ADD_TO_STAGE_LIST;
                 while (list.length) {
                     let childAddToStage = list.shift();
                     if (childAddToStage.$stage && notifyListeners) {
-                        childAddToStage.dispatchEventWith(Event.ADDED_TO_STAGE);
+                        childAddToStage.dispatchEventWith(EventType.ADDED_TO_STAGE);
                     }
                 }
             }
@@ -400,7 +400,7 @@ namespace egret {
             let child: DisplayObject = children[index];
             this.$childRemoved(child, index);
             if (notifyListeners) {
-                child.dispatchEventWith(Event.REMOVED, true);
+                child.dispatchEventWith(EventType.REMOVED, true);
             }
             if (this.$stage) {//在舞台上
                 child.$onRemoveFromStage();
@@ -409,7 +409,7 @@ namespace egret {
                     let childAddToStage = list.shift();
                     if (notifyListeners && childAddToStage.$hasAddToStage) {
                         childAddToStage.$hasAddToStage = false;
-                        childAddToStage.dispatchEventWith(Event.REMOVED_FROM_STAGE);
+                        childAddToStage.dispatchEventWith(EventType.REMOVED_FROM_STAGE);
                     }
                     childAddToStage.$hasAddToStage = false;
                     childAddToStage.$stage = null;

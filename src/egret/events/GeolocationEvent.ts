@@ -29,10 +29,39 @@
 
 namespace egret {
 
-    export interface Geolocation{
-        addEventListener<Z>(type: "ioError"
-            , listener: (this: Z, e: GeolocationEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-        addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
+    export interface Geolocation {
+        on<Z>(type: "ioError"
+            , listener: (this: Z, e: GeolocationEvent) => void, thisObject?: Z, useCapture?: boolean, priority?: number);
+        on(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number);
+    }
+
+    export const enum EventType {
+        /**
+    * The acquisition of the location information failed because of app don't have permission.
+    * @version Egret 2.4
+    * @platform Web,Native
+    * @language en_US
+    */
+        /**
+         * 由于用户拒绝访问位置信息，获取位置信息失败
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        PERMISSION_DENIED = "permissionDenied",
+        /**
+         * The acquisition of the location failed because at least one internal source of position returned an internal error.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 设备位置服务不可用或者超时等原因没有得到位置信息
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        UNAVAILABLE = "unavailable",
     }
     /**
      * The GeolocationEvent represents the position and altitude of the device on Earth,
@@ -52,33 +81,6 @@ namespace egret {
      * @language zh_CN
      */
     export class GeolocationEvent extends Event {
-
-        /**
-         * The acquisition of the location information failed because of app don't have permission.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 由于用户拒绝访问位置信息，获取位置信息失败
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static PERMISSION_DENIED: string = "permissionDenied";
-        /**
-         * The acquisition of the location failed because at least one internal source of position returned an internal error.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 设备位置服务不可用或者超时等原因没有得到位置信息
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static UNAVAILABLE: string = "unavailable";
 
         /**
          * The position's longitude in decimal degrees.
@@ -163,7 +165,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        accuracy :number;
+        accuracy: number;
         /**
          * The accuracy of the altitude expressed in meters. This value can be null.
          * @version Egret 2.4

@@ -69,7 +69,7 @@ namespace eui {
      * that act as a single mutually exclusive component; therefore,
      * a user can select only one RadioButton component at a time.
      *
-     * @event egret.Event.CHANGE Dispatched when the value of the selected RadioButton component in
+     * @event egret.EventType.CHANGE Dispatched when the value of the selected RadioButton component in
      * this group changes.
      *
      * @version Egret 2.4
@@ -81,7 +81,7 @@ namespace eui {
     /**
      * RadioButtonGroup 组件定义一组 RadioButton 组件，这些组件相互排斥；因此，用户每次只能选择一个 RadioButton 组件
      *
-     * @event egret.Event.CHANGE 此组中所选 RadioButton 组件的值更改时分派。
+     * @event egret.EventType.CHANGE 此组中所选 RadioButton 组件的值更改时分派。
      *
      * @version Egret 2.4
      * @version eui 1.0
@@ -332,7 +332,7 @@ namespace eui {
          * 添加单选按钮到组内
          */
         $addInstance(instance:RadioButton):void {
-            instance.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.removedHandler, this);
+            instance.on(egret.EventType.REMOVED_FROM_STAGE, this.removedHandler, this);
             let buttons = this.radioButtons;
             buttons.push(instance);
             buttons.sort(breadthOrderCompare);
@@ -365,7 +365,7 @@ namespace eui {
                     }
                     else if (rb == instance) {
                         if (addListener)
-                            instance.addEventListener(egret.Event.ADDED_TO_STAGE, this.addedHandler, this);
+                            instance.on(egret.EventType.ADDED_TO_STAGE, this.addedHandler, this);
                         if (instance == this._selection)
                             this._selection = null;
                         instance.$radioButtonGroup = null;
@@ -392,7 +392,7 @@ namespace eui {
                     this._selection.selected = false;
                     this._selection = null;
                     if (fireChange)
-                        this.dispatchEventWith(egret.Event.CHANGE);
+                        this.dispatchEventWith(egret.EventType.CHANGE);
                 }
             }
             else {
@@ -421,7 +421,7 @@ namespace eui {
                 this._selection = rb;
                 this._selection.selected = true;
                 if (fireChange)
-                    this.dispatchEventWith(egret.Event.CHANGE);
+                    this.dispatchEventWith(egret.EventType.CHANGE);
             }
         }
 
@@ -433,7 +433,7 @@ namespace eui {
         private addedHandler(event:egret.Event):void {
             let rb:RadioButton = event.target;
             if (rb == event.currentTarget) {
-                rb.removeEventListener(egret.Event.ADDED_TO_STAGE, this.addedHandler, this);
+                rb.off(egret.EventType.ADDED_TO_STAGE, this.addedHandler, this);
                 this.$addInstance(rb);
             }
         }
@@ -445,7 +445,7 @@ namespace eui {
         private removedHandler(event:egret.Event):void {
             let rb:RadioButton = event.target;
             if (rb == event.currentTarget) {
-                rb.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.removedHandler, this);
+                rb.off(egret.EventType.REMOVED_FROM_STAGE, this.removedHandler, this);
                 this.$removeInstance(rb, true);
             }
         }

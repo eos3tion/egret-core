@@ -91,7 +91,7 @@ namespace egret.web {
             super();
             this.$renderNode = new sys.BitmapNode();
             this.src = url;
-            this.once(egret.Event.ADDED_TO_STAGE, this.loadPoster, this);
+            this.once(egret.EventType.ADDED_TO_STAGE, this.loadPoster, this);
             if (url) {
                 this.load();
             }
@@ -160,7 +160,7 @@ namespace egret.web {
         public play(startTime?: number, loop: boolean = false) {
             if (this.loaded == false) {
                 this.load(this.src);
-                this.once(egret.Event.COMPLETE, e => this.play(startTime, loop), this);
+                this.once(egret.EventType.COMPLETE, e => this.play(startTime, loop), this);
                 return;
             }
 
@@ -309,7 +309,7 @@ namespace egret.web {
             this.pause();
             this.isPlayed = false;
 
-            this.dispatchEventWith(egret.Event.ENDED);
+            this.dispatchEventWith(egret.EventType.ENDED);
         }
 
         /**
@@ -317,7 +317,7 @@ namespace egret.web {
          *
          */
         private onVideoError() {
-            this.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+            this.dispatchEventWith(egret.EventType.IO_ERROR);
         }
 
         /**
@@ -434,7 +434,7 @@ namespace egret.web {
             if (!poster)
                 return;
             let imageLoader = new egret.ImageLoader();
-            imageLoader.once(egret.Event.COMPLETE, e => {
+            imageLoader.once(egret.EventType.COMPLETE, e => {
                 let posterData = <HTMLImageElement><any>imageLoader.data;
                 this.posterData = imageLoader.data;
                 this.$renderDirty = true;
@@ -460,7 +460,7 @@ namespace egret.web {
             video.width = video.videoWidth;
             video.height = video.videoHeight;
             window.setTimeout(() => {
-                this.dispatchEventWith(egret.Event.COMPLETE);
+                this.dispatchEventWith(egret.EventType.COMPLETE);
             }, 200);
         };
 
@@ -552,7 +552,7 @@ namespace egret.web {
             if (this.paused) { // 在暂停和播放结束后，修改视频大小时，没有重绘导致的bug
                 const self = this;
                 this.$renderDirty = true;
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     self.$renderDirty = false;
                 }, 200);
             }
@@ -568,7 +568,7 @@ namespace egret.web {
             if (this.paused) { // 在暂停和播放结束后，修改视频大小时，没有重绘导致的bug
                 const self = this;
                 this.$renderDirty = true;
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     self.$renderDirty = false;
                 }, 200);
             }

@@ -55,7 +55,7 @@ namespace eui {
      *
      * @event eui.UIEvent.CHANGE_START Dispatched when the scroll position is going to change
      * @event eui.UIEvent.CHANGE_END Dispatched when the scroll position changed complete
-     * @event egret.Event.CHANGE Dispatched when the scroll position is changing
+     * @event egret.EventType.CHANGE Dispatched when the scroll position is changing
      *
      * @see eui.HSlider
      * @see eui.VSlider
@@ -72,7 +72,7 @@ namespace eui {
      *
      * @event eui.UIEvent.CHANGE_START 滚动位置改变开始
      * @event eui.UIEvent.CHANGE_END 滚动位置改变结束
-     * @event egret.Event.CHANGE 滚动位置改变的时候
+     * @event egret.EventType.CHANGE 滚动位置改变的时候
      *
      * @see eui.HSlider
      * @see eui.VSlider
@@ -112,7 +112,7 @@ namespace eui {
                 9: true,     //liveDragging
             };
             this.maximum = 10;
-            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+            this.on(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
         }
 
         /**
@@ -323,12 +323,12 @@ namespace eui {
             super.partAdded(partName, instance);
 
             if (instance == this.thumb) {
-                this.thumb.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onThumbTouchBegin, this);
-                this.thumb.addEventListener(egret.Event.RESIZE, this.onTrackOrThumbResize, this);
+                this.thumb.on(egret.TouchEvent.TOUCH_BEGIN, this.onThumbTouchBegin, this);
+                this.thumb.on(egret.EventType.RESIZE, this.onTrackOrThumbResize, this);
             }
             else if (instance == this.track) {
-                this.track.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTrackTouchBegin, this);
-                this.track.addEventListener(egret.Event.RESIZE, this.onTrackOrThumbResize, this);
+                this.track.on(egret.TouchEvent.TOUCH_BEGIN, this.onTrackTouchBegin, this);
+                this.track.on(egret.EventType.RESIZE, this.onTrackOrThumbResize, this);
             }
             else if (instance === this.trackHighlight) {
                 this.trackHighlight.touchEnabled = false;
@@ -349,12 +349,12 @@ namespace eui {
             super.partRemoved(partName, instance);
 
             if (instance == this.thumb) {
-                this.thumb.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onThumbTouchBegin, this);
-                this.thumb.removeEventListener(egret.Event.RESIZE, this.onTrackOrThumbResize, this);
+                this.thumb.off(egret.TouchEvent.TOUCH_BEGIN, this.onThumbTouchBegin, this);
+                this.thumb.off(egret.EventType.RESIZE, this.onTrackOrThumbResize, this);
             }
             else if (instance == this.track) {
-                this.track.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTrackTouchBegin, this);
-                this.track.removeEventListener(egret.Event.RESIZE, this.onTrackOrThumbResize, this);
+                this.track.off(egret.TouchEvent.TOUCH_BEGIN, this.onTrackTouchBegin, this);
+                this.track.off(egret.EventType.RESIZE, this.onTrackOrThumbResize, this);
             }
         }
 
@@ -393,8 +393,8 @@ namespace eui {
                 this.stopAnimation();
 
             let stage = this.$stage;
-            stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.onStageTouchMove, this);
-            stage.addEventListener(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
+            stage.on(egret.TouchEvent.TOUCH_MOVE, this.onStageTouchMove, this);
+            stage.on(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
 
             let clickOffset = this.thumb.globalToLocal(event.stageX, event.stageY, egret.$TempPoint);
 
@@ -441,7 +441,7 @@ namespace eui {
             if (newValue != this.$SliderBase[Keys.pendingValue]) {
                 if (this.liveDragging) {
                     this.setValue(newValue);
-                    this.dispatchEventWith(egret.Event.CHANGE);
+                    this.dispatchEventWith(egret.EventType.CHANGE);
                 }
                 else {
                     this.pendingValue = newValue;
@@ -471,13 +471,13 @@ namespace eui {
          */
         protected onStageTouchEnd(event:egret.Event):void {
             let stage:egret.Stage = event.$currentTarget;
-            stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onStageTouchMove, this);
-            stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
+            stage.off(egret.TouchEvent.TOUCH_MOVE, this.onStageTouchMove, this);
+            stage.off(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
             UIEvent.dispatchUIEvent(this, UIEvent.CHANGE_END);
             let values = this.$SliderBase;
             if (!this.liveDragging && this.value != values[Keys.pendingValue]) {
                 this.setValue(values[Keys.pendingValue]);
-                this.dispatchEventWith(egret.Event.CHANGE);
+                this.dispatchEventWith(egret.EventType.CHANGE);
             }
         }
 
@@ -486,7 +486,7 @@ namespace eui {
          * 当在组件上按下时记录被按下的子显示对象
          */
         private onTouchBegin(event:egret.TouchEvent):void {
-            this.$stage.addEventListener(egret.TouchEvent.TOUCH_END, this.stageTouchEndHandler, this);
+            this.$stage.on(egret.TouchEvent.TOUCH_END, this.stageTouchEndHandler, this);
             this.$SliderBase[Keys.touchDownTarget] = <egret.DisplayObject> (event.$target);
         }
 
@@ -497,7 +497,7 @@ namespace eui {
         private stageTouchEndHandler(event:egret.TouchEvent):void {
             let target:egret.DisplayObject = event.$target;
             let values = this.$SliderBase;
-            event.$currentTarget.removeEventListener(egret.TouchEvent.TOUCH_END, this.stageTouchEndHandler, this);
+            event.$currentTarget.off(egret.TouchEvent.TOUCH_END, this.stageTouchEndHandler, this);
             if (values[Keys.touchDownTarget] != target && this.contains(<egret.DisplayObject> (target))) {
                 egret.TouchEvent.dispatchTouchEvent(this, egret.TouchEvent.TOUCH_TAP, true, true,
                     event.$stageX, event.$stageY, event.touchPointID);
@@ -520,7 +520,7 @@ namespace eui {
          */
         private animationEndHandler(animation:sys.Animation):void {
             this.setValue(this.$SliderBase[Keys.slideToValue]);
-            this.dispatchEventWith(egret.Event.CHANGE);
+            this.dispatchEventWith(egret.EventType.CHANGE);
             UIEvent.dispatchUIEvent(this, UIEvent.CHANGE_END);
         }
 
@@ -531,7 +531,7 @@ namespace eui {
         private stopAnimation():void {
             this.$SliderBase[Keys.animation].stop();
             this.setValue(this.nearestValidValue(this.pendingValue, this.snapInterval));
-            this.dispatchEventWith(egret.Event.CHANGE);
+            this.dispatchEventWith(egret.EventType.CHANGE);
             UIEvent.dispatchUIEvent(this, UIEvent.CHANGE_END);
         }
 
@@ -587,7 +587,7 @@ namespace eui {
                 }
                 else {
                     this.setValue(newValue);
-                    this.dispatchEventWith(egret.Event.CHANGE);
+                    this.dispatchEventWith(egret.EventType.CHANGE);
                 }
             }
         }

@@ -349,7 +349,7 @@ namespace eui {
             let oldHost = this.host;
             if(oldHost){
                 if (egret.is(oldHost, "egret.IEventDispatcher")) {
-                    oldHost.removeEventListener(PropertyEvent.PROPERTY_CHANGE, this.wrapHandler, this);
+                    oldHost.off(PropertyEvent.PROPERTY_CHANGE, this.wrapHandler, this);
                 }
                 else {
                     let list:any[] = oldHost[listeners];
@@ -363,7 +363,7 @@ namespace eui {
             if(newHost){
                 Watcher.checkBindable(newHost, this.property);
                 if (egret.is(newHost, "egret.IEventDispatcher")) {
-                    newHost.addEventListener(PropertyEvent.PROPERTY_CHANGE, this.wrapHandler, this, false, 100);
+                    newHost.on(PropertyEvent.PROPERTY_CHANGE, this.wrapHandler, this, false, 100);
                 }
                 else{
                     let list:any[] = newHost[listeners];

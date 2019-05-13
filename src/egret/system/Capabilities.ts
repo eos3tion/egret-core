@@ -280,7 +280,7 @@ namespace egret {
         /***
          * Clients border width.
          * The value before the document class initialization is always 0.
-         * This value will change after the distribution Event.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
+         * This value will change after the distribution EventType.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language en_US
@@ -288,7 +288,7 @@ namespace egret {
         /***
          * 客户端边界宽度。
          * 该值在文档类初始化之前始终是0。
-         * 该值在派发 Event.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
+         * 该值在派发 EventType.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language zh_CN
@@ -298,7 +298,7 @@ namespace egret {
         /***
          * Clients border height.
          * The value before the document class initialization is always 0.
-         * This value will change after the distribution Event.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
+         * This value will change after the distribution EventType.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language en_US
@@ -306,7 +306,7 @@ namespace egret {
         /***
          * 客户端边界高度。
          * 该值在文档类初始化之前始终是0。
-         * 该值在派发 Event.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
+         * 该值在派发 EventType.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language zh_CN

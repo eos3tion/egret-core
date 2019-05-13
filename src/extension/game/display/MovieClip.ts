@@ -39,8 +39,8 @@ namespace egret {
     /**
      * 影片剪辑，可以通过影片剪辑播放序列帧动画。MovieClip 类从以下类继承而来：DisplayObject 和 EventDispatcher。不同于 DisplayObject 对象，MovieClip 对象拥有一个时间轴。
      * @extends egret.DisplayObject
-     * @event egret.Event.COMPLETE 动画播放完成。
-     * @event egret.Event.LOOP_COMPLETE 动画循环播放完成。循环最后一次只派发 COMPLETE 事件，不派发 LOOP_COMPLETE 事件。
+     * @event egret.EventType.COMPLETE 动画播放完成。
+     * @event egret.EventType.LOOP_COMPLETE 动画循环播放完成。循环最后一次只派发 COMPLETE 事件，不派发 LOOP_COMPLETE 事件。
      * @see http://edn.egret.com/cn/docs/page/596 MovieClip序列帧动画
      * @version Egret 2.4
      * @platform Web,Native
@@ -516,18 +516,18 @@ namespace egret {
                 self.$nextFrameNum++;
                 if (self.$nextFrameNum > self.$totalFrames || (self.$frameLabelStart > 0 && self.$nextFrameNum > self.$frameLabelEnd)) {
                     if (self.playTimes == -1) {
-                        self.$eventPool.push(Event.LOOP_COMPLETE);
+                        self.$eventPool.push(EventType.LOOP_COMPLETE);
                         self.$nextFrameNum = 1;
                     }
                     else {
                         self.playTimes--;
                         if (self.playTimes > 0) {
-                            self.$eventPool.push(Event.LOOP_COMPLETE);
+                            self.$eventPool.push(EventType.LOOP_COMPLETE);
                             self.$nextFrameNum = 1;
                         }
                         else {
                             self.$nextFrameNum = self.$totalFrames;
-                            self.$eventPool.push(Event.COMPLETE);
+                            self.$eventPool.push(EventType.COMPLETE);
                             self.stop();
                             break;
                         }
@@ -601,9 +601,9 @@ namespace egret {
 
                 for (let i = 0; i < length; i++) {
                     let event: string = eventPool.pop();
-                    if (event == Event.LOOP_COMPLETE) {
+                    if (event == EventType.LOOP_COMPLETE) {
                         isLoopComplete = true;
-                    } else if (event == Event.COMPLETE) {
+                    } else if (event == EventType.COMPLETE) {
                         isComplete = true;
                     } else {
                         this.dispatchEventWith(event);
@@ -611,10 +611,10 @@ namespace egret {
                 }
 
                 if (isLoopComplete) {
-                    this.dispatchEventWith(Event.LOOP_COMPLETE);
+                    this.dispatchEventWith(EventType.LOOP_COMPLETE);
                 }
                 if (isComplete) {
-                    this.dispatchEventWith(Event.COMPLETE);
+                    this.dispatchEventWith(EventType.COMPLETE);
                 }
             }
         }

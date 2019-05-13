@@ -57,7 +57,7 @@ namespace eui {
      *
      * Associate a skin class with a component class by setting the <code>skinName</code> property of the
      * component class.
-     * @event egret.Event.COMPLETE Dispatch when <code>skinName</code> property is set the path of external EXML file and the EXML file is resolved.
+     * @event egret.EventType.COMPLETE Dispatch when <code>skinName</code> property is set the path of external EXML file and the EXML file is resolved.
      *
      * @includeExample  extension/eui/components/ComponentExample.ts
      * @version Egret 2.4
@@ -68,7 +68,7 @@ namespace eui {
     /**
      * Component 类定义可设置外观的组件的基类。Component 类所使用的外观通常是 Skin 类的子类。<p/>
      * 通过设置 component 类的 skinName 属性，将 skin 类与 component 类相关联。
-     * @event egret.Event.COMPLETE 当设置skinName为外部exml文件路径时，加载并完成EXML解析后调度。
+     * @event egret.EventType.COMPLETE 当设置skinName为外部exml文件路径时，加载并完成EXML解析后调度。
      *
      * @includeExample  extension/eui/components/ComponentExample.ts
      * @version Egret 2.4
@@ -309,7 +309,7 @@ namespace eui {
             }
             this.invalidateSize();
             this.invalidateDisplayList();
-            this.dispatchEventWith(egret.Event.COMPLETE);
+            this.dispatchEventWith(egret.EventType.COMPLETE);
         }
 
 

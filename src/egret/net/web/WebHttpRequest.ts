@@ -242,7 +242,7 @@ namespace egret.web {
             if (DEBUG) {
                 egret.$warn(1052, this._url);
             }
-            this.dispatchEventWith(IOErrorEvent.IO_ERROR);
+            this.dispatchEventWith(EventType.IO_ERROR);
         }
 
         /**
@@ -256,13 +256,13 @@ namespace egret.web {
                 let self = this;
                 window.setTimeout(function (): void {
                     if (ioError) {//请求错误
-                        if (DEBUG && !self.hasEventListener(IOErrorEvent.IO_ERROR)) {
+                        if (DEBUG && !self.hasListen(EventType.IO_ERROR)) {
                             $error(1011, url);
                         }
-                        self.dispatchEventWith(IOErrorEvent.IO_ERROR);
+                        self.dispatchEventWith(EventType.IO_ERROR);
                     }
                     else {
-                        self.dispatchEventWith(Event.COMPLETE);
+                        self.dispatchEventWith(EventType.COMPLETE);
                     }
                 }, 0)
 
@@ -274,7 +274,7 @@ namespace egret.web {
          */
         private updateProgress(event): void {
             if (event.lengthComputable) {
-                ProgressEvent.dispatchProgressEvent(this, ProgressEvent.PROGRESS, event.loaded, event.total);
+                ProgressEvent.dispatchProgressEvent(this, EventType.PROGRESS, event.loaded, event.total);
             }
         }
 
@@ -285,7 +285,7 @@ namespace egret.web {
         private onload(): void {
             let self = this;
             window.setTimeout(function (): void {
-                self.dispatchEventWith(Event.COMPLETE);
+                self.dispatchEventWith(EventType.COMPLETE);
             }, 0);
         }
 
@@ -296,10 +296,10 @@ namespace egret.web {
             let url = this._url;
             let self = this;
             window.setTimeout(function (): void {
-                if (DEBUG && !self.hasEventListener(IOErrorEvent.IO_ERROR)) {
+                if (DEBUG && !self.hasListen(EventType.IO_ERROR)) {
                     $error(1011, url);
                 }
-                self.dispatchEventWith(IOErrorEvent.IO_ERROR);
+                self.dispatchEventWith(EventType.IO_ERROR);
             }, 0);
         }
     }

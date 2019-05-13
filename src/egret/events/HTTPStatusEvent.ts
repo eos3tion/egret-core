@@ -30,6 +30,23 @@
 
 namespace egret {
 
+    export const enum EventType {
+
+        /**
+         * HTTPStatusEvent.HTTP_STATUS constant defines the value of the type property httpStatus event object.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * HTTPStatusEvent.HTTP_STATUS 常量定义 httpStatus 事件对象的 type 属性值。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        HTTP_STATUS = "httpStatus"
+    }
+
     /**
      * When a network request returns an HTTP status code, the application dispatches HTTPStatusEvent objects.
      * Before error or completion events will always send HTTPStatusEvent object. HTTPStatusEvent object does not necessarily indicate an error condition; it simply reflects the HTTP status code provided by the network stack (if any).
@@ -46,19 +63,6 @@ namespace egret {
      */
     export class HTTPStatusEvent extends Event {
 
-        /**
-         * HTTPStatusEvent.HTTP_STATUS constant defines the value of the type property httpStatus event object.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * HTTPStatusEvent.HTTP_STATUS 常量定义 httpStatus 事件对象的 type 属性值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static HTTP_STATUS:"httpStatus" = "httpStatus";
 
         /**
          * Create a egret.HTTPStatusEvent objects
@@ -78,14 +82,14 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(type:string, bubbles:boolean = false, cancelable:boolean = false) {
+        public constructor(type: string, bubbles?: boolean, cancelable?: boolean) {
             super(type, bubbles, cancelable);
         }
 
         /**
          * @private
          */
-        private _status:number = 0;
+        private _status: number = 0;
         /**
          * he server returns the HTTP status code.
          * @version Egret 2.4
@@ -98,7 +102,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get status():number {
+        public get status(): number {
             return this._status;
         }
 
@@ -118,8 +122,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static dispatchHTTPStatusEvent(target:IEventDispatcher, status:number):boolean {
-            let event:HTTPStatusEvent = Event.create(HTTPStatusEvent, HTTPStatusEvent.HTTP_STATUS);
+        public static dispatchHTTPStatusEvent(target: IEventDispatcher, status: number): boolean {
+            let event: HTTPStatusEvent = Event.create(HTTPStatusEvent, EventType.HTTP_STATUS);
             event._status = status;
             let result = target.dispatchEvent(event);
             Event.release(event);

@@ -33,16 +33,105 @@ namespace egret {
 
     export interface DisplayObject {
 
-        addEventListener<Z>(type:   "touchMove"   |
-                                    "touchBegin"  |
-                                    "touchEnd"    |
-                                    "touchCancel" |
-                                    "touchTap"    |
-                                    "touchReleaseOutside" |
-                                    "touchRollOut"|
-                                    "touchRollOver"
-                                   , listener: (this: Z, e: TouchEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-        addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
+        on<Z>(type: "touchMove" |
+            "touchBegin" |
+            "touchEnd" |
+            "touchCancel" |
+            "touchTap" |
+            "touchReleaseOutside" |
+            "touchRollOut" |
+            "touchRollOver"
+            , listener: (this: Z, e: TouchEvent) => void, thisObject?: Z, useCapture?: boolean, priority?: number);
+        on(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number);
+    }
+
+    export const enum EventType {
+        /**
+         * Dispatched when the user touches the device, and is continuously dispatched until the point of contact is removed.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 当用户触碰设备时进行调度，而且会连续调度，直到接触点被删除。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TOUCH_MOVE = "touchMove",
+
+        /**
+         * Dispatched when the user first contacts a touch-enabled device (such as touches a finger to a mobile phone or tablet with a touch screen).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 当用户第一次触摸启用触摸的设备时（例如，用手指触摸配有触摸屏的移动电话或平板电脑）调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TOUCH_BEGIN = "touchBegin",
+
+        /**
+         * Dispatched when the user removes contact with a touch-enabled device (such as lifts a finger off a mobile phone
+         * or tablet with a touch screen).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 当用户移除与启用触摸的设备的接触时（例如，将手指从配有触摸屏的移动电话或平板电脑上抬起）调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TOUCH_END = "touchEnd",
+        /**
+         * Dispatched when an event of some kind occurred that canceled the touch.
+         * Such as the eui.Scroller will dispatch 'TOUCH_CANCEL' when it start move, the 'TOUCH_END' and 'TOUCH_TAP' will not be triggered.
+         * @version Egret 3.0.1
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 由于某个事件取消了触摸时触发。比如 eui.Scroller 在开始滚动后会触发 'TOUCH_CANCEL' 事件，不再触发后续的 'TOUCH_END' 和 'TOUCH_TAP' 事件
+         * @version Egret 3.0.1
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TOUCH_CANCEL = "touchCancel",
+
+        /**
+         * Dispatched when the user lifts the point of contact over the same DisplayObject instance on which the contact
+         * was initiated on a touch-enabled device.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 当用户在触摸设备上与开始触摸的同一 DisplayObject 实例上抬起接触点时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TOUCH_TAP = "touchTap",
+        /**
+         * Dispatched when the user lifts the point of contact over the different DisplayObject instance on which the contact
+         * was initiated on a touch-enabled device (such as presses and releases a finger from a single point over a display
+         * object on a mobile phone or tablet with a touch screen).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 当用户在触摸设备上与开始触摸的不同 DisplayObject 实例上抬起接触点时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TOUCH_RELEASE_OUTSIDE = "touchReleaseOutside"
     }
 
     let localPoint: Point = new Point();
@@ -77,93 +166,6 @@ namespace egret {
      * @language zh_CN
      */
     export class TouchEvent extends Event {
-
-        /**
-         * Dispatched when the user touches the device, and is continuously dispatched until the point of contact is removed.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户触碰设备时进行调度，而且会连续调度，直到接触点被删除。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TOUCH_MOVE: "touchMove" = "touchMove";
-
-        /**
-         * Dispatched when the user first contacts a touch-enabled device (such as touches a finger to a mobile phone or tablet with a touch screen).
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户第一次触摸启用触摸的设备时（例如，用手指触摸配有触摸屏的移动电话或平板电脑）调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TOUCH_BEGIN: "touchBegin" = "touchBegin";
-
-        /**
-         * Dispatched when the user removes contact with a touch-enabled device (such as lifts a finger off a mobile phone
-         * or tablet with a touch screen).
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户移除与启用触摸的设备的接触时（例如，将手指从配有触摸屏的移动电话或平板电脑上抬起）调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TOUCH_END: "touchEnd" = "touchEnd";
-        /**
-         * Dispatched when an event of some kind occurred that canceled the touch.
-         * Such as the eui.Scroller will dispatch 'TOUCH_CANCEL' when it start move, the 'TOUCH_END' and 'TOUCH_TAP' will not be triggered.
-         * @version Egret 3.0.1
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 由于某个事件取消了触摸时触发。比如 eui.Scroller 在开始滚动后会触发 'TOUCH_CANCEL' 事件，不再触发后续的 'TOUCH_END' 和 'TOUCH_TAP' 事件
-         * @version Egret 3.0.1
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TOUCH_CANCEL: "touchCancel" = "touchCancel";
-
-        /**
-         * Dispatched when the user lifts the point of contact over the same DisplayObject instance on which the contact
-         * was initiated on a touch-enabled device.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户在触摸设备上与开始触摸的同一 DisplayObject 实例上抬起接触点时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TOUCH_TAP: "touchTap" = "touchTap";
-        /**
-         * Dispatched when the user lifts the point of contact over the different DisplayObject instance on which the contact
-         * was initiated on a touch-enabled device (such as presses and releases a finger from a single point over a display
-         * object on a mobile phone or tablet with a touch screen).
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户在触摸设备上与开始触摸的不同 DisplayObject 实例上抬起接触点时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TOUCH_RELEASE_OUTSIDE: "touchReleaseOutside" = "touchReleaseOutside";
 
         /**
          * Creates an Event object that contains information about touch events.
@@ -384,14 +386,14 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static dispatchTouchEvent(target: IEventDispatcher, type: string, bubbles?: boolean, cancelable?: boolean,
-            stageX?: number, stageY?: number, touchPointID?: number, touchDown: boolean = false): boolean {
-            if (!bubbles && !target.hasEventListener(type)) {
+        static dispatchTouchEvent(target: IEventDispatcher, type: string, bubbles?: boolean, cancelable?: boolean,
+            stageX?: number, stageY?: number, touchPointID?: number, touchDown?: boolean): boolean {
+            if (!bubbles && !target.hasListen(type)) {
                 return true;
             }
             let event: TouchEvent = Event.create(TouchEvent, type, bubbles, cancelable);
             event.$initTo(stageX, stageY, touchPointID);
-            event.touchDown = touchDown;
+            event.touchDown = !!touchDown;
             let result = target.dispatchEvent(event);
             Event.release(event);
             return result;

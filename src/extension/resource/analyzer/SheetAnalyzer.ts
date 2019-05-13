@@ -66,7 +66,7 @@ namespace RES {
             delete this.resItemDic[request.hashCode];
             let resItem:ResourceItem = data.item;
             let compFunc:Function = data.func;
-            resItem.loaded = (event.type == egret.Event.COMPLETE);
+            resItem.loaded = (event.type == egret.EventType.COMPLETE);
             if (resItem.loaded) {
                 if (request instanceof egret.HttpRequest) {
                     resItem.loaded = false;
@@ -215,8 +215,8 @@ namespace RES {
             let loader = this.recyclerIamge.pop();
             if (!loader) {
                 loader = new egret.ImageLoader();
-                loader.addEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-                loader.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+                loader.on(egret.EventType.COMPLETE, this.onLoadFinish, this);
+                loader.on(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
             }
             return loader;
         }

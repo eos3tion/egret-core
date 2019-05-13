@@ -66,10 +66,10 @@ namespace egret {
          * Registers an event listener object with an EventDispatcher object so that the listener receives notification of an
          * event. You can register event listeners on all nodes in the display list for a specific type of event, phase,
          * and priority.After you successfully register an event listener, you cannot change its priority through additional 
-         * calls to on(). To change a listener's priority, you must first call removeEventListener(). Then you can register the
+         * calls to on(). To change a listener's priority, you must first call off(). Then you can register the
          * listener again with the new priority level.After the listener is registered, subsequent calls to on() with a 
          * different value for either type or useCapture result in the creation of a separate listener registration. <br/>
-         * When you no longer need an event listener, remove it by calling EventDispatcher.removeEventListener(); otherwise, memory
+         * When you no longer need an event listener, remove it by calling EventDispatcher.off(); otherwise, memory
          * problems might result. Objects with registered event listeners are not automatically removed from memory because
          * the garbage collector does not remove objects that still have references.Copying an EventDispatcher instance does
          * not copy the event listeners attached to it. (If your newly created node needs an event listener, you must attach 
@@ -93,7 +93,7 @@ namespace egret {
          * If two or more listeners share the same priority, they are processed in the order in which they were added.
          * The default priority is
          * @see #once()
-         * @see #removeEventListener()
+         * @see #off()
          * @version Egret 2.4
          * @platform Web,Native
          * @language en_US
@@ -101,9 +101,9 @@ namespace egret {
         /**
          * 使用 EventDispatcher 对象注册事件侦听器对象，以使侦听器能够接收事件通知。可以为特定类型的事件、阶段和优先级在显示列表的所有节
          * 点上注册事件侦听器。成功注册一个事件侦听器后，无法通过额外调用 on() 来更改其优先级。要更改侦听器的优先级，必须
-         * 先调用 removeEventListener()。然后，可以使用新的优先级再次注册该侦听器。注册该侦听器后，如果继续调用具有不同 type 或 useCapture
+         * 先调用 off()。然后，可以使用新的优先级再次注册该侦听器。注册该侦听器后，如果继续调用具有不同 type 或 useCapture
          * 值的 on()，则会创建单独的侦听器注册。<br/>
-         * 如果不再需要某个事件侦听器，可调用 EventDispatcher.removeEventListener()
+         * 如果不再需要某个事件侦听器，可调用 EventDispatcher.off()
          * 删除它；否则会产生内存问题。由于垃圾回收器不会删除仍包含引用的对象，因此不会从内存中自动删除使用已注册事件侦听器的对象。复制
          * EventDispatcher 实例时并不复制其中附加的事件侦听器。（如果新近创建的节点需要一个事件侦听器，必须在创建该节点后附加该侦听器。）
          * 但是，如果移动 EventDispatcher 实例，则其中附加的事件侦听器也会随之移动。如果在正在处理事件的节点上注册事件侦听器，则不会在当
@@ -119,12 +119,12 @@ namespace egret {
          * @param  priority 事件侦听器的优先级。优先级由一个带符号的整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
          * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
          * @see #once()
-         * @see #removeEventListener()
+         * @see #off()
          * @version Egret 2.4
          * @platform Web,Native
          * @language zh_CN
          */
-        addEventListener(type:string, listener:Function, thisObject:any, useCapture?:boolean, priority?:number):void;
+        on(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number): void;
         /**
          * Registers an event listener object with an EventDispatcher object so that the listener receives notification of an
          * event. Different from the on() method,the listener receives notification only once,and then it will be removed
@@ -143,7 +143,7 @@ namespace egret {
          * If two or more listeners share the same priority, they are processed in the order in which they were added.
          * The default priority is
          * @see #on()
-         * @see #removeEventListener()
+         * @see #off()
          * @version Egret 2.4
          * @platform Web,Native
          * @language en_US
@@ -160,12 +160,12 @@ namespace egret {
          * @param  priority 事件侦听器的优先级。优先级由一个带符号整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
          * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
          * @see #on()
-         * @see #removeEventListener()
+         * @see #off()
          * @version Egret 2.4
          * @platform Web,Native
          * @language zh_CN
          */
-        once(type:string, listener:Function, thisObject:any, useCapture?:boolean, priority?:number):void;
+        once(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number): void;
         /**
          * Removes a listener from the EventDispatcher object. If there is no matching listener registered with the
          * EventDispatcher object, a call to this method has no effect.
@@ -173,7 +173,7 @@ namespace egret {
          * @param listener The listener object to remove.
          * @param thisObject the listener function's "this"
          * @param useCapture Specifies whether the listener was registered for the capture phase or the bubbling phases.
-         * If the listener was registered for both the capture phase and the bubbling phases, two calls to removeEventListener()
+         * If the listener was registered for both the capture phase and the bubbling phases, two calls to off()
          * are required to remove both: one call with useCapture set to true, and another call with useCapture set to false.
          * @version Egret 2.4
          * @platform Web,Native
@@ -185,12 +185,12 @@ namespace egret {
          * @param listener 要删除的侦听器对象
          * @param thisObject 侦听函数绑定的this对象
          * @param useCapture 指出是为捕获阶段还是为冒泡阶段注册了侦听器。如果为捕获阶段以及冒泡阶段注册了侦听器，则需要对
-         * removeEventListener() 进行两次调用才能将这两个侦听器删除：一次调用将 useCapture 设置为 true，另一次调用将 useCapture 设置为 false。。
+         * off() 进行两次调用才能将这两个侦听器删除：一次调用将 useCapture 设置为 true，另一次调用将 useCapture 设置为 false。。
          * @version Egret 2.4
          * @platform Web,Native
          * @language zh_CN
          */
-        removeEventListener(type:string, listener:Function, thisObject:any, useCapture?:boolean):void;
+        off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void;
 
         /**
          * Checks whether the EventDispatcher object has any listeners registered for a specific type of event. This allows
@@ -216,7 +216,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        hasEventListener(type:string):boolean;
+        hasListen(type: string | number): boolean;
 
         /**
          * Dispatches an event into the event flow. The event target is the EventDispatcher object upon which dispatchEvent() is called.
@@ -234,7 +234,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        dispatchEvent(event:Event):boolean;
+        dispatchEvent(event: Event): boolean;
 
         /**
          * Checks whether an event listener is registered with this EventDispatcher object or any of its ancestors for the
@@ -259,6 +259,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        willTrigger(type:string):boolean;
+        willTrigger(type: string | number): boolean;
     }
 }

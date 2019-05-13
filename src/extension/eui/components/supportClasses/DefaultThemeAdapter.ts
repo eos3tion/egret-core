@@ -61,8 +61,8 @@ namespace eui {
                 errorFunc.call(thisObject);
             }
             let loader:egret.HttpRequest = new egret.HttpRequest();
-            loader.addEventListener(egret.Event.COMPLETE,onGet,thisObject);
-            loader.addEventListener(egret.IOErrorEvent.IO_ERROR,onError,thisObject);
+            loader.on(egret.EventType.COMPLETE,onGet,thisObject);
+            loader.on(egret.EventType.IO_ERROR,onError,thisObject);
             loader.responseType = egret.HttpResponseType.TEXT;
             loader.open(url);
             loader.send();

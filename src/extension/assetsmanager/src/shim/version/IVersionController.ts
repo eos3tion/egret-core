@@ -85,7 +85,7 @@ namespace RES {
      * Manage version control class
      * @version Egret 2.4
      * @platform Web,Native
-     * @event egret.Event.COMPLETE Version control loading is complete when thrown
+     * @event egret.EventType.COMPLETE Version control loading is complete when thrown
      * @event egret.IOErrorEvent.IO_ERROR Version control failed to load when thrown
      * @includeExample extension/version/VersionControl.ts
      * @language en_US
@@ -94,7 +94,7 @@ namespace RES {
      * 管理版本控制的类
      * @version Egret 2.4
      * @platform Web,Native
-     * @event egret.Event.COMPLETE 版本控制加载完成时抛出
+     * @event egret.EventType.COMPLETE 版本控制加载完成时抛出
      * @event egret.IOErrorEvent.IO_ERROR 版本控制加载失败时抛出
      * @includeExample extension/version/VersionControl.ts
      * @language zh_CN

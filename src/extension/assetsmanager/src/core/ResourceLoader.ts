@@ -79,10 +79,10 @@ module RES {
 			const dispatcher = new egret.EventDispatcher();
 			this.dispatcherDic[resInfo.root + resInfo.name] = dispatcher;
 			const promise = new Promise((resolve, reject) => {
-				dispatcher.addEventListener("complete", function (e: egret.Event) {
+				dispatcher.on("complete", function (e: egret.Event) {
 					resolve(e.data);
 				}, null);
-				dispatcher.addEventListener("error", function (e: egret.Event) {
+				dispatcher.on("error", function (e: egret.Event) {
 					reject(e.data);
 				}, null);
 			});
@@ -112,8 +112,8 @@ module RES {
 			const dispatcher = new egret.EventDispatcher();
 			this.dispatcherDic[groupName] = dispatcher;
 			const promise = new Promise((resolve, reject) => {
-				dispatcher.addEventListener("complete", resolve, null);
-				dispatcher.addEventListener("error", function (e: egret.Event) {
+				dispatcher.on("complete", resolve, null);
+				dispatcher.on("error", function (e: egret.Event) {
 					reject(e.data);
 				}, null);
 			});

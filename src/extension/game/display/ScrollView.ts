@@ -383,7 +383,7 @@ namespace egret {
             let width = this.width;
             //这里将坐标取整，避免有些浏览器精度低产生“黑线”问题
             this.scrollRect = new Rectangle(Math.round(this._ScrV_Props_._scrollLeft), Math.round(this._ScrV_Props_._scrollTop), width, height);
-            this.dispatchEvent(new Event(Event.CHANGE));
+            this.dispatchEvent(new Event(EventType.CHANGE));
         }
 
         /**
@@ -424,9 +424,9 @@ namespace egret {
          * @returns
          */
         public _addEvents(): void {
-            this.addEventListener(TouchEvent.TOUCH_BEGIN, this._onTouchBegin, this);
-            this.addEventListener(TouchEvent.TOUCH_BEGIN, this._onTouchBeginCapture, this, true);
-            this.addEventListener(TouchEvent.TOUCH_END, this._onTouchEndCapture, this, true);
+            this.on(TouchEvent.TOUCH_BEGIN, this._onTouchBegin, this);
+            this.on(TouchEvent.TOUCH_BEGIN, this._onTouchBeginCapture, this, true);
+            this.on(TouchEvent.TOUCH_END, this._onTouchEndCapture, this, true);
         }
 
         /**
@@ -435,9 +435,9 @@ namespace egret {
          * @returns
          */
         public _removeEvents(): void {
-            this.removeEventListener(TouchEvent.TOUCH_BEGIN, this._onTouchBegin, this);
-            this.removeEventListener(TouchEvent.TOUCH_BEGIN, this._onTouchBeginCapture, this, true);
-            this.removeEventListener(TouchEvent.TOUCH_END, this._onTouchEndCapture, this, true);
+            this.off(TouchEvent.TOUCH_BEGIN, this._onTouchBegin, this);
+            this.off(TouchEvent.TOUCH_BEGIN, this._onTouchBeginCapture, this, true);
+            this.off(TouchEvent.TOUCH_END, this._onTouchEndCapture, this, true);
         }
 
         private _tempStage: Stage;
@@ -460,10 +460,10 @@ namespace egret {
                 this._onScrollFinished();
             }
             this._tempStage = this.stage;
-            this._tempStage.addEventListener(TouchEvent.TOUCH_MOVE, this._onTouchMove, this);
-            this._tempStage.addEventListener(TouchEvent.TOUCH_END, this._onTouchEnd, this);
-            this._tempStage.addEventListener(TouchEvent.LEAVE_STAGE, this._onTouchEnd, this);
-            this.addEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
+            this._tempStage.on(TouchEvent.TOUCH_MOVE, this._onTouchMove, this);
+            this._tempStage.on(TouchEvent.TOUCH_END, this._onTouchEnd, this);
+            this._tempStage.on(TouchEvent.LEAVE_STAGE, this._onTouchEnd, this);
+            this.on(EventType.ENTER_FRAME, this._onEnterFrame, this);
 
             this._logTouchEvent(e);
             e.preventDefault();
@@ -504,7 +504,7 @@ namespace egret {
             this.delayTouchBeginEvent = evt;
             if (!this.touchBeginTimer) {
                 this.touchBeginTimer = new egret.Timer(100, 1);
-                this.touchBeginTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this._onTouchBeginTimer, this);
+                this.touchBeginTimer.on(TimerEvent.TIMER_COMPLETE, this._onTouchBeginTimer, this);
             }
             this.touchBeginTimer.start();
             this._onTouchBegin(event);
@@ -606,10 +606,10 @@ namespace egret {
         public _onTouchEnd(event: TouchEvent): void {
             this.touchChildren = true;
             this._ScrV_Props_._scrollStarted = false;
-            this._tempStage.removeEventListener(TouchEvent.TOUCH_MOVE, this._onTouchMove, this);
-            this._tempStage.removeEventListener(TouchEvent.TOUCH_END, this._onTouchEnd, this);
-            this._tempStage.removeEventListener(TouchEvent.LEAVE_STAGE, this._onTouchEnd, this);
-            this.removeEventListener(Event.ENTER_FRAME, this._onEnterFrame, this);
+            this._tempStage.off(TouchEvent.TOUCH_MOVE, this._onTouchMove, this);
+            this._tempStage.off(TouchEvent.TOUCH_END, this._onTouchEnd, this);
+            this._tempStage.off(TouchEvent.LEAVE_STAGE, this._onTouchEnd, this);
+            this.off(EventType.ENTER_FRAME, this._onEnterFrame, this);
 
             this._moveAfterTouchEnd();
         }
@@ -808,7 +808,7 @@ namespace egret {
             this._ScrV_Props_._vScrollTween = null;
             this._ScrV_Props_._isHTweenPlaying = false;
             this._ScrV_Props_._isVTweenPlaying = false
-            this.dispatchEvent(new Event(Event.COMPLETE));
+            this.dispatchEvent(new Event(EventType.COMPLETE));
         }
 
         /**

@@ -182,7 +182,7 @@ namespace egret.sys {
             if (this.stageDisplayList) {
                 this.stageDisplayList.setClipRect(stageWidth, stageHeight);
             }
-            stage.dispatchEventWith(Event.RESIZE);
+            stage.dispatchEventWith(EventType.RESIZE);
         }
 
 

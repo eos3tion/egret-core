@@ -86,8 +86,8 @@ namespace eui {
             callBackMap[source] = [[callBack, thisObject]];
             loaderMap[loader.$hashCode] = source;
 
-            loader.addEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-            loader.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+            loader.on(egret.EventType.COMPLETE, this.onLoadFinish, this);
+            loader.on(egret.EventType.IO_ERROR, this.onLoadFinish, this);
             loader.load(source);
         }
 
@@ -98,10 +98,10 @@ namespace eui {
          */
         private onLoadFinish(event:egret.Event):void {
             let loader = event.currentTarget;
-            loader.removeEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-            loader.removeEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+            loader.off(egret.EventType.COMPLETE, this.onLoadFinish, this);
+            loader.off(egret.EventType.IO_ERROR, this.onLoadFinish, this);
             let data:egret.Texture;
-            if (event.$type == egret.Event.COMPLETE) {
+            if (event.$type == egret.EventType.COMPLETE) {
                 data = new egret.Texture();
                 data._setBitmapData(loader.data);
                 loader.data = null;

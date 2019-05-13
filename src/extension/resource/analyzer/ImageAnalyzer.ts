@@ -75,8 +75,8 @@ namespace RES {
             let loader = this.recycler.pop();
             if (!loader) {
                 loader = new egret.ImageLoader();
-                loader.addEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-                loader.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+                loader.on(egret.EventType.COMPLETE, this.onLoadFinish, this);
+                loader.on(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
             }
             return loader;
         }
@@ -90,7 +90,7 @@ namespace RES {
             delete this.resItemDic[request.$hashCode];
             let resItem:ResourceItem = data.item;
             let compFunc:Function = data.func;
-            resItem.loaded = (event.$type == egret.Event.COMPLETE);
+            resItem.loaded = (event.$type == egret.EventType.COMPLETE);
             if (resItem.loaded) {
                 let texture:egret.Texture = new egret.Texture();
                 texture._setBitmapData(request.data);

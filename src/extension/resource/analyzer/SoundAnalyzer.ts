@@ -58,8 +58,8 @@ namespace RES {
                 return;
             }
             let sound = new egret.Sound();
-            sound.addEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-            sound.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+            sound.on(egret.EventType.COMPLETE, this.onLoadFinish, this);
+            sound.on(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
             this.resItemDic[sound.$hashCode] = {item: resItem, func: callBack, thisObject: thisObject};
             sound.load($getVirtualUrl(resItem.url));
             if (resItem.data) {
@@ -72,13 +72,13 @@ namespace RES {
          */
         protected onLoadFinish(event:egret.Event):void {
             let sound = <egret.Sound> (event.$target);
-            sound.removeEventListener(egret.Event.COMPLETE, this.onLoadFinish, this);
-            sound.removeEventListener(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
+            sound.off(egret.EventType.COMPLETE, this.onLoadFinish, this);
+            sound.off(egret.IOErrorEvent.IO_ERROR, this.onLoadFinish, this);
             let data:any = this.resItemDic[sound.$hashCode];
             delete this.resItemDic[sound.$hashCode];
             let resItem:ResourceItem = data.item;
             let compFunc:Function = data.func;
-            resItem.loaded = (event.$type == egret.Event.COMPLETE);
+            resItem.loaded = (event.$type == egret.EventType.COMPLETE);
             if (resItem.loaded) {
                 this.analyzeData(resItem, sound)
             }

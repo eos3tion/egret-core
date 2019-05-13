@@ -37,7 +37,7 @@ namespace egret.web {
                     code: 2,
                     message: egret.sys.tr(3004),
                     PERMISSION_DENIED: 1,
-                    POSITION_UNAVAILABLE:2
+                    POSITION_UNAVAILABLE: 2
                 });
         }
 
@@ -54,11 +54,11 @@ namespace egret.web {
          * @private
          */
         private onUpdate = (position: Position) => {
-            let event = new GeolocationEvent(Event.CHANGE);
+            let event = new GeolocationEvent(EventType.CHANGE);
             let coords = position.coords;
             event.altitude = coords.altitude;
             event.heading = coords.heading;
-            event.accuracy  = coords.accuracy;
+            event.accuracy = coords.accuracy;
             event.latitude = coords.latitude;
             event.longitude = coords.longitude;
             event.speed = coords.speed;
@@ -69,13 +69,13 @@ namespace egret.web {
         /**
          * @private
          */
-        private onError = (error: { code: number; message: string; PERMISSION_DENIED:number; POSITION_UNAVAILABLE:number} ) => {
+        private onError = (error: { code: number; message: string; PERMISSION_DENIED: number; POSITION_UNAVAILABLE: number }) => {
 
-            let errorType = GeolocationEvent.UNAVAILABLE;
+            let errorType = EventType.UNAVAILABLE;
             if (error.code == error.PERMISSION_DENIED)
-                errorType = GeolocationEvent.PERMISSION_DENIED;
+                errorType = EventType.PERMISSION_DENIED;
 
-            let event = new GeolocationEvent(IOErrorEvent.IO_ERROR);
+            let event = new GeolocationEvent(EventType.IO_ERROR);
             event.errorType = errorType;
             event.errorMessage = error.message;
             this.dispatchEvent(event);

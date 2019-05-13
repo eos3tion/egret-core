@@ -33,7 +33,7 @@ namespace egret {
      * it through the stage property of a DisplayObject instance.<br/>
      * The Stage class has several ancestor classes — Sprite, DisplayObject, and EventDispatcher — from which it inherits
      * properties and methods. Many of these properties and methods are inapplicable to Stage objects.
-     * @event egret.Event.RESIZE Dispatched when the stageWidth or stageHeight property of the Stage object is changed.
+     * @event egret.EventType.RESIZE Dispatched when the stageWidth or stageHeight property of the Stage object is changed.
      * @version Egret 2.4
      * @platform Web,Native
      * @includeExample egret/display/Stage.ts
@@ -44,9 +44,9 @@ namespace egret {
      * 可以利用 DisplayObject 实例的 stage 属性进行访问。<br/>
      * Stage 类具有多个祖代类: Sprite、DisplayObject 和 EventDispatcher，属性和方法便是从这些类继承而来的。
      * 从这些继承的许多属性和方法不适用于 Stage 对象。
-     * @event egret.Event.RESIZE 当stageWidth或stageHeight属性发生改变时调度
-     * @event egret.Event.DEACTIVATE 当stage失去焦点后调度
-     * @event egret.Event.ACTIVATE 当stage获得焦点后调度
+     * @event egret.EventType.RESIZE 当stageWidth或stageHeight属性发生改变时调度
+     * @event egret.EventType.DEACTIVATE 当stage失去焦点后调度
+     * @event egret.EventType.ACTIVATE 当stage获得焦点后调度
      *
      * @version Egret 2.4
      * @platform Web,Native
@@ -143,8 +143,8 @@ namespace egret {
          * @language en_US
          */
         /**
-         * 调用 invalidate() 方法后，在显示列表下次呈现时，Egret 会向每个已注册侦听 Event.RENDER 事件的显示对象发送一个 Event.RENDER 事件。
-         * 每次您希望 Egret 发送 Event.RENDER 事件时，都必须调用 invalidate() 方法。
+         * 调用 invalidate() 方法后，在显示列表下次呈现时，Egret 会向每个已注册侦听 EventType.RENDER 事件的显示对象发送一个 EventType.RENDER 事件。
+         * 每次您希望 Egret 发送 EventType.RENDER 事件时，都必须调用 invalidate() 方法。
          * @version Egret 2.4
          * @platform Web,Native
          * @language zh_CN

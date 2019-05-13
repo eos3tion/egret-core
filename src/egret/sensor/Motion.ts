@@ -12,7 +12,7 @@ namespace egret {
      * This data represents the device's movement along a 3-dimensional axis. When the device moves,
      * the sensor detects this movement and emit the CHANGE event. @see egret.MotionEvent
      *
-     * @event egret.Event.CHANGE device is moved
+     * @event egret.EventType.CHANGE device is moved
      * @version Egret 2.4
      * @platform Web
      * @includeExample egret/sensor/Motion.ts
@@ -23,7 +23,7 @@ namespace egret {
      * 当设备移动时，传感器会检测到此移动并返回设备加速度，重力和旋转数据。@see egret.MotionEvent
      * Motion 类提供了 start 和 stop 方法，来启动和停止运动信息检查
      *
-     * @event egret.Event.CHANGE 运动状态发生改变
+     * @event egret.EventType.CHANGE 运动状态发生改变
      * @version Egret 2.4
      * @platform Web
      * @includeExample egret/sensor/Motion.ts

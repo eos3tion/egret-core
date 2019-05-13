@@ -95,7 +95,7 @@ namespace egret.web {
             let self = this;
             window.addEventListener("orientationchange", function () {
                 window.setTimeout(function () {
-                    egret.StageOrientationEvent.dispatchStageOrientationEvent(self.stage, StageOrientationEvent.ORIENTATION_CHANGE);
+                    self.stage.dispatchEventWith(EventType.ORIENTATION_CHANGE);
                 }, 350);
             });
         }

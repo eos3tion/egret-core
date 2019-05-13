@@ -77,9 +77,9 @@ namespace eui {
     /**
      * The ListBase class is the base class for list component.
      * It can display items of list as vertical or horizontal such as SELECT of HTML.
-     * @event egret.Event.CHANGE Dispatched after the selection has changed.
+     * @event egret.EventType.CHANGE Dispatched after the selection has changed.
      * This event is dispatched when the user interacts with the control.
-     * @event egret.Event.CHANGING Dispatched when the selection is going to change.
+     * @event egret.EventType.CHANGING Dispatched when the selection is going to change.
      * Calling the <code>preventDefault()</code> method
      * on the event prevents the selection from changing.<p/>
      * This event is dispatched when the user interacts with the control.
@@ -94,8 +94,8 @@ namespace eui {
      */
     /**
      * ListBase 是列表控件基类。可显示垂直或水平的项目列表。其功能与 HTML 中的 SELECT 表单元素的功能相似。
-     * @event egret.Event.CHANGE 选中的索引已经发生改变,注意：此事件仅在索引改变是由用户触摸操作引起时才抛出。
-     * @event egret.Event.CHANGING 选中的索引即将发生改变，可以通过调用事件对象的 preventDefault() 方法来阻止改变。<p/>
+     * @event egret.EventType.CHANGE 选中的索引已经发生改变,注意：此事件仅在索引改变是由用户触摸操作引起时才抛出。
+     * @event egret.EventType.CHANGING 选中的索引即将发生改变，可以通过调用事件对象的 preventDefault() 方法来阻止改变。<p/>
      * 注意：此事件仅在索引改变是由用户触摸操作引起时才抛出。
      *
      * @event eui.ItemTapEvent.ITEM_TAP 项呈示器单击事件。
@@ -570,7 +570,7 @@ namespace eui {
 
 
             if (values[sys.ListBaseKeys.dispatchChangeAfterSelection]) {
-                let result = this.dispatchEventWith(egret.Event.CHANGING, false, true, true);
+                let result = this.dispatchEventWith(egret.EventType.CHANGING, false, true, true);
                 if (!result) {
                     this.itemSelected(values[sys.ListBaseKeys.proposedSelectedIndex], false);
                     values[sys.ListBaseKeys.proposedSelectedIndex] = ListBase.NO_PROPOSED_SELECTION;
@@ -591,7 +591,7 @@ namespace eui {
             //子类若需要自身抛出Change事件，而不是在此处抛出，可以设置dispatchChangedEvents为false
             if (dispatchChangedEvents) {
                 if (values[sys.ListBaseKeys.dispatchChangeAfterSelection]) {
-                    this.dispatchEventWith(egret.Event.CHANGE);
+                    this.dispatchEventWith(egret.EventType.CHANGE);
                     values[sys.ListBaseKeys.dispatchChangeAfterSelection] = false;
                 }
                 PropertyEvent.dispatchPropertyEvent(this, PropertyEvent.PROPERTY_CHANGE, "selectedIndex");
@@ -779,9 +779,9 @@ namespace eui {
          * @language zh_CN
          */
         protected rendererAdded(renderer:IItemRenderer, index:number, item:any):void {
-            renderer.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onRendererTouchBegin, this);
-            renderer.addEventListener(egret.TouchEvent.TOUCH_END, this.onRendererTouchEnd, this);
-            renderer.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onRendererTouchCancle, this);
+            renderer.on(egret.TouchEvent.TOUCH_BEGIN, this.onRendererTouchBegin, this);
+            renderer.on(egret.TouchEvent.TOUCH_END, this.onRendererTouchEnd, this);
+            renderer.on(egret.TouchEvent.TOUCH_CANCEL, this.onRendererTouchCancle, this);
         }
 
         /**
@@ -805,9 +805,9 @@ namespace eui {
          * @language zh_CN
          */
         protected rendererRemoved(renderer:IItemRenderer, index:number, item:any):void {
-            renderer.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onRendererTouchBegin, this);
-            renderer.removeEventListener(egret.TouchEvent.TOUCH_END, this.onRendererTouchEnd, this);
-            renderer.removeEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onRendererTouchCancle, this);
+            renderer.off(egret.TouchEvent.TOUCH_BEGIN, this.onRendererTouchBegin, this);
+            renderer.off(egret.TouchEvent.TOUCH_END, this.onRendererTouchEnd, this);
+            renderer.off(egret.TouchEvent.TOUCH_CANCEL, this.onRendererTouchCancle, this);
         }
 
         /**
@@ -837,7 +837,7 @@ namespace eui {
                 return;
             values[sys.ListBaseKeys.touchCancle] = false;
             values[sys.ListBaseKeys.touchDownItemRenderer] = <IItemRenderer> (event.$currentTarget);
-            this.$stage.addEventListener(egret.TouchEvent.TOUCH_END, this.stage_touchEndHandler, this);
+            this.$stage.on(egret.TouchEvent.TOUCH_END, this.stage_touchEndHandler, this);
         }
         /**
          * Handles <code>egret.TouchEvent.TOUCH_CANCEL</code> events from any of the
@@ -862,7 +862,7 @@ namespace eui {
             values[sys.ListBaseKeys.touchDownItemRenderer] = null;
             values[sys.ListBaseKeys.touchCancle] = true;
             if(this.$stage){
-                this.$stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.stage_touchEndHandler, this);
+                this.$stage.off(egret.TouchEvent.TOUCH_END, this.stage_touchEndHandler, this);
             }
         }
         /**
@@ -900,7 +900,7 @@ namespace eui {
          */
         private stage_touchEndHandler(event:egret.Event):void {
             let stage = <egret.Stage>event.$currentTarget;
-            stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.stage_touchEndHandler, this);
+            stage.off(egret.TouchEvent.TOUCH_END, this.stage_touchEndHandler, this);
             this.$ListBase[sys.ListBaseKeys.touchDownItemRenderer] = null;
         }
     }

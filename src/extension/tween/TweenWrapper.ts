@@ -530,9 +530,9 @@ namespace egret.tween {
         private registerEvent(add: boolean): void {
             this._items && this._items.forEach(item => {
                 if (add) {
-                    item.addEventListener('complete', this.itemComplete, this);
+                    item.on('complete', this.itemComplete, this);
                 } else {
-                    item.removeEventListener('complete', this.itemComplete, this);
+                    item.off('complete', this.itemComplete, this);
                 }
             });
         }

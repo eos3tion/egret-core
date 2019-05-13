@@ -65,15 +65,15 @@ namespace eui {
          */
         public constructor(){
             super();
-            this.addEventListener(egret.Event.ADDED_TO_STAGE,this.onAddToStage,this);
-            this.addEventListener(egret.Event.REMOVED_FROM_STAGE,this.onRemoveFromStage,this);
+            this.on(egret.EventType.ADDED_TO_STAGE,this.onAddToStage,this);
+            this.on(egret.EventType.REMOVED_FROM_STAGE,this.onRemoveFromStage,this);
         }
         /**
          * @private
          * 添加到舞台
          */
         private onAddToStage(event?:egret.Event):void{
-            this.$stage.addEventListener(egret.Event.RESIZE,this.onResize,this);
+            this.$stage.on(egret.EventType.RESIZE,this.onResize,this);
             this.onResize();
         }
         /**
@@ -81,7 +81,7 @@ namespace eui {
          * 从舞台移除
          */
         private onRemoveFromStage(event:egret.Event):void{
-            this.$stage.removeEventListener(egret.Event.RESIZE,this.onResize,this);
+            this.$stage.off(egret.EventType.RESIZE,this.onResize,this);
         }
 
         /**

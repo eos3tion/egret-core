@@ -259,7 +259,7 @@ namespace eui {
             if (this._hostComponent == value)
                 return;
             if(this._hostComponent){
-                this._hostComponent.removeEventListener(egret.Event.ADDED_TO_STAGE,this.onAddedToStage,this);
+                this._hostComponent.off(egret.EventType.ADDED_TO_STAGE,this.onAddedToStage,this);
             }
             this._hostComponent = value;
             let values = this.$stateValues;
@@ -271,7 +271,7 @@ namespace eui {
                         this.initializeStates(value.$stage);
                     }
                     else{
-                        value.once(egret.Event.ADDED_TO_STAGE,this.onAddedToStage,this);
+                        value.once(egret.EventType.ADDED_TO_STAGE,this.onAddedToStage,this);
                     }
                 }
             }

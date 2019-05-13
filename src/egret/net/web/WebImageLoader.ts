@@ -101,8 +101,8 @@ namespace egret.web {
                 let request = this.request;
                 if (!request) {
                     request = this.request = new egret.web.WebHttpRequest();
-                    request.addEventListener(egret.Event.COMPLETE, this.onBlobLoaded, this);
-                    request.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onBlobError, this);
+                    request.on(egret.EventType.COMPLETE, this.onBlobLoaded, this);
+                    request.on(egret.EventType.IO_ERROR, this.onBlobError, this);
                     request.responseType = "blob";
                 }
                 if (DEBUG) {
@@ -171,7 +171,7 @@ namespace egret.web {
             this.data = new egret.BitmapData(image);
             let self = this;
             window.setTimeout(function ():void {
-                self.dispatchEventWith(Event.COMPLETE);
+                self.dispatchEventWith(EventType.COMPLETE);
             }, 0);
         }
 
@@ -189,10 +189,10 @@ namespace egret.web {
         private dispatchIOError(url:string):void {
             let self = this;
             window.setTimeout(function ():void {
-                if (DEBUG && !self.hasEventListener(IOErrorEvent.IO_ERROR)) {
+                if (DEBUG && !self.hasListen(EventType.IO_ERROR)) {
                     $error(1011, url);
                 }
-                self.dispatchEventWith(IOErrorEvent.IO_ERROR);
+                self.dispatchEventWith(EventType.IO_ERROR);
             }, 0);
         }
 

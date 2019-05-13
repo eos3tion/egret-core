@@ -196,7 +196,6 @@ var egret;
          * @language zh_CN
          */
         function EventDispatcher(target) {
-            if (target === void 0) { target = null; }
             var _this = _super.call(this) || this;
             _this.$EventDispatcher = {
                 0: target ? target : _this,
@@ -221,8 +220,8 @@ var egret;
          * @version Egret 2.4
          * @platform Web,Native
          */
-        EventDispatcher.prototype.addEventListener = function (type, listener, thisObject, useCapture, priority) {
-            this.$addListener(type, listener, thisObject, useCapture, priority);
+        EventDispatcher.prototype.on = function (type, listener, thisObject, useCapture, priority) {
+            this.$on(type, listener, thisObject, useCapture, priority);
         };
         /**
          * @inheritDoc
@@ -230,12 +229,12 @@ var egret;
          * @platform Web,Native
          */
         EventDispatcher.prototype.once = function (type, listener, thisObject, useCapture, priority) {
-            this.$addListener(type, listener, thisObject, useCapture, priority, true);
+            this.$on(type, listener, thisObject, useCapture, priority, true);
         };
         /**
          * @private
          */
-        EventDispatcher.prototype.$addListener = function (type, listener, thisObject, useCapture, priority, dispatchOnce) {
+        EventDispatcher.prototype.$on = function (type, listener, thisObject, useCapture, priority, dispatchOnce) {
             if (true && !listener) {
                 egret.$error(1003, "listener");
             }
@@ -280,7 +279,7 @@ var egret;
          * @version Egret 2.4
          * @platform Web,Native
          */
-        EventDispatcher.prototype.removeEventListener = function (type, listener, thisObject, useCapture) {
+        EventDispatcher.prototype.off = function (type, listener, thisObject, useCapture) {
             var values = this.$EventDispatcher;
             var eventMap = useCapture ? values[2 /* captureEventsMap */] : values[1 /* eventsMap */];
             var list = eventMap[type];
@@ -294,6 +293,17 @@ var egret;
             if (list.length == 0) {
                 eventMap[type] = null;
             }
+        };
+        /**
+         * @language zh_CN
+         * 派发一个指定参数的事件。
+         * @param type {string | number} 事件类型
+         * @param data {any} 事件data
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        EventDispatcher.prototype.dispatch = function (type, data) {
+            return this.dispatchEventWith(type, false, data);
         };
         EventDispatcher.prototype.$removeEventBin = function (list, listener, thisObject) {
             var length = list.length;
@@ -311,7 +321,7 @@ var egret;
          * @version Egret 2.4
          * @platform Web,Native
          */
-        EventDispatcher.prototype.hasEventListener = function (type) {
+        EventDispatcher.prototype.hasListen = function (type) {
             var values = this.$EventDispatcher;
             return !!(values[1 /* eventsMap */][type] || values[2 /* captureEventsMap */][type]);
         };
@@ -321,7 +331,7 @@ var egret;
          * @platform Web,Native
          */
         EventDispatcher.prototype.willTrigger = function (type) {
-            return this.hasEventListener(type);
+            return this.hasListen(type);
         };
         /**
          * @inheritDoc
@@ -363,7 +373,7 @@ var egret;
             values[3 /* notifyLevel */]--;
             while (onceList.length) {
                 var eventBin = onceList.pop();
-                eventBin.target.removeEventListener(eventBin.type, eventBin.listener, eventBin.thisObject, eventBin.useCapture);
+                eventBin.target.off(eventBin.type, eventBin.listener, eventBin.thisObject, eventBin.useCapture);
             }
             return !event.$isDefaultPrevented;
         };
@@ -389,7 +399,7 @@ var egret;
          * @language zh_CN
          */
         EventDispatcher.prototype.dispatchEventWith = function (type, bubbles, data, cancelable) {
-            if (bubbles || this.hasEventListener(type)) {
+            if (bubbles || this.hasListen(type)) {
                 var event_1 = egret.Event.create(egret.Event, type, bubbles, cancelable);
                 event_1.data = data;
                 var result = this.dispatchEvent(event_1);
@@ -397,6 +407,30 @@ var egret;
                 return result;
             }
             return true;
+        };
+        /**
+         * 移除指定type的监听器
+         *
+         * @param {(string | number)} type
+         * @param {boolean} [useCapture]
+         *
+         * @memberOf EventDispatcher
+         */
+        EventDispatcher.prototype.removeListeners = function (type, useCapture) {
+            var eventMap = this.$getEventMap(useCapture);
+            var list = eventMap[type];
+            if (list) {
+                list.length = 0;
+            }
+        };
+        /**
+         * 删除所有事件监听
+         *
+         */
+        EventDispatcher.prototype.removeAllListeners = function () {
+            var values = this.$EventDispatcher;
+            values[1 /**eventsMap */] = {};
+            values[2 /**captureEventsMap */] = {};
         };
         return EventDispatcher;
     }(egret.HashObject));
@@ -468,12 +502,12 @@ var egret;
      * instance, but rather all DisplayObject instances, including those that are not on the display list. This means that you
      * can add a listener to any DisplayObject instance to listen for broadcast events.
      *
-     * @event egret.Event.ADDED Dispatched when a display object is added to the display list.
-     * @event egret.Event.ADDED_TO_STAGE Dispatched when a display object is added to the on stage display list, either directly or through the addition of a sub tree in which the display object is contained.
-     * @event egret.Event.REMOVED Dispatched when a display object is about to be removed from the display list.
-     * @event egret.Event.REMOVED_FROM_STAGE Dispatched when a display object is about to be removed from the display list, either directly or through the removal of a sub tree in which the display object is contained.
-     * @event egret.Event.ENTER_FRAME [broadcast event] Dispatched when the playhead is entering a new frame.
-     * @event egret.Event.RENDER [broadcast event] Dispatched when the display list is about to be updated and rendered.
+     * @event egret.EventType.ADDED Dispatched when a display object is added to the display list.
+     * @event egret.EventType.ADDED_TO_STAGE Dispatched when a display object is added to the on stage display list, either directly or through the addition of a sub tree in which the display object is contained.
+     * @event egret.EventType.REMOVED Dispatched when a display object is about to be removed from the display list.
+     * @event egret.EventType.REMOVED_FROM_STAGE Dispatched when a display object is about to be removed from the display list, either directly or through the removal of a sub tree in which the display object is contained.
+     * @event egret.EventType.ENTER_FRAME [broadcast event] Dispatched when the playhead is entering a new frame.
+     * @event egret.EventType.RENDER [broadcast event] Dispatched when the display list is about to be updated and rendered.
      * @event egret.TouchEvent.TOUCH_MOVE Dispatched when the user touches the device, and is continuously dispatched until the point of contact is removed.
      * @event egret.TouchEvent.TOUCH_BEGIN Dispatched when the user first contacts a touch-enabled device (such as touches a finger to a mobile phone or tablet with a touch screen).
      * @event egret.TouchEvent.TOUCH_END Dispatched when the user removes contact with a touch-enabled device (such as lifts a finger off a mobile phone or tablet with a touch screen).
@@ -493,12 +527,12 @@ var egret;
      * 但是对于广播事件，目标不是特定的 DisplayObject 实例，而是所有 DisplayObject 实例（包括那些不在显示列表中的实例）。这意味着您可以向任何
      * DisplayObject 实例添加侦听器来侦听广播事件。
      *
-     * @event egret.Event.ADDED 将显示对象添加到显示列表中时调度。
-     * @event egret.Event.ADDED_TO_STAGE 在将显示对象直接添加到舞台显示列表或将包含显示对象的子树添加至舞台显示列表中时调度。
-     * @event egret.Event.REMOVED 将要从显示列表中删除显示对象时调度。
-     * @event egret.Event.REMOVED_FROM_STAGE 在从显示列表中直接删除显示对象或删除包含显示对象的子树时调度。
-     * @event egret.Event.ENTER_FRAME [广播事件] 播放头进入新帧时调度。
-     * @event egret.Event.RENDER [广播事件] 将要更新和呈现显示列表时调度。
+     * @event egret.EventType.ADDED 将显示对象添加到显示列表中时调度。
+     * @event egret.EventType.ADDED_TO_STAGE 在将显示对象直接添加到舞台显示列表或将包含显示对象的子树添加至舞台显示列表中时调度。
+     * @event egret.EventType.REMOVED 将要从显示列表中删除显示对象时调度。
+     * @event egret.EventType.REMOVED_FROM_STAGE 在从显示列表中直接删除显示对象或删除包含显示对象的子树时调度。
+     * @event egret.EventType.ENTER_FRAME [广播事件] 播放头进入新帧时调度。
+     * @event egret.EventType.RENDER [广播事件] 将要更新和呈现显示列表时调度。
      * @event egret.TouchEvent.TOUCH_MOVE 当用户触碰设备时进行调度，而且会连续调度，直到接触点被删除。
      * @event egret.TouchEvent.TOUCH_BEGIN 当用户第一次触摸启用触摸的设备时（例如，用手指触摸手机屏幕）调度。
      * @event egret.TouchEvent.TOUCH_END 当用户移除与启用触摸的设备的接触时（例如，将手指从屏幕上抬起）调度。
@@ -2172,10 +2206,10 @@ var egret;
         /**
          * @private
          */
-        DisplayObject.prototype.$addListener = function (type, listener, thisObject, useCapture, priority, dispatchOnce) {
-            _super.prototype.$addListener.call(this, type, listener, thisObject, useCapture, priority, dispatchOnce);
-            var isEnterFrame = (type == egret.Event.ENTER_FRAME);
-            if (isEnterFrame || type == egret.Event.RENDER) {
+        DisplayObject.prototype.$on = function (type, listener, thisObject, useCapture, priority, dispatchOnce) {
+            _super.prototype.$on.call(this, type, listener, thisObject, useCapture, priority, dispatchOnce);
+            var isEnterFrame = (type == "enterFrame" /* ENTER_FRAME */);
+            if (isEnterFrame || type == "render" /* RENDER */) {
                 var list = isEnterFrame ? DisplayObject.$enterFrameCallBackList : DisplayObject.$renderCallBackList;
                 if (list.indexOf(this) == -1) {
                     list.push(this);
@@ -2187,10 +2221,10 @@ var egret;
          * @version Egret 2.4
          * @platform Web,Native
          */
-        DisplayObject.prototype.removeEventListener = function (type, listener, thisObject, useCapture) {
-            _super.prototype.removeEventListener.call(this, type, listener, thisObject, useCapture);
-            var isEnterFrame = (type == egret.Event.ENTER_FRAME);
-            if ((isEnterFrame || type == egret.Event.RENDER) && !this.hasEventListener(type)) {
+        DisplayObject.prototype.off = function (type, listener, thisObject, useCapture) {
+            _super.prototype.off.call(this, type, listener, thisObject, useCapture);
+            var isEnterFrame = (type == "enterFrame" /* ENTER_FRAME */);
+            if ((isEnterFrame || type == "render" /* RENDER */) && !this.hasListen(type)) {
                 var list = isEnterFrame ? DisplayObject.$enterFrameCallBackList : DisplayObject.$renderCallBackList;
                 var index = list.indexOf(this);
                 if (index !== -1) {
@@ -2267,7 +2301,7 @@ var egret;
         DisplayObject.prototype.willTrigger = function (type) {
             var parent = this;
             while (parent) {
-                if (parent.hasEventListener(type))
+                if (parent.hasListen(type))
                     return true;
                 parent = parent.$parent;
             }
@@ -3132,14 +3166,14 @@ var egret;
                 child.$onAddToStage(stage, self.$nestLevel + 1);
             }
             if (notifyListeners) {
-                child.dispatchEventWith(egret.Event.ADDED, true);
+                child.dispatchEventWith("added" /* ADDED */, true);
             }
             if (stage) {
                 var list = DisplayObjectContainer.$EVENT_ADD_TO_STAGE_LIST;
                 while (list.length) {
                     var childAddToStage = list.shift();
                     if (childAddToStage.$stage && notifyListeners) {
-                        childAddToStage.dispatchEventWith(egret.Event.ADDED_TO_STAGE);
+                        childAddToStage.dispatchEventWith("addedToStage" /* ADDED_TO_STAGE */);
                     }
                 }
             }
@@ -3338,7 +3372,7 @@ var egret;
             var child = children[index];
             this.$childRemoved(child, index);
             if (notifyListeners) {
-                child.dispatchEventWith(egret.Event.REMOVED, true);
+                child.dispatchEventWith("removed" /* REMOVED */, true);
             }
             if (this.$stage) { //在舞台上
                 child.$onRemoveFromStage();
@@ -3347,7 +3381,7 @@ var egret;
                     var childAddToStage = list.shift();
                     if (notifyListeners && childAddToStage.$hasAddToStage) {
                         childAddToStage.$hasAddToStage = false;
-                        childAddToStage.dispatchEventWith(egret.Event.REMOVED_FROM_STAGE);
+                        childAddToStage.dispatchEventWith("removedFromStage" /* REMOVED_FROM_STAGE */);
                     }
                     childAddToStage.$hasAddToStage = false;
                     childAddToStage.$stage = null;
@@ -4662,8 +4696,7 @@ var egret;
          * @language zh_CN
          */
         Event.dispatchEvent = function (target, type, bubbles, data) {
-            if (bubbles === void 0) { bubbles = false; }
-            var event = Event.create(Event, type, bubbles);
+            var event = Event.create(Event, type, !!bubbles);
             var props = Event._getPropertyData(Event);
             if (data != undefined) {
                 props.data = data;
@@ -4786,230 +4819,6 @@ var egret;
             var EventClass = Object.getPrototypeOf(event).constructor;
             EventClass.eventPool.push(event);
         };
-        /**
-         * Dispatched when a display object is added to the on stage display list, either directly or through the addition
-         * of a sub tree in which the display object is contained.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在将显示对象直接添加到舞台显示列表或将包含显示对象的子树添加至舞台显示列表中时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.ADDED_TO_STAGE = "addedToStage";
-        /**
-         * Dispatched when a display object is about to be removed from the display list, either directly or through the removal
-         * of a sub tree in which the display object is contained.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在从显示列表中直接删除显示对象或删除包含显示对象的子树时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.REMOVED_FROM_STAGE = "removedFromStage";
-        /**
-         * Dispatched when a display object is added to the display list.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 将显示对象添加到显示列表中时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.ADDED = "added";
-        /**
-         * Dispatched when a display object is about to be removed from the display list.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 将要从显示列表中删除显示对象时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.REMOVED = "removed";
-        /**
-         * [broadcast event] Dispatched when the playhead is entering a new frame.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * [广播事件] 进入新的一帧,监听此事件将会在下一帧开始时触发一次回调。这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.ENTER_FRAME = "enterFrame";
-        /**
-         * Dispatched when the display list is about to be updated and rendered.
-         * Note: Every time you want to receive a render event,you must call the stage.invalidate() method.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 渲染事件，监听此事件将会在本帧末即将开始渲染的前一刻触发回调，这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
-         * 注意：每次您希望 Egret 发送 Event.RENDER 事件时，都必须调用 stage.invalidate() 方法，由于每帧只会触发一次屏幕刷新，
-         * 若在 Event.RENDER 回调函数执行期间再次调用stage.invalidate()，将会被忽略。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.RENDER = "render";
-        /**
-         * Dispatched when the size of stage or UIComponent is changed.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 舞台尺寸或UI组件尺寸发生改变
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.RESIZE = "resize";
-        /**
-         * Dispatched when the value or selection of a property is chaned.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 属性值或状态发生改变。通常是按钮的选中状态，或者列表的选中项索引改变。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.CHANGE = "change";
-        /**
-         * Dispatched when the value or selection of a property is going to change.you can cancel this by calling the
-         * preventDefault() method.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 属性值或状态即将发生改变,通常是按钮的选中状态，或者列表的选中项索引改变。可以通过调用 preventDefault() 方法阻止索引发生更改。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.CHANGING = "changing";
-        /**
-         * Dispatched when the net request is complete.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 网络请求加载完成
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.COMPLETE = "complete";
-        /**
-         * Dispatched when loop completed.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 循环完成。循环最后一次只派发 COMPLETE 事件，不派发 LOOP_COMPLETE 事件。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.LOOP_COMPLETE = "loopComplete";
-        /**
-         * Dispatched when the TextInput instance gets focus.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * TextInput实例获得焦点
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.FOCUS_IN = "focusIn";
-        /**
-         * Dispatched when the TextInput instance loses focus.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * TextInput实例失去焦点
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.FOCUS_OUT = "focusOut";
-        /**
-         * Dispatched when the playback is ended.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 动画声音等播放完成
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        Event.ENDED = "ended";
-        /**
-         * 游戏激活
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        Event.ACTIVATE = "activate";
-        /**
-         * 取消激活
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        Event.DEACTIVATE = "deactivate";
-        /**
-         * Event.CLOSE 常量定义 close 事件对象的 type 属性的值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        Event.CLOSE = "close";
-        /**
-         * Event.CONNECT 常量定义 connect 事件对象的 type 属性的值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        Event.CONNECT = "connect";
-        /**
-         * Event.LEAVE_STAGE 常量定义 leaveStage 事件对象的 type 属性的值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        Event.LEAVE_STAGE = "leaveStage";
-        /**
-         * Event.SOUND_COMPLETE 常量定义 在声音完成播放后调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        Event.SOUND_COMPLETE = "soundComplete";
         return Event;
     }(egret.HashObject));
     egret.Event = Event;
@@ -8246,7 +8055,7 @@ var egret;
      * it through the stage property of a DisplayObject instance.<br/>
      * The Stage class has several ancestor classes — Sprite, DisplayObject, and EventDispatcher — from which it inherits
      * properties and methods. Many of these properties and methods are inapplicable to Stage objects.
-     * @event egret.Event.RESIZE Dispatched when the stageWidth or stageHeight property of the Stage object is changed.
+     * @event egret.EventType.RESIZE Dispatched when the stageWidth or stageHeight property of the Stage object is changed.
      * @version Egret 2.4
      * @platform Web,Native
      * @includeExample egret/display/Stage.ts
@@ -8257,9 +8066,9 @@ var egret;
      * 可以利用 DisplayObject 实例的 stage 属性进行访问。<br/>
      * Stage 类具有多个祖代类: Sprite、DisplayObject 和 EventDispatcher，属性和方法便是从这些类继承而来的。
      * 从这些继承的许多属性和方法不适用于 Stage 对象。
-     * @event egret.Event.RESIZE 当stageWidth或stageHeight属性发生改变时调度
-     * @event egret.Event.DEACTIVATE 当stage失去焦点后调度
-     * @event egret.Event.ACTIVATE 当stage获得焦点后调度
+     * @event egret.EventType.RESIZE 当stageWidth或stageHeight属性发生改变时调度
+     * @event egret.EventType.DEACTIVATE 当stage失去焦点后调度
+     * @event egret.EventType.ACTIVATE 当stage获得焦点后调度
      *
      * @version Egret 2.4
      * @platform Web,Native
@@ -8365,8 +8174,8 @@ var egret;
          * @language en_US
          */
         /**
-         * 调用 invalidate() 方法后，在显示列表下次呈现时，Egret 会向每个已注册侦听 Event.RENDER 事件的显示对象发送一个 Event.RENDER 事件。
-         * 每次您希望 Egret 发送 Event.RENDER 事件时，都必须调用 invalidate() 方法。
+         * 调用 invalidate() 方法后，在显示列表下次呈现时，Egret 会向每个已注册侦听 EventType.RENDER 事件的显示对象发送一个 EventType.RENDER 事件。
+         * 每次您希望 Egret 发送 EventType.RENDER 事件时，都必须调用 invalidate() 方法。
          * @version Egret 2.4
          * @platform Web,Native
          * @language zh_CN
@@ -8605,112 +8414,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    // export interface TextField{
-    //     addEventListener<Z>(type: "focusIn" |
-    //                               "focusOut"
-    //         , listener: (this: Z, e: FocusEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-    //     addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
-    // }
-    /**
-     * When the user changes the focus from one object in the display list to another object, the object dispatches a FocusEvent object. Currently only supports input text.
-     * Focus events: FocusEvent.FOCUS_IN FocusEvent.FOCUS_OUT
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * 用户将焦点从显示列表中的一个对象更改到另一个对象时，对象将调度 FocusEvent 对象。目前只支持输入文本。
-     * 焦点事件：FocusEvent.FOCUS_IN FocusEvent.FOCUS_OUT
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    var FocusEvent = /** @class */ (function (_super) {
-        __extends(FocusEvent, _super);
-        /**
-         * Create a egret.FocusEvent objects
-         * @param type  The type of the event, accessible as Event.type.
-         * @param bubbles  Determines whether the Event object participates in the bubbling stage of the event flow. The default value is false.
-         * @param cancelable Determines whether the Event object can be canceled. The default values is false.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建一个 egret.FocusEvent 对象
-         * @param type  事件的类型，可以作为 Event.type 访问。
-         * @param bubbles  确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable 确定是否可以取消 Event 对象。默认值为 false。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function FocusEvent(type, bubbles, cancelable) {
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
-            return _super.call(this, type, bubbles, cancelable) || this;
-        }
-        /**
-         * Gets focus
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 获得焦点
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        FocusEvent.FOCUS_IN = "focusIn";
-        /**
-         * Loses focus
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 失去焦点
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        FocusEvent.FOCUS_OUT = "focusOut";
-        return FocusEvent;
-    }(egret.Event));
-    egret.FocusEvent = FocusEvent;
-    __reflect(FocusEvent.prototype, "egret.FocusEvent");
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
     /**
      * The GeolocationEvent represents the position and altitude of the device on Earth,
      * and show errors occurred while getting the location of the device.
@@ -8733,32 +8436,6 @@ var egret;
         function GeolocationEvent() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        /**
-         * The acquisition of the location information failed because of app don't have permission.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 由于用户拒绝访问位置信息，获取位置信息失败
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        GeolocationEvent.PERMISSION_DENIED = "permissionDenied";
-        /**
-         * The acquisition of the location failed because at least one internal source of position returned an internal error.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 设备位置服务不可用或者超时等原因没有得到位置信息
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        GeolocationEvent.UNAVAILABLE = "unavailable";
         return GeolocationEvent;
     }(egret.Event));
     egret.GeolocationEvent = GeolocationEvent;
@@ -8829,8 +8506,6 @@ var egret;
          * @language zh_CN
          */
         function HTTPStatusEvent(type, bubbles, cancelable) {
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
             var _this = _super.call(this, type, bubbles, cancelable) || this;
             /**
              * @private
@@ -8874,25 +8549,12 @@ var egret;
          * @language zh_CN
          */
         HTTPStatusEvent.dispatchHTTPStatusEvent = function (target, status) {
-            var event = egret.Event.create(HTTPStatusEvent, HTTPStatusEvent.HTTP_STATUS);
+            var event = egret.Event.create(HTTPStatusEvent, "httpStatus" /* HTTP_STATUS */);
             event._status = status;
             var result = target.dispatchEvent(event);
             egret.Event.release(event);
             return result;
         };
-        /**
-         * HTTPStatusEvent.HTTP_STATUS constant defines the value of the type property httpStatus event object.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * HTTPStatusEvent.HTTP_STATUS 常量定义 httpStatus 事件对象的 type 属性值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        HTTPStatusEvent.HTTP_STATUS = "httpStatus";
         return HTTPStatusEvent;
     }(egret.Event));
     egret.HTTPStatusEvent = HTTPStatusEvent;
@@ -8954,85 +8616,6 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * @classdesc IO流事件，当错误导致输入或输出操作失败时调度 IOErrorEvent 对象。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/IOErrorEvent.ts
-     * @language en_US
-     */
-    /**
-     * @classdesc IO流事件，当错误导致输入或输出操作失败时调度 IOErrorEvent 对象。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/IOErrorEvent.ts
-     * @language zh_CN
-     */
-    var IOErrorEvent = /** @class */ (function (_super) {
-        __extends(IOErrorEvent, _super);
-        /**
-         * Create a egret.IOErrorEvent objects
-         * @param type {string} Type of event, accessible as Event.type.
-         * @param bubbles {boolean} Determines whether the Event object participates in the bubbling stage of the event flow. The default value is false.
-         * @param cancelable {boolean} Determine whether the Event object can be canceled. The default value is false.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建一个 egret.IOErrorEvent 对象
-         * @param type {string} 事件的类型，可以作为 Event.type 访问。
-         * @param bubbles {boolean} 确定 Event 对象是否参与事件流的冒泡阶段。默认值为 false。
-         * @param cancelable {boolean} 确定是否可以取消 Event 对象。默认值为 false。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function IOErrorEvent(type, bubbles, cancelable) {
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
-            return _super.call(this, type, bubbles, cancelable) || this;
-        }
-        /**
-         * EventDispatcher object using the specified event object thrown Event. The objects will be thrown in the object cache pool for the next round robin.
-         * @param target {egret.IEventDispatcher} Distribute event target
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 使用指定的EventDispatcher对象来抛出Event事件对象。抛出的对象将会缓存在对象池上，供下次循环复用。
-         * @param target {egret.IEventDispatcher} 派发事件目标
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        IOErrorEvent.dispatchIOErrorEvent = function (target) {
-            var event = egret.Event.create(IOErrorEvent, IOErrorEvent.IO_ERROR);
-            var result = target.dispatchEvent(event);
-            egret.Event.release(event);
-            return result;
-        };
-        /**
-         * io error
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * io发生错误
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        IOErrorEvent.IO_ERROR = "ioError";
-        return IOErrorEvent;
-    }(egret.Event));
-    egret.IOErrorEvent = IOErrorEvent;
-    __reflect(IOErrorEvent.prototype, "egret.IOErrorEvent");
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -9218,10 +8801,6 @@ var egret;
          * @language zh_CN
          */
         function ProgressEvent(type, bubbles, cancelable, bytesLoaded, bytesTotal) {
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
-            if (bytesLoaded === void 0) { bytesLoaded = 0; }
-            if (bytesTotal === void 0) { bytesTotal = 0; }
             var _this = _super.call(this, type, bubbles, cancelable) || this;
             /**
              * Number of items or bytes when the listener processes the event。
@@ -9249,8 +8828,8 @@ var egret;
              * @language zh_CN
              */
             _this.bytesTotal = 0;
-            _this.bytesLoaded = bytesLoaded;
-            _this.bytesTotal = bytesTotal;
+            _this.bytesLoaded = bytesLoaded || 0;
+            _this.bytesTotal = bytesTotal || 0;
             return _this;
         }
         /**
@@ -9274,41 +8853,13 @@ var egret;
          * @language zh_CN
          */
         ProgressEvent.dispatchProgressEvent = function (target, type, bytesLoaded, bytesTotal) {
-            if (bytesLoaded === void 0) { bytesLoaded = 0; }
-            if (bytesTotal === void 0) { bytesTotal = 0; }
             var event = egret.Event.create(ProgressEvent, type);
-            event.bytesLoaded = bytesLoaded;
-            event.bytesTotal = bytesTotal;
+            event.bytesLoaded = bytesLoaded || 0;
+            event.bytesTotal = bytesTotal || 0;
             var result = target.dispatchEvent(event);
             egret.Event.release(event);
             return result;
         };
-        /**
-         * Changes in the loading progress
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 加载进度发生变化
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        ProgressEvent.PROGRESS = "progress";
-        /**
-         * Get the data
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 获取到数据
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        ProgressEvent.SOCKET_DATA = "socketData";
         return ProgressEvent;
     }(egret.Event));
     egret.ProgressEvent = ProgressEvent;
@@ -9342,87 +8893,6 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * When the direction of the stage of change, Stage object dispatches StageOrientationEvent object.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/StageOrientationEvent.ts
-     * @language en_US
-     */
-    /**
-     * 当舞台的方向更改时，Stage 对象将调度 StageOrientationEvent 对象。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/StageOrientationEvent.ts
-     * @language zh_CN
-     */
-    var StageOrientationEvent = /** @class */ (function (_super) {
-        __extends(StageOrientationEvent, _super);
-        /**
-         * Creating contains specific information related to the event and the stage direction of StageOrientationEvent object.
-         * @param type Event types:StageOrientationEvent.ORIENTATION_CHANGE
-         * @param bubbles It indicates whether the Event object participates in the bubbling stage of the event flow.
-         * @param cancelable It indicates whether the Event object can be canceled.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建包含与舞台方向事件相关的特定信息的 StageOrientationEvent 对象。
-         * @param type 事件的类型：StageOrientationEvent.ORIENTATION_CHANGE
-         * @param bubbles 表示 Event 对象是否参与事件流的冒泡阶段。
-         * @param cancelable 表示是否可以取消 Event 对象。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function StageOrientationEvent(type, bubbles, cancelable) {
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
-            return _super.call(this, type, bubbles, cancelable) || this;
-        }
-        /**
-         * 派发一个屏幕旋转的事件。
-         * @param target {egret.IEventDispatcher} 派发事件目标
-         * @param type {egret.IEventDispatcher} 派发事件类型
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 派发一个屏幕旋转的事件。
-         * @param target {egret.IEventDispatcher} Distribute event target
-         * @param type {egret.IEventDispatcher} Distribute event type
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        StageOrientationEvent.dispatchStageOrientationEvent = function (target, type) {
-            var event = egret.Event.create(StageOrientationEvent, type);
-            var result = target.dispatchEvent(event);
-            egret.Event.release(event);
-            return result;
-        };
-        /**
-         * After screen rotation distribute events.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 屏幕旋转后派发的事件。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        StageOrientationEvent.ORIENTATION_CHANGE = "orientationChange";
-        return StageOrientationEvent;
-    }(egret.Event));
-    egret.StageOrientationEvent = StageOrientationEvent;
-    __reflect(StageOrientationEvent.prototype, "egret.StageOrientationEvent");
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -9453,11 +8923,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    // export interface TextField{
-    //     addEventListener<Z>(type: "link"
-    //         , listener: (this: Z, e: TextEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-    //     addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
-    // }
     /**
      * When a user clicks a hyperlink rich text object dispatches TextEvent object. Text Event Type: TextEvent.LINK.
      * @version Egret 2.4
@@ -9495,11 +8960,8 @@ var egret;
          * @language zh_CN
          */
         function TextEvent(type, bubbles, cancelable, text) {
-            if (bubbles === void 0) { bubbles = false; }
-            if (cancelable === void 0) { cancelable = false; }
-            if (text === void 0) { text = ""; }
             var _this = _super.call(this, type, bubbles, cancelable) || this;
-            _this.text = text;
+            _this.text = text || "";
             return _this;
         }
         /**
@@ -9527,19 +8989,6 @@ var egret;
             egret.Event.release(event);
             return result;
         };
-        /**
-         * It defines the value of the type property of a link event object.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 定义 link 事件对象的 type 属性值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TextEvent.LINK = "link";
         return TextEvent;
     }(egret.Event));
     egret.TextEvent = TextEvent;
@@ -9694,32 +9143,6 @@ var egret;
             egret.Event.release(event);
             return result;
         };
-        /**
-         * Dispatched whenever a Timer object reaches an interval specified according to the Timer.delay property.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 每当 Timer 对象达到根据 Timer.delay 属性指定的间隔时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TimerEvent.TIMER = "timer";
-        /**
-         * Dispatched whenever it has completed the number of requests set by Timer.repeatCount.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 每当它完成 Timer.repeatCount 设置的请求数后调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TimerEvent.TIMER_COMPLETE = "timerComplete";
         return TimerEvent;
     }(egret.Event));
     egret.TimerEvent = TimerEvent;
@@ -9987,100 +9410,16 @@ var egret;
          * @language zh_CN
          */
         TouchEvent.dispatchTouchEvent = function (target, type, bubbles, cancelable, stageX, stageY, touchPointID, touchDown) {
-            if (touchDown === void 0) { touchDown = false; }
-            if (!bubbles && !target.hasEventListener(type)) {
+            if (!bubbles && !target.hasListen(type)) {
                 return true;
             }
             var event = egret.Event.create(TouchEvent, type, bubbles, cancelable);
             event.$initTo(stageX, stageY, touchPointID);
-            event.touchDown = touchDown;
+            event.touchDown = !!touchDown;
             var result = target.dispatchEvent(event);
             egret.Event.release(event);
             return result;
         };
-        /**
-         * Dispatched when the user touches the device, and is continuously dispatched until the point of contact is removed.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户触碰设备时进行调度，而且会连续调度，直到接触点被删除。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TouchEvent.TOUCH_MOVE = "touchMove";
-        /**
-         * Dispatched when the user first contacts a touch-enabled device (such as touches a finger to a mobile phone or tablet with a touch screen).
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户第一次触摸启用触摸的设备时（例如，用手指触摸配有触摸屏的移动电话或平板电脑）调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TouchEvent.TOUCH_BEGIN = "touchBegin";
-        /**
-         * Dispatched when the user removes contact with a touch-enabled device (such as lifts a finger off a mobile phone
-         * or tablet with a touch screen).
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户移除与启用触摸的设备的接触时（例如，将手指从配有触摸屏的移动电话或平板电脑上抬起）调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TouchEvent.TOUCH_END = "touchEnd";
-        /**
-         * Dispatched when an event of some kind occurred that canceled the touch.
-         * Such as the eui.Scroller will dispatch 'TOUCH_CANCEL' when it start move, the 'TOUCH_END' and 'TOUCH_TAP' will not be triggered.
-         * @version Egret 3.0.1
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 由于某个事件取消了触摸时触发。比如 eui.Scroller 在开始滚动后会触发 'TOUCH_CANCEL' 事件，不再触发后续的 'TOUCH_END' 和 'TOUCH_TAP' 事件
-         * @version Egret 3.0.1
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TouchEvent.TOUCH_CANCEL = "touchCancel";
-        /**
-         * Dispatched when the user lifts the point of contact over the same DisplayObject instance on which the contact
-         * was initiated on a touch-enabled device.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户在触摸设备上与开始触摸的同一 DisplayObject 实例上抬起接触点时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TouchEvent.TOUCH_TAP = "touchTap";
-        /**
-         * Dispatched when the user lifts the point of contact over the different DisplayObject instance on which the contact
-         * was initiated on a touch-enabled device (such as presses and releases a finger from a single point over a display
-         * object on a mobile phone or tablet with a touch screen).
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 当用户在触摸设备上与开始触摸的不同 DisplayObject 实例上抬起接触点时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        TouchEvent.TOUCH_RELEASE_OUTSIDE = "touchReleaseOutside";
         return TouchEvent;
     }(egret.Event));
     egret.TouchEvent = TouchEvent;
@@ -13261,7 +12600,7 @@ var egret;
                 if (this.stageDisplayList) {
                     this.stageDisplayList.setClipRect(stageWidth, stageHeight);
                 }
-                stage.dispatchEventWith(egret.Event.RESIZE);
+                stage.dispatchEventWith("resize" /* RESIZE */);
             };
             /**
              * @private
@@ -13807,7 +13146,7 @@ var egret;
         sys.$START_TIME = 0;
         /**
          * @private
-         * 是否要广播Event.RENDER事件的标志。
+         * 是否要广播EventType.RENDER事件的标志。
          */
         sys.$invalidateRenderFlag = false;
         /**
@@ -14068,7 +13407,7 @@ var egret;
                 }
                 list = list.concat();
                 for (var i = 0; i < length; i++) {
-                    list[i].dispatchEventWith(egret.Event.ENTER_FRAME);
+                    list[i].dispatchEventWith("enterFrame" /* ENTER_FRAME */);
                 }
             };
             /**
@@ -14083,7 +13422,7 @@ var egret;
                 }
                 list = list.concat();
                 for (var i = 0; i < length; i++) {
-                    list[i].dispatchEventWith(egret.Event.RENDER);
+                    list[i].dispatchEventWith("render" /* RENDER */);
                 }
             };
             /**
@@ -14150,7 +13489,7 @@ var egret;
             LifecycleContext.prototype.pause = function () {
                 if (isActivate) {
                     isActivate = false;
-                    lifecycle.stage.dispatchEvent(new egret.Event(egret.Event.DEACTIVATE));
+                    lifecycle.stage.dispatchEvent(new egret.Event("deactivate" /* DEACTIVATE */));
                     if (lifecycle.onPause) {
                         lifecycle.onPause();
                     }
@@ -14159,7 +13498,7 @@ var egret;
             LifecycleContext.prototype.resume = function () {
                 if (!isActivate) {
                     isActivate = true;
-                    lifecycle.stage.dispatchEvent(new egret.Event(egret.Event.ACTIVATE));
+                    lifecycle.stage.dispatchEvent(new egret.Event("activate" /* ACTIVATE */));
                     if (lifecycle.onResume) {
                         lifecycle.onResume();
                     }
@@ -14269,7 +13608,7 @@ var egret;
                     this.touchDownTarget[touchPointID] = target;
                     this.useTouchesCount++;
                 }
-                egret.TouchEvent.dispatchTouchEvent(target, egret.TouchEvent.TOUCH_BEGIN, true, true, x, y, touchPointID, true);
+                egret.TouchEvent.dispatchTouchEvent(target, "touchBegin" /* TOUCH_BEGIN */, true, true, x, y, touchPointID, true);
             };
             /**
              * @private
@@ -14288,7 +13627,7 @@ var egret;
                 this.lastTouchX = x;
                 this.lastTouchY = y;
                 var target = this.findTarget(x, y);
-                egret.TouchEvent.dispatchTouchEvent(target, egret.TouchEvent.TOUCH_MOVE, true, true, x, y, touchPointID, true);
+                egret.TouchEvent.dispatchTouchEvent(target, "touchMove" /* TOUCH_MOVE */, true, true, x, y, touchPointID, true);
             };
             /**
              * @private
@@ -14305,12 +13644,12 @@ var egret;
                 var oldTarget = this.touchDownTarget[touchPointID];
                 delete this.touchDownTarget[touchPointID];
                 this.useTouchesCount--;
-                egret.TouchEvent.dispatchTouchEvent(target, egret.TouchEvent.TOUCH_END, true, true, x, y, touchPointID, false);
+                egret.TouchEvent.dispatchTouchEvent(target, "touchEnd" /* TOUCH_END */, true, true, x, y, touchPointID, false);
                 if (oldTarget == target) {
-                    egret.TouchEvent.dispatchTouchEvent(target, egret.TouchEvent.TOUCH_TAP, true, true, x, y, touchPointID, false);
+                    egret.TouchEvent.dispatchTouchEvent(target, "touchTap" /* TOUCH_TAP */, true, true, x, y, touchPointID, false);
                 }
                 else {
-                    egret.TouchEvent.dispatchTouchEvent(oldTarget, egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, true, true, x, y, touchPointID, false);
+                    egret.TouchEvent.dispatchTouchEvent(oldTarget, "touchReleaseOutside" /* TOUCH_RELEASE_OUTSIDE */, true, true, x, y, touchPointID, false);
                 }
             };
             /**
@@ -16703,7 +16042,7 @@ var egret;
         /***
          * Clients border width.
          * The value before the document class initialization is always 0.
-         * This value will change after the distribution Event.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
+         * This value will change after the distribution EventType.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language en_US
@@ -16711,7 +16050,7 @@ var egret;
         /***
          * 客户端边界宽度。
          * 该值在文档类初始化之前始终是0。
-         * 该值在派发 Event.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
+         * 该值在派发 EventType.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language zh_CN
@@ -16720,7 +16059,7 @@ var egret;
         /***
          * Clients border height.
          * The value before the document class initialization is always 0.
-         * This value will change after the distribution Event.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
+         * This value will change after the distribution EventType.RESIZE and StageOrientationEvent.ORIENTATION_CHANGE.
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language en_US
@@ -16728,7 +16067,7 @@ var egret;
         /***
          * 客户端边界高度。
          * 该值在文档类初始化之前始终是0。
-         * 该值在派发 Event.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
+         * 该值在派发 EventType.RESIZE 以及 StageOrientationEvent.ORIENTATION_CHANGE 之后会发生改变。
          * @version Egret 3.1.3
          * @platform Web,Native
          * @language zh_CN
@@ -18064,10 +17403,10 @@ var egret;
             }
             this.tempStage = _text.stage;
             stageText.$addToStage();
-            stageText.addEventListener("updateText", this.updateTextHandler, this);
-            _text.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
-            stageText.addEventListener("blur", this.blurHandler, this);
-            stageText.addEventListener("focus", this.focusHandler, this);
+            stageText.on("updateText", this.updateTextHandler, this);
+            _text.on("touchBegin" /* TOUCH_BEGIN */, this.onMouseDownHandler, this);
+            stageText.on("blur", this.blurHandler, this);
+            stageText.on("focus", this.focusHandler, this);
             this.stageTextAdded = true;
         };
         /**
@@ -18083,11 +17422,11 @@ var egret;
                 _text.$touchEnabled = false;
             }
             stageText.$removeFromStage();
-            stageText.removeEventListener("updateText", this.updateTextHandler, this);
-            _text.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
-            this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
-            stageText.removeEventListener("blur", this.blurHandler, this);
-            stageText.removeEventListener("focus", this.focusHandler, this);
+            stageText.off("updateText", this.updateTextHandler, this);
+            _text.off("touchBegin" /* TOUCH_BEGIN */, this.onMouseDownHandler, this);
+            this.tempStage.off("touchBegin" /* TOUCH_BEGIN */, this.onStageDownHandler, this);
+            stageText.off("blur", this.blurHandler, this);
+            stageText.off("focus", this.focusHandler, this);
             this.stageTextAdded = false;
         };
         /**
@@ -18124,7 +17463,7 @@ var egret;
                 if (!event["showing"]) {
                     this._text.$setIsTyping(true);
                 }
-                this._text.dispatchEvent(new egret.FocusEvent(egret.FocusEvent.FOCUS_IN, true));
+                this._text.dispatchEventWith("focusIn" /* FOCUS_IN */, true);
             }
         };
         /**
@@ -18136,11 +17475,11 @@ var egret;
             if (this._isFocus) {
                 //不再显示竖线，并且输入框显示最开始
                 this._isFocus = false;
-                this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
+                this.tempStage.off("touchBegin" /* TOUCH_BEGIN */, this.onStageDownHandler, this);
                 this._text.$setIsTyping(false);
                 //失去焦点后调用
                 this.stageText.$onBlur();
-                this._text.dispatchEvent(new egret.FocusEvent(egret.FocusEvent.FOCUS_OUT, true));
+                this._text.dispatchEventWith("focusOut" /* FOCUS_OUT */, true);
             }
         };
         //点中文本
@@ -18156,9 +17495,9 @@ var egret;
             if (this._isFocus) {
                 return;
             }
-            this.tempStage.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onStageDownHandler, this);
+            this.tempStage.off("touchBegin" /* TOUCH_BEGIN */, this.onStageDownHandler, this);
             egret.callLater(function () {
-                _this.tempStage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.onStageDownHandler, _this);
+                _this.tempStage.on("touchBegin" /* TOUCH_BEGIN */, _this.onStageDownHandler, _this);
             }, this);
             //强制更新输入框位置
             this.stageText.$show();
@@ -18207,7 +17546,7 @@ var egret;
             }
             this.resetText();
             //抛出change事件
-            this._text.dispatchEvent(new egret.Event(egret.Event.CHANGE, true));
+            this._text.dispatchEvent(new egret.Event("change" /* CHANGE */, true));
         };
         /**
          * @private
@@ -18332,7 +17671,7 @@ var egret;
      * If developers expect  no differences among all platforms, please use BitmapText
      * @see http://edn.egret.com/cn/docs/page/141 Create Text
      *
-     * @event egret.Event.CHANGE Dispatched when entering text user input。
+     * @event egret.EventType.CHANGE Dispatched when entering text user input。
      * @event egret.FocusEvent.FOCUS_IN Dispatched after the focus to enter text.
      * @event egret.FocusEvent.FOCUS_OUT Enter the text loses focus after dispatch.
      * @version Egret 2.4
@@ -18345,7 +17684,7 @@ var egret;
      * 如果开发者希望所有平台完全无差异，请使用BitmapText
      * @see http://edn.egret.com/cn/docs/page/141 创建文本
      *
-     * @event egret.Event.CHANGE 输入文本有用户输入时调度。
+     * @event egret.EventType.CHANGE 输入文本有用户输入时调度。
      * @event egret.FocusEvent.FOCUS_IN 聚焦输入文本后调度。
      * @event egret.FocusEvent.FOCUS_OUT 输入文本失去焦点后调度。
      * @version Egret 2.4
@@ -20139,11 +19478,11 @@ var egret;
         };
         //增加点击事件
         TextField.prototype.addEvent = function () {
-            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTapHandler, this);
+            this.on("touchTap" /* TOUCH_TAP */, this.onTapHandler, this);
         };
         //释放点击事件
         TextField.prototype.removeEvent = function () {
-            this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTapHandler, this);
+            this.off("touchTap" /* TOUCH_TAP */, this.onTapHandler, this);
         };
         //处理富文本中有href的
         TextField.prototype.onTapHandler = function (e) {
@@ -20158,7 +19497,7 @@ var egret;
             if (style && style.href) {
                 if (style.href.match(/^event:/)) {
                     var type = style.href.match(/^event:/)[0];
-                    egret.TextEvent.dispatchTextEvent(this, egret.TextEvent.LINK, style.href.substring(type.length));
+                    egret.TextEvent.dispatchTextEvent(this, "link" /* LINK */, style.href.substring(type.length));
                 }
                 else {
                     open(style.href, style.target || "_blank");
@@ -22651,10 +21990,10 @@ var egret;
             this.lastTimeStamp = timeStamp;
             this._currentCount++;
             var complete = (this.repeatCount > 0 && this._currentCount >= this.repeatCount);
-            egret.TimerEvent.dispatchTimerEvent(this, egret.TimerEvent.TIMER);
+            egret.TimerEvent.dispatchTimerEvent(this, "timer" /* TIMER */);
             if (complete) {
                 this.stop();
-                egret.TimerEvent.dispatchTimerEvent(this, egret.TimerEvent.TIMER_COMPLETE);
+                egret.TimerEvent.dispatchTimerEvent(this, "timerComplete" /* TIMER_COMPLETE */);
             }
             return false;
         };

@@ -960,7 +960,7 @@ var egret;
                 this._useTicks = props.useTicks;
                 this.ignoreGlobalPause = props.ignoreGlobalPause;
                 this.loop = props.loop;
-                props.onChange && this.addEventListener("change", props.onChange, props.onChangeObj);
+                props.onChange && this.on("change", props.onChange, props.onChangeObj);
                 if (props.override) {
                     Tween.removeTweens(target);
                 }
@@ -2003,10 +2003,10 @@ var egret;
                 var _this = this;
                 this._items && this._items.forEach(function (item) {
                     if (add) {
-                        item.addEventListener('complete', _this.itemComplete, _this);
+                        item.on('complete', _this.itemComplete, _this);
                     }
                     else {
-                        item.removeEventListener('complete', _this.itemComplete, _this);
+                        item.off('complete', _this.itemComplete, _this);
                     }
                 });
             };

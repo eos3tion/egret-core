@@ -421,8 +421,8 @@ namespace eui {
             if (instance == this.textDisplay) {
                 this.textDisplayAdded();
                 if (this.textDisplay instanceof EditableText) {
-                    this.textDisplay.addEventListener(FocusEvent.FOCUS_IN, this.focusInHandler, this);
-                    this.textDisplay.addEventListener(FocusEvent.FOCUS_OUT, this.focusOutHandler, this);
+                    this.textDisplay.on(FocusEvent.FOCUS_IN, this.focusInHandler, this);
+                    this.textDisplay.on(FocusEvent.FOCUS_OUT, this.focusOutHandler, this);
                 }
             }
             else if (instance == this.promptDisplay) {
@@ -444,8 +444,8 @@ namespace eui {
             if (instance == this.textDisplay) {
                 this.textDisplayRemoved();
                 if (this.textDisplay instanceof EditableText) {
-                    this.textDisplay.removeEventListener(FocusEvent.FOCUS_IN, this.focusInHandler, this);
-                    this.textDisplay.removeEventListener(FocusEvent.FOCUS_OUT, this.focusOutHandler, this);
+                    this.textDisplay.off(FocusEvent.FOCUS_IN, this.focusInHandler, this);
+                    this.textDisplay.off(FocusEvent.FOCUS_OUT, this.focusOutHandler, this);
                 }
             }
             else if (instance == this.promptDisplay) {

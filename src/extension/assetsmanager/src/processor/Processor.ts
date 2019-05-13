@@ -102,8 +102,8 @@ module RES.processor {
                 let e = new ResourceManagerError(1001, resource.url);
                 reject(e);
             }
-            loader.addEventListener(egret.Event.COMPLETE, onSuccess, this);
-            loader.addEventListener(egret.IOErrorEvent.IO_ERROR, onError, this);
+            loader.on(egret.EventType.COMPLETE, onSuccess, this);
+            loader.on(egret.IOErrorEvent.IO_ERROR, onError, this);
         })
     }
     /**

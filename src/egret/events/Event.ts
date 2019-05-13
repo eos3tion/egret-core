@@ -28,6 +28,246 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 namespace egret {
+    export const enum EventType {
+        /**
+          * Dispatched when a display object is added to the on stage display list, either directly or through the addition
+          * of a sub tree in which the display object is contained.
+          * @version Egret 2.4
+          * @platform Web,Native
+          * @language en_US
+          */
+        /**
+         * 在将显示对象直接添加到舞台显示列表或将包含显示对象的子树添加至舞台显示列表中时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        ADDED_TO_STAGE = "addedToStage",
+        /**
+         * Dispatched when a display object is about to be removed from the display list, either directly or through the removal
+         * of a sub tree in which the display object is contained.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 在从显示列表中直接删除显示对象或删除包含显示对象的子树时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        REMOVED_FROM_STAGE = "removedFromStage",
+        /**
+         * Dispatched when a display object is added to the display list.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 将显示对象添加到显示列表中时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        ADDED = "added",
+        /**
+         * Dispatched when a display object is about to be removed from the display list.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 将要从显示列表中删除显示对象时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        REMOVED = "removed",
+        /**
+         * [broadcast event] Dispatched when the playhead is entering a new frame.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * [广播事件] 进入新的一帧,监听此事件将会在下一帧开始时触发一次回调。这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        ENTER_FRAME = "enterFrame",
+        /**
+         * Dispatched when the display list is about to be updated and rendered.
+         * Note: Every time you want to receive a render event,you must call the stage.invalidate() method.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 渲染事件，监听此事件将会在本帧末即将开始渲染的前一刻触发回调，这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
+         * 注意：每次您希望 Egret 发送 EventType.RENDER 事件时，都必须调用 stage.invalidate() 方法，由于每帧只会触发一次屏幕刷新，
+         * 若在 EventType.RENDER 回调函数执行期间再次调用stage.invalidate()，将会被忽略。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        RENDER = "render",
+        /**
+         * Dispatched when the size of stage or UIComponent is changed.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 舞台尺寸或UI组件尺寸发生改变
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        RESIZE = "resize",
+
+        /**
+         * Dispatched when the value or selection of a property is chaned.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 属性值或状态发生改变。通常是按钮的选中状态，或者列表的选中项索引改变。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        CHANGE = "change",
+
+        /**
+         * Dispatched when the value or selection of a property is going to change.you can cancel this by calling the
+         * preventDefault() method.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 属性值或状态即将发生改变,通常是按钮的选中状态，或者列表的选中项索引改变。可以通过调用 preventDefault() 方法阻止索引发生更改。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        CHANGING = "changing",
+        /**
+         * Dispatched when the net request is complete.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 网络请求加载完成
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        COMPLETE = "complete",
+
+        /**
+         * Dispatched when loop completed.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 循环完成。循环最后一次只派发 COMPLETE 事件，不派发 LOOP_COMPLETE 事件。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        LOOP_COMPLETE = "loopComplete",
+
+        /**
+         * Dispatched when the TextInput instance gets focus.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * TextInput实例获得焦点
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        FOCUS_IN = "focusIn",
+        /**
+         * Dispatched when the TextInput instance loses focus.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * TextInput实例失去焦点
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        FOCUS_OUT = "focusOut",
+        /**
+         * Dispatched when the playback is ended.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 动画声音等播放完成
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        ENDED = "ended",
+
+
+        /**
+         * 游戏激活
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        ACTIVATE = "activate",
+
+        /**
+         * 取消激活
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        DEACTIVATE = "deactivate",
+
+        /**
+         * EventType.CLOSE 常量定义 close 事件对象的 type 属性的值。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        CLOSE = "close",
+
+        /**
+         * EventType.CONNECT 常量定义 connect 事件对象的 type 属性的值。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        CONNECT = "connect",
+
+
+        /**
+         * EventType.LEAVE_STAGE 常量定义 leaveStage 事件对象的 type 属性的值。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        LEAVE_STAGE = "leaveStage",
+
+        /**
+         * EventType.SOUND_COMPLETE 常量定义 在声音完成播放后调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        SOUND_COMPLETE = "soundComplete",
+
+    }
+
     /**
      * The Event class is used as the base class for the creation of Event objects, which are passed as parameters to event
      * listeners when an event occurs.The properties of the Event class carry basic information about an event, such as
@@ -63,243 +303,6 @@ namespace egret {
      * @language zh_CN
      */
     export class Event extends HashObject {
-        /**
-         * Dispatched when a display object is added to the on stage display list, either directly or through the addition
-         * of a sub tree in which the display object is contained.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在将显示对象直接添加到舞台显示列表或将包含显示对象的子树添加至舞台显示列表中时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static ADDED_TO_STAGE: string = "addedToStage";
-        /**
-         * Dispatched when a display object is about to be removed from the display list, either directly or through the removal
-         * of a sub tree in which the display object is contained.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 在从显示列表中直接删除显示对象或删除包含显示对象的子树时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static REMOVED_FROM_STAGE: string = "removedFromStage";
-        /**
-         * Dispatched when a display object is added to the display list.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 将显示对象添加到显示列表中时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static ADDED: string = "added";
-        /**
-         * Dispatched when a display object is about to be removed from the display list.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 将要从显示列表中删除显示对象时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static REMOVED: string = "removed";
-        /**
-         * [broadcast event] Dispatched when the playhead is entering a new frame.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * [广播事件] 进入新的一帧,监听此事件将会在下一帧开始时触发一次回调。这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static ENTER_FRAME: string = "enterFrame";
-        /**
-         * Dispatched when the display list is about to be updated and rendered.
-         * Note: Every time you want to receive a render event,you must call the stage.invalidate() method.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 渲染事件，监听此事件将会在本帧末即将开始渲染的前一刻触发回调，这是一个广播事件，可以在任何一个显示对象上监听，无论它是否在显示列表中。
-         * 注意：每次您希望 Egret 发送 Event.RENDER 事件时，都必须调用 stage.invalidate() 方法，由于每帧只会触发一次屏幕刷新，
-         * 若在 Event.RENDER 回调函数执行期间再次调用stage.invalidate()，将会被忽略。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static RENDER: string = "render";
-        /**
-         * Dispatched when the size of stage or UIComponent is changed.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 舞台尺寸或UI组件尺寸发生改变
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static RESIZE: string = "resize";
-
-        /**
-         * Dispatched when the value or selection of a property is chaned.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 属性值或状态发生改变。通常是按钮的选中状态，或者列表的选中项索引改变。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static CHANGE: string = "change";
-
-        /**
-         * Dispatched when the value or selection of a property is going to change.you can cancel this by calling the
-         * preventDefault() method.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 属性值或状态即将发生改变,通常是按钮的选中状态，或者列表的选中项索引改变。可以通过调用 preventDefault() 方法阻止索引发生更改。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static CHANGING: string = "changing";
-        /**
-         * Dispatched when the net request is complete.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 网络请求加载完成
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static COMPLETE: string = "complete";
-
-        /**
-         * Dispatched when loop completed.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 循环完成。循环最后一次只派发 COMPLETE 事件，不派发 LOOP_COMPLETE 事件。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static LOOP_COMPLETE: string = "loopComplete";
-
-        /**
-         * Dispatched when the TextInput instance gets focus.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * TextInput实例获得焦点
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static FOCUS_IN: string = "focusIn";
-        /**
-         * Dispatched when the TextInput instance loses focus.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * TextInput实例失去焦点
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static FOCUS_OUT: string = "focusOut";
-        /**
-         * Dispatched when the playback is ended.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 动画声音等播放完成
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static ENDED: string = "ended";
-
-
-        /**
-         * 游戏激活
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public static ACTIVATE: string = "activate";
-
-        /**
-         * 取消激活
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public static DEACTIVATE: string = "deactivate";
-
-        /**
-         * Event.CLOSE 常量定义 close 事件对象的 type 属性的值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public static CLOSE: string = "close";
-
-        /**
-         * Event.CONNECT 常量定义 connect 事件对象的 type 属性的值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public static CONNECT: string = "connect";
-
-
-        /**
-         * Event.LEAVE_STAGE 常量定义 leaveStage 事件对象的 type 属性的值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public static LEAVE_STAGE: string = "leaveStage";
-
-        /**
-         * Event.SOUND_COMPLETE 常量定义 在声音完成播放后调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public static SOUND_COMPLETE: string = "soundComplete";
-
 
         /**
          * Creates an Event object to pass as a parameter to event listeners.
@@ -321,7 +324,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(type: string, bubbles?: boolean, cancelable?: boolean, data?: any) {
+        public constructor(type: string | number, bubbles?: boolean, cancelable?: boolean, data?: any) {
             super();
             this.$type = type;
             this.$bubbles = !!bubbles;
@@ -346,7 +349,7 @@ namespace egret {
         /**
          * @private
          */
-        $type: string;
+        $type: string | number;
 
         /**
          * The type of event. The type is case-sensitive.
@@ -360,7 +363,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get type(): string {
+        public get type() {
             return this.$type;
         }
 
@@ -457,14 +460,14 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get currentTarget(): any {
+        public get currentTarget() {
             return this.$currentTarget;
         }
 
         /**
          * @private
          */
-        $target: any = null;
+        $target = null;
 
         /**
          * The event target. This property contains the target node. For example, if a user clicks an OK button,
@@ -479,7 +482,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get target(): any {
+        public get target() {
             return this.$target;
         }
 
@@ -510,7 +513,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public isDefaultPrevented(): boolean {
+        public isDefaultPrevented() {
             return this.$isDefaultPrevented;
         }
 
@@ -657,8 +660,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static dispatchEvent(target: IEventDispatcher, type: string, bubbles: boolean = false, data?: any): boolean {
-            let event: IOErrorEvent = Event.create(Event, type, bubbles);
+        public static dispatchEvent(target: IEventDispatcher, type: string | number, bubbles?: boolean, data?: any): boolean {
+            let event = Event.create(Event, type, !!bubbles);
             let props: any = Event._getPropertyData(Event);
             if (data != undefined) {
                 props.data = data;
@@ -722,8 +725,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static create<T extends Event>(EventClass: { new(type: string, bubbles?: boolean, cancelable?: boolean): T; eventPool?: Event[] },
-            type: string, bubbles?: boolean, cancelable?: boolean): T {
+        public static create<T extends Event>(EventClass: { new(type: string | number, bubbles?: boolean, cancelable?: boolean): T; eventPool?: Event[] },
+            type: string | number, bubbles?: boolean, cancelable?: boolean): T {
             let eventPool: Event[];
             let hasEventPool = (EventClass as any).hasOwnProperty("eventPool");
             if (hasEventPool) {

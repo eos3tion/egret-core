@@ -29,10 +29,40 @@
 
 
 namespace egret {
-    export interface Timer{
+    export interface Timer {
         addEventListener<Z>(type: "timer" | "timerComplete"
             , listener: (this: Z, e: TimerEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
         addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
+    }
+
+    export const enum EventType {
+        /**
+  * Dispatched whenever a Timer object reaches an interval specified according to the Timer.delay property.
+  * @version Egret 2.4
+  * @platform Web,Native
+  * @language en_US
+  */
+        /**
+         * 每当 Timer 对象达到根据 Timer.delay 属性指定的间隔时调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TIMER = "timer",
+
+        /**
+         * Dispatched whenever it has completed the number of requests set by Timer.repeatCount.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 每当它完成 Timer.repeatCount 设置的请求数后调度。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        TIMER_COMPLETE = "timerComplete",
     }
     /**
      * A Timer object dispatches a TimerEvent objects whenever the Timer object reaches the interval specified by the Timer.delay property.
@@ -51,35 +81,6 @@ namespace egret {
      * @language zh_CN
      */
     export class TimerEvent extends Event {
-
-        /**
-         * Dispatched whenever a Timer object reaches an interval specified according to the Timer.delay property.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 每当 Timer 对象达到根据 Timer.delay 属性指定的间隔时调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TIMER:"timer" = "timer";
-
-        /**
-         * Dispatched whenever it has completed the number of requests set by Timer.repeatCount.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 每当它完成 Timer.repeatCount 设置的请求数后调度。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static TIMER_COMPLETE:"timerComplete" = "timerComplete";
-
         /**
          * Creates an Event object with specific information relevant to timer events.
          * @param type The type of the event. Event listeners can access this information through the inherited type property.
@@ -100,7 +101,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(type:string, bubbles?:boolean, cancelable?:boolean) {
+        public constructor(type: string, bubbles?: boolean, cancelable?: boolean) {
             super(type, bubbles, cancelable);
         }
 
@@ -146,7 +147,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public updateAfterEvent():void {
+        public updateAfterEvent(): void {
             sys.$requestRenderingFlag = true;
         }
 
@@ -177,7 +178,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static dispatchTimerEvent(target:IEventDispatcher, type:string, bubbles?:boolean, cancelable?:boolean):boolean {
+        public static dispatchTimerEvent(target: IEventDispatcher, type: string, bubbles?: boolean, cancelable?: boolean): boolean {
             let event = Event.create(TimerEvent, type, bubbles, cancelable);
             let result = target.dispatchEvent(event);
             Event.release(event);

@@ -27,11 +27,42 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 namespace egret {
-    export interface HttpRequest{
-        addEventListener<Z>(type: "progress"
-            , listener: (this: Z, e: ProgressEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-        addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
+    export interface HttpRequest {
+        on<Z>(type: "progress"
+            , listener: (this: Z, e: ProgressEvent) => void, thisObject?: Z, useCapture?: boolean, priority?: number);
+        on(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number);
     }
+
+    export const enum EventType {
+        /**
+         * Changes in the loading progress
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 加载进度发生变化
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        PROGRESS = "progress",
+
+        /**
+         * Get the data
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 获取到数据
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        SOCKET_DATA = "socketData"
+    }
+
     /**
      * When a load operation has begun or a socket has received data, ProgressEvent object is dispatched.
      * There are two types of progress events: ProgressEvent.PROGRESS and ProgressEvent.SOCKET_DATA.
@@ -49,34 +80,6 @@ namespace egret {
     export class ProgressEvent extends egret.Event {
 
         /**
-         * Changes in the loading progress
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 加载进度发生变化
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static PROGRESS:"progress" = "progress";
-
-        /**
-         * Get the data
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 获取到数据
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static SOCKET_DATA:"socketData" = "socketData";
-
-        /**
          * Number of items or bytes when the listener processes the event。
          * @version Egret 2.4
          * @platform Web,Native
@@ -88,7 +91,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public bytesLoaded:number = 0;
+        public bytesLoaded: number = 0;
 
         /**
          * If the loading process succeeds, the total number or the total number of bytes that will be loaded term.
@@ -102,7 +105,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public bytesTotal:number = 0;
+        public bytesTotal: number = 0;
 
         /**
          * 创建一个 egret.ProgressEvent 对象
@@ -126,11 +129,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(type:string, bubbles:boolean = false, cancelable:boolean = false, bytesLoaded:number = 0, bytesTotal:number = 0) {
+        public constructor(type: string, bubbles?: boolean, cancelable?: boolean, bytesLoaded?: number, bytesTotal?: number) {
             super(type, bubbles, cancelable);
 
-            this.bytesLoaded = bytesLoaded;
-            this.bytesTotal = bytesTotal;
+            this.bytesLoaded = bytesLoaded || 0;
+            this.bytesTotal = bytesTotal || 0;
         }
 
         /**
@@ -153,10 +156,10 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static dispatchProgressEvent(target:IEventDispatcher, type:string, bytesLoaded:number = 0, bytesTotal:number = 0):boolean {
-            let event:ProgressEvent = Event.create(ProgressEvent, type);
-            event.bytesLoaded = bytesLoaded;
-            event.bytesTotal = bytesTotal;
+        public static dispatchProgressEvent(target: IEventDispatcher, type: string, bytesLoaded?: number, bytesTotal?: number): boolean {
+            let event: ProgressEvent = Event.create(ProgressEvent, type);
+            event.bytesLoaded = bytesLoaded || 0;
+            event.bytesTotal = bytesTotal || 0;
             let result = target.dispatchEvent(event);
             Event.release(event);
             return result;

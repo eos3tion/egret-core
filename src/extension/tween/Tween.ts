@@ -355,7 +355,7 @@ namespace egret {
                 this._useTicks = props.useTicks;
                 this.ignoreGlobalPause = props.ignoreGlobalPause;
                 this.loop = props.loop;
-                props.onChange && this.addEventListener("change", props.onChange, props.onChangeObj);
+                props.onChange && this.on("change", props.onChange, props.onChangeObj);
                 if (props.override) {
                     Tween.removeTweens(target);
                 }

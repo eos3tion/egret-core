@@ -34,33 +34,7 @@ namespace egret.web {
      * @inheritDoc
      */
     export class HtmlSound extends egret.EventDispatcher implements egret.Sound {
-        /**
-         * Background music
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 背景音乐
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static MUSIC: string = "music";
-
-        /**
-         * EFFECT
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 音效
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static EFFECT: string = "effect";
+ 
 
         /**
          * @private
@@ -140,12 +114,12 @@ namespace egret.web {
                 
 
                 self.loaded = true;
-                self.dispatchEventWith(egret.Event.COMPLETE);
+                self.dispatchEventWith(egret.EventType.COMPLETE);
             }
 
             function onAudioError(): void {
                 removeListeners();
-                self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+                self.dispatchEventWith(egret.EventType.IO_ERROR);
             }
 
             function removeListeners(): void {

@@ -60,8 +60,8 @@ namespace RES.web {
             let virtualUrl:string = "all.manifest";
 
             let httpLoader:egret.HttpRequest = new egret.HttpRequest();
-            httpLoader.addEventListener(egret.Event.COMPLETE, onLoadComplete, this);
-            httpLoader.addEventListener(egret.IOErrorEvent.IO_ERROR, onError, this);
+            httpLoader.on(egret.EventType.COMPLETE, onLoadComplete, this);
+            httpLoader.on(egret.IOErrorEvent.IO_ERROR, onError, this);
 
             httpLoader.open(virtualUrl + "?r=" + Date.now(), "get");
             httpLoader.send();
@@ -77,13 +77,13 @@ namespace RES.web {
                 self._versionInfo = JSON.parse(httpLoader.response);
 
                 window.setTimeout(function () {
-                    self.dispatchEvent(new egret.Event(egret.Event.COMPLETE));
+                    self.dispatchEvent(new egret.Event(egret.EventType.COMPLETE));
                 }, 0);
             }
 
             function removeListeners():void {
-                httpLoader.removeEventListener(egret.Event.COMPLETE, onLoadComplete, self);
-                httpLoader.removeEventListener(egret.IOErrorEvent.IO_ERROR, onError, self);
+                httpLoader.off(egret.EventType.COMPLETE, onLoadComplete, self);
+                httpLoader.off(egret.IOErrorEvent.IO_ERROR, onError, self);
             }
 
             */

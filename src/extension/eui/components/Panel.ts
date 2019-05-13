@@ -77,7 +77,7 @@ namespace eui {
          */
         public constructor() {
             super();
-            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onWindowTouchBegin, this, false, 100);
+            this.on(egret.TouchEvent.TOUCH_BEGIN, this.onWindowTouchBegin, this, false, 100);
         }
 
         /**
@@ -227,10 +227,10 @@ namespace eui {
                 this.titleDisplay.text = this._title;
             }
             else if (instance == this.moveArea) {
-                this.moveArea.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+                this.moveArea.on(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
             }
             else if (instance == this.closeButton) {
-                this.closeButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onCloseButtonClick, this);
+                this.closeButton.on(egret.TouchEvent.TOUCH_TAP, this.onCloseButtonClick, this);
             }
         }
 
@@ -244,10 +244,10 @@ namespace eui {
         protected partRemoved(partName:string, instance:any):void {
             super.partRemoved(partName, instance);
             if (instance == this.moveArea) {
-                this.moveArea.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+                this.moveArea.off(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
             }
             else if (instance == this.closeButton) {
-                this.closeButton.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onCloseButtonClick, this);
+                this.closeButton.off(egret.TouchEvent.TOUCH_TAP, this.onCloseButtonClick, this);
             }
         }
 
@@ -326,8 +326,8 @@ namespace eui {
             this.$includeInLayout = false;
             this.offsetPointX = this.x - event.$stageX;
             this.offsetPointY = this.y - event.$stageY;
-            this.$stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
-            this.$stage.addEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
+            this.$stage.on(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+            this.$stage.on(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
         }
 
         /**
@@ -369,8 +369,8 @@ namespace eui {
          */
         protected onTouchEnd(event:egret.TouchEvent):void {
             let stage = event.$currentTarget;
-            stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
-            stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
+            stage.off(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+            stage.off(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
         }
     }
 

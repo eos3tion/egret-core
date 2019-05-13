@@ -456,7 +456,7 @@ module RES {
      * @language zh_CN
      */
     export function getResByUrl(url: string, compFunc?: Function, thisObject?: any, type: string = ""): Promise<any> {
-        if(!instance){
+        if (!instance) {
             let message = egret.sys.tr(3200)
             egret.warn(message)
             return Promise.reject(message);
@@ -536,7 +536,7 @@ module RES {
      * @param useCapture Determine the listener is running on the capture or running on the target and the bubbling phase. Set useCapture to true,
      * then the listener in the capture phase processing events, but not in the target or the bubbling phase processing events.
      * If useCapture is false, then the listener only in the target or the bubbling phase processing events.
-     * To listen for events in all three stages, please call addEventListener two times: once the useCapture is set to true, once the useCapture is set to false.
+     * To listen for events in all three stages, please call on two times: once the useCapture is set to true, once the useCapture is set to false.
      * @param priority Event listener priority. Priority is specified by a 32 - bit integer with a symbol. The higher the number, the higher the priority.
      * All listeners with a priority for n will be processed before the -1 n listener.
      * If two or more listeners share the same priority, they are processed in accordance with the order of their added. The default priority is 0.
@@ -553,7 +553,7 @@ module RES {
      * @param thisObject 侦听函数绑定的 this 对象。
      * @param useCapture 确定侦听器是运行于捕获阶段还是运行于目标和冒泡阶段。如果将 useCapture 设置为 true，
      * 则侦听器只在捕获阶段处理事件，而不在目标或冒泡阶段处理事件。如果 useCapture 为 false，则侦听器只在目标或冒泡阶段处理事件。
-     * 要在所有三个阶段都侦听事件，请调用 addEventListener 两次：一次将 useCapture 设置为 true，一次将 useCapture 设置为 false。
+     * 要在所有三个阶段都侦听事件，请调用 on 两次：一次将 useCapture 设置为 true，一次将 useCapture 设置为 false。
      * @param priority 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
      * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
      * @see RES.ResourceEvent
@@ -562,9 +562,9 @@ module RES {
      * @platform Web,Native
      * @language zh_CN
      */
-    export function addEventListener(type: string, listener: (event: egret.Event) => void, thisObject: any, useCapture: boolean = false, priority: number = 0): void {
+    export function on(type: string | number, listener: (event: egret.Event) => void, thisObject: any, useCapture: boolean = false, priority: number = 0): void {
         if (!instance) instance = new Resource();
-        instance.addEventListener(type, listener, thisObject, useCapture, priority);
+        instance.on(type, listener, thisObject, useCapture, priority);
     }
     /**
      * Remove event listeners, reference ResourceEvent defined constants.
@@ -586,8 +586,8 @@ module RES {
      * @platform Web,Native
      * @language zh_CN
      */
-    export function removeEventListener(type: string, listener: (event: egret.Event) => void, thisObject: any, useCapture: boolean = false): void {
-        instance.removeEventListener(type, listener, thisObject, useCapture);
+    export function off(type: string | number, listener: (event: egret.Event) => void, thisObject: any, useCapture: boolean = false): void {
+        instance.off(type, listener, thisObject, useCapture);
     }
 
 
@@ -928,7 +928,7 @@ module RES {
             const group = config.getGroupByName(name);
             if (group && group.length > 0) {
                 const index = config.config.loadGroup.indexOf(name);
-                if(index == -1) {
+                if (index == -1) {
                     return false;
                 }
                 if (force || (config.config.loadGroup.length == 1 && config.config.loadGroup[0] == name)) {

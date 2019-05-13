@@ -339,7 +339,7 @@ namespace eui {
             if (instance === this.thumb) {
                 if(this.thumb.x) this.thumbInitX = this.thumb.x;
                 if(this.thumb.y) this.thumbInitY = this.thumb.y;
-                this.thumb.addEventListener(egret.Event.RESIZE, this.onThumbResize, this);
+                this.thumb.on(egret.EventType.RESIZE, this.onThumbResize, this);
             }
         }
 
@@ -353,7 +353,7 @@ namespace eui {
         protected partRemoved(partName:string, instance:any):void {
             super.partRemoved(partName, instance);
             if (instance === this.thumb) {
-                this.thumb.removeEventListener(egret.Event.RESIZE, this.onThumbResize, this);
+                this.thumb.off(egret.EventType.RESIZE, this.onThumbResize, this);
             }
         }
 

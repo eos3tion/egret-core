@@ -31,13 +31,13 @@
  * @private
  */
 interface AudioBufferSourceNodeEgret {
-    buffer:any;
-    context:any;
-    onended:Function;
-    stop(when?:number): void;
-    noteOff(when?:number): void;
-    addEventListener(type:string, listener:Function, useCapture?:boolean);
-    removeEventListener(type:string, listener:Function, useCapture?:boolean);
+    buffer: any;
+    context: any;
+    onended: Function;
+    stop(when?: number): void;
+    noteOff(when?: number): void;
+    addEventListener(type: string, listener: Function, useCapture?: boolean);
+    removeEventListener(type: string, listener: Function, useCapture?: boolean);
     disconnect();
 }
 
@@ -55,11 +55,11 @@ namespace egret.web {
         /**
          * @private
          */
-        public static decodeArr:any[] = [];
+        public static decodeArr: any[] = [];
         /**
          * @private
          */
-        private static isDecoding:boolean = false;
+        private static isDecoding: boolean = false;
 
         /**
          * @private
@@ -84,7 +84,7 @@ namespace egret.web {
                 WebAudioDecode.isDecoding = false;
                 WebAudioDecode.decodeAudios();
             }, function () {
-                alert("sound decode error: " + decodeInfo["url"] + "！\nsee http://edn.egret.com/cn/docs/page/156");
+                console.log("sound decode error: " + decodeInfo["url"] + "！\nsee http://edn.egret.com/cn/docs/page/156");
 
                 if (decodeInfo["fail"]) {
                     decodeInfo["fail"]();
@@ -101,47 +101,20 @@ namespace egret.web {
      * @inheritDoc
      */
     export class WebAudioSound extends egret.EventDispatcher implements egret.Sound {
-        /**
-         * Background music
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 背景音乐
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static MUSIC:string = "music";
-
-        /**
-         * EFFECT
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 音效
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static EFFECT:string = "effect";
 
         /**
          * @private
          */
-        public type:string;
+        public type: string;
 
         /**
          * @private
          */
-        private url:string;
+        private url: string;
         /**
          * @private
          */
-        private loaded:boolean = false;
+        private loaded: boolean = false;
 
         /**
          * @private
@@ -155,15 +128,15 @@ namespace egret.web {
         /**
          * @private
          */
-        private audioBuffer:AudioBuffer;
+        private audioBuffer: AudioBuffer;
 
 
-        public get length():number {
+        public get length(): number {
             if (this.audioBuffer) {
                 return this.audioBuffer.duration;
             }
 
-            throw new Error ("sound not loaded!");
+            throw new Error("sound not loaded!");
 
             //return 0;
         }
@@ -172,7 +145,7 @@ namespace egret.web {
         /**
          * @inheritDoc
          */
-        public load(url:string):void {
+        public load(url: string): void {
             let self = this;
 
             this.url = url;
@@ -184,7 +157,7 @@ namespace egret.web {
             let request = new XMLHttpRequest();
             request.open("GET", url, true);
             request.responseType = "arraybuffer";
-            request.addEventListener("load", function() {
+            request.addEventListener("load", function () {
                 WebAudioDecode.decodeArr.push({
                     "buffer": request.response,
                     "success": onAudioLoaded,
@@ -194,25 +167,25 @@ namespace egret.web {
                 });
                 WebAudioDecode.decodeAudios();
             });
-            request.addEventListener("error", function() {
-                self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+            request.addEventListener("error", function () {
+                self.dispatchEventWith(egret.EventType.IO_ERROR);
             });
             request.send();
 
-            function onAudioLoaded():void {
+            function onAudioLoaded(): void {
                 self.loaded = true;
-                self.dispatchEventWith(egret.Event.COMPLETE);
+                self.dispatchEventWith(egret.EventType.COMPLETE);
             }
 
-            function onAudioError():void {
-                self.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
+            function onAudioError(): void {
+                self.dispatchEventWith(egret.EventType.IO_ERROR);
             }
         }
 
         /**
          * @inheritDoc
          */
-        public play(startTime?:number, loops?:number):SoundChannel {
+        public play(startTime?: number, loops?: number): SoundChannel {
             startTime = +startTime || 0;
             loops = +loops || 0;
 

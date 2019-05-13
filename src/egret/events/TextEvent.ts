@@ -29,11 +29,22 @@
 
 
 namespace egret {
-    // export interface TextField{
-    //     addEventListener<Z>(type: "link"
-    //         , listener: (this: Z, e: TextEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-    //     addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
-    // }
+    export const enum EventType {
+        /**
+         * It defines the value of the type property of a link event object.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 定义 link 事件对象的 type 属性值。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        LINK = "link"
+    }
+
     /**
      * When a user clicks a hyperlink rich text object dispatches TextEvent object. Text Event Type: TextEvent.LINK.
      * @version Egret 2.4
@@ -70,25 +81,12 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public constructor(type:string, bubbles:boolean = false, cancelable:boolean = false, text:string = "") {
+        public constructor(type: string, bubbles?: boolean, cancelable?: boolean, text?: string) {
             super(type, bubbles, cancelable);
 
-            this.text = text;
+            this.text = text || "";
         }
 
-        /**
-         * It defines the value of the type property of a link event object.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 定义 link 事件对象的 type 属性值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static LINK:"link" = "link";
 
         /**
          * In TextEvent.LINK event, event corresponding string.
@@ -102,7 +100,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public text:string;
+        public text: string;
 
         /**
          * EventDispatcher object using the specified event object thrown TextEvent. The objects will be thrown in the object cache pool for the next round robin.
@@ -122,8 +120,8 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static dispatchTextEvent(target:IEventDispatcher, type:string, text:string):boolean {
-            let event:TextEvent = Event.create(TextEvent, type);
+        public static dispatchTextEvent(target: IEventDispatcher, type: string, text: string): boolean {
+            let event: TextEvent = Event.create(TextEvent, type);
             event.text = text;
             let result = target.dispatchEvent(event);
             Event.release(event);

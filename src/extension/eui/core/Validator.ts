@@ -198,8 +198,8 @@ namespace eui.sys {
          * 添加事件监听
          */
         private attachListeners():void {
-            this.eventDisplay.addEventListener(egret.Event.ENTER_FRAME, this.doPhasedInstantiationCallBack, this);
-            this.eventDisplay.addEventListener(egret.Event.RENDER, this.doPhasedInstantiationCallBack, this);
+            this.eventDisplay.on(egret.EventType.ENTER_FRAME, this.doPhasedInstantiationCallBack, this);
+            this.eventDisplay.on(egret.EventType.RENDER, this.doPhasedInstantiationCallBack, this);
             egret.sys.$invalidateRenderFlag = true;
             this.listenersAttached = true;
         }
@@ -209,8 +209,8 @@ namespace eui.sys {
          * 执行属性应用
          */
         private doPhasedInstantiationCallBack(event?:egret.Event):void {
-            this.eventDisplay.removeEventListener(egret.Event.ENTER_FRAME, this.doPhasedInstantiationCallBack, this);
-            this.eventDisplay.removeEventListener(egret.Event.RENDER, this.doPhasedInstantiationCallBack, this);
+            this.eventDisplay.off(egret.EventType.ENTER_FRAME, this.doPhasedInstantiationCallBack, this);
+            this.eventDisplay.off(egret.EventType.RENDER, this.doPhasedInstantiationCallBack, this);
             this.doPhasedInstantiation();
         }
 

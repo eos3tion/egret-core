@@ -44,7 +44,7 @@ namespace egret {
      * A URLLoader object downloads all of the data from a URL before making it available to code in the applications. It sends out notifications about the progress of the download,
      * which you can monitor through bytesLoaded and bytesTotal properties, as well as through dispatched events.
      * @see http://edn.egret.com/cn/docs/page/601 Build communication request
-     * @event egret.Event.COMPLETE Dispatched when the net request is complete.
+     * @event egret.EventType.COMPLETE Dispatched when the net request is complete.
      * @event egret.IOErrorEvent.IO_ERROR io error. 
      * @version Egret 2.4
      * @platform Web,Native
@@ -56,7 +56,7 @@ namespace egret {
      * URLLoader 对象会先从 URL 中下载所有数据，然后才将数据用于应用程序中的代码。它会发出有关下载进度的通知，
      * 通过 bytesLoaded 和 bytesTotal 属性以及已调度的事件，可以监视下载进度。
      * @see http://edn.egret.com/cn/docs/page/601 构建通信请求
-     * @event egret.Event.COMPLETE 加载完成后调度。 
+     * @event egret.EventType.COMPLETE 加载完成后调度。 
      * @event egret.IOErrorEvent.IO_ERROR 加载错误后调度。 
      * @version Egret 2.4
      * @platform Web,Native
@@ -189,11 +189,11 @@ namespace egret {
                 let urlRequestHeader: egret.URLRequestHeader = request.requestHeaders[i];
                 httpRequest.setRequestHeader(urlRequestHeader.name, urlRequestHeader.value);
             }
-            httpRequest.addEventListener(Event.COMPLETE, function () {
+            httpRequest.on(EventType.COMPLETE, function () {
                 loader.data = httpRequest.response;
-                Event.dispatchEvent(loader, Event.COMPLETE);
+                Event.dispatchEvent(loader, EventType.COMPLETE);
             }, this);
-            httpRequest.addEventListener(IOErrorEvent.IO_ERROR, function () {
+            httpRequest.on(IOErrorEvent.IO_ERROR, function () {
                 IOErrorEvent.dispatchIOErrorEvent(loader);
             }, this);
             httpRequest.responseType = loader.dataFormat == URLLoaderDataFormat.BINARY ? HttpResponseType.ARRAY_BUFFER : HttpResponseType.TEXT;
@@ -223,9 +223,9 @@ namespace egret {
             let virtualUrl: string = loader._request.url;
 
             let sound: egret.Sound = new egret.Sound();
-            sound.addEventListener(egret.Event.COMPLETE, onLoadComplete, self);
-            sound.addEventListener(egret.IOErrorEvent.IO_ERROR, onError, self);
-            sound.addEventListener(egret.ProgressEvent.PROGRESS, onPostProgress, self);
+            sound.on(egret.EventType.COMPLETE, onLoadComplete, self);
+            sound.on(egret.IOErrorEvent.IO_ERROR, onError, self);
+            sound.on(egret.ProgressEvent.PROGRESS, onPostProgress, self);
             sound.load(virtualUrl);
 
             function onPostProgress(event: egret.ProgressEvent): void {
@@ -243,14 +243,14 @@ namespace egret {
                 loader.data = sound;
 
                 window.setTimeout(function () {
-                    loader.dispatchEventWith(Event.COMPLETE);
+                    loader.dispatchEventWith(EventType.COMPLETE);
                 }, 0);
             }
 
             function removeListeners(): void {
-                sound.removeEventListener(egret.Event.COMPLETE, onLoadComplete, self);
-                sound.removeEventListener(egret.IOErrorEvent.IO_ERROR, onError, self);
-                sound.removeEventListener(egret.ProgressEvent.PROGRESS, onPostProgress, self);
+                sound.off(egret.EventType.COMPLETE, onLoadComplete, self);
+                sound.off(egret.IOErrorEvent.IO_ERROR, onError, self);
+                sound.off(egret.ProgressEvent.PROGRESS, onPostProgress, self);
             }
         }
 
@@ -264,9 +264,9 @@ namespace egret {
 
             let virtualUrl: string = loader._request.url;
             let imageLoader: ImageLoader = new ImageLoader();
-            imageLoader.addEventListener(egret.Event.COMPLETE, onLoadComplete, self);
-            imageLoader.addEventListener(egret.IOErrorEvent.IO_ERROR, onError, self);
-            imageLoader.addEventListener(egret.ProgressEvent.PROGRESS, onPostProgress, self);
+            imageLoader.on(egret.EventType.COMPLETE, onLoadComplete, self);
+            imageLoader.on(egret.IOErrorEvent.IO_ERROR, onError, self);
+            imageLoader.on(egret.ProgressEvent.PROGRESS, onPostProgress, self);
             imageLoader.load(virtualUrl);
 
             function onPostProgress(event: egret.ProgressEvent): void {
@@ -290,14 +290,14 @@ namespace egret {
                 loader.data = texture;
 
                 window.setTimeout(function () {
-                    loader.dispatchEventWith(Event.COMPLETE);
+                    loader.dispatchEventWith(EventType.COMPLETE);
                 }, self);
             }
 
             function removeListeners(): void {
-                imageLoader.removeEventListener(egret.Event.COMPLETE, onLoadComplete, self);
-                imageLoader.removeEventListener(egret.IOErrorEvent.IO_ERROR, onError, self);
-                imageLoader.removeEventListener(egret.ProgressEvent.PROGRESS, onPostProgress, self);
+                imageLoader.off(egret.EventType.COMPLETE, onLoadComplete, self);
+                imageLoader.off(egret.IOErrorEvent.IO_ERROR, onError, self);
+                imageLoader.off(egret.ProgressEvent.PROGRESS, onPostProgress, self);
             }
         }
 

@@ -213,7 +213,7 @@ namespace egret {
      * If developers expect  no differences among all platforms, please use BitmapText
      * @see http://edn.egret.com/cn/docs/page/141 Create Text
      *
-     * @event egret.Event.CHANGE Dispatched when entering text user input。
+     * @event egret.EventType.CHANGE Dispatched when entering text user input。
      * @event egret.FocusEvent.FOCUS_IN Dispatched after the focus to enter text.
      * @event egret.FocusEvent.FOCUS_OUT Enter the text loses focus after dispatch.
      * @version Egret 2.4
@@ -226,7 +226,7 @@ namespace egret {
      * 如果开发者希望所有平台完全无差异，请使用BitmapText
      * @see http://edn.egret.com/cn/docs/page/141 创建文本
      *
-     * @event egret.Event.CHANGE 输入文本有用户输入时调度。
+     * @event egret.EventType.CHANGE 输入文本有用户输入时调度。
      * @event egret.FocusEvent.FOCUS_IN 聚焦输入文本后调度。
      * @event egret.FocusEvent.FOCUS_OUT 输入文本失去焦点后调度。
      * @version Egret 2.4
@@ -2130,12 +2130,12 @@ namespace egret {
 
         //增加点击事件
         private addEvent(): void {
-            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTapHandler, this);
+            this.on(egret.EventType.TOUCH_TAP, this.onTapHandler, this);
         }
 
         //释放点击事件
         private removeEvent(): void {
-            this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTapHandler, this);
+            this.off(egret.EventType.TOUCH_TAP, this.onTapHandler, this);
         }
 
         //处理富文本中有href的
@@ -2152,7 +2152,7 @@ namespace egret {
             if (style && style.href) {
                 if (style.href.match(/^event:/)) {
                     let type: string = style.href.match(/^event:/)[0];
-                    egret.TextEvent.dispatchTextEvent(this, egret.TextEvent.LINK, style.href.substring(type.length));
+                    egret.TextEvent.dispatchTextEvent(this, egret.EventType.LINK, style.href.substring(type.length));
                 }
                 else {
                     open(style.href, style.target || "_blank");
@@ -2175,11 +2175,11 @@ namespace egret {
     }
 
     export interface TextField {
-        addEventListener<Z>(type: "link"
-            , listener: (this: Z, e: TextEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-        addEventListener<Z>(type: "focusIn" |
+        on<Z>(type: "link"
+            , listener: (this: Z, e: TextEvent) => void, thisObject?: Z, useCapture?: boolean, priority?: number);
+        on<Z>(type: "focusIn" |
             "focusOut"
-            , listener: (this: Z, e: FocusEvent) => void, thisObject: Z, useCapture?: boolean, priority?: number);
-        addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number);
+            , listener: (this: Z, e: Event) => void, thisObject?: Z, useCapture?: boolean, priority?: number);
+        on(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number);
     }
 }

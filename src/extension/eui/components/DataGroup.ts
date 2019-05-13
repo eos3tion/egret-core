@@ -156,7 +156,7 @@ namespace eui {
 
             if (this.$layout) {
                 this.$layout.setTypicalSize(0, 0);
-                this.$layout.removeEventListener("useVirtualLayoutChanged", this.onUseVirtualLayoutChanged, this);
+                this.$layout.off("useVirtualLayoutChanged", this.onUseVirtualLayoutChanged, this);
             }
 
             if (this.$layout && value && (this.$layout.$useVirtualLayout != value.$useVirtualLayout))
@@ -168,7 +168,7 @@ namespace eui {
                     value.setTypicalSize(rect.width, rect.height);
                 }
                 value.useVirtualLayout = this.$DataGroup[Keys.useVirtualLayout];
-                value.addEventListener("useVirtualLayoutChanged", this.onUseVirtualLayoutChanged, this);
+                value.on("useVirtualLayoutChanged", this.onUseVirtualLayoutChanged, this);
             }
 
             return result;
@@ -406,7 +406,7 @@ namespace eui {
          */
         private removeDataProviderListener():void {
             if (this.$dataProvider)
-                this.$dataProvider.removeEventListener(CollectionEvent.COLLECTION_CHANGE, this.onCollectionChange, this);
+                this.$dataProvider.off(CollectionEvent.COLLECTION_CHANGE, this.onCollectionChange, this);
         }
 
         /**
@@ -790,7 +790,7 @@ namespace eui {
                 values[Keys.useVirtualLayoutChanged] = false;
                 values[Keys.itemRendererChanged] = false;
                 if (this.$dataProvider)
-                    this.$dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, this.onCollectionChange, this);
+                    this.$dataProvider.on(CollectionEvent.COLLECTION_CHANGE, this.onCollectionChange, this);
                 if (this.$layout && this.$layout.$useVirtualLayout) {
                     this.invalidateSize();
                     this.invalidateDisplayList();

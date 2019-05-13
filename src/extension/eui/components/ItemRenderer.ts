@@ -75,7 +75,7 @@ namespace eui {
          */
         public constructor() {
             super();
-            this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+            this.on(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
         }
 
         /**
@@ -201,8 +201,8 @@ namespace eui {
         protected onTouchCancle(event: egret.TouchEvent): void {
             this.touchCaptured = false;
             let stage = event.$currentTarget;
-            stage.removeEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancle, this);
-            stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
+            stage.off(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancle, this);
+            stage.off(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
             this.invalidateState();
         }
 
@@ -226,8 +226,8 @@ namespace eui {
             if(!this.$stage) {
                 return;
             }
-            this.$stage.addEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancle, this);
-            this.$stage.addEventListener(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
+            this.$stage.on(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancle, this);
+            this.$stage.on(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
             this.touchCaptured = true;
             this.invalidateState();
             event.updateAfterEvent();
@@ -238,8 +238,8 @@ namespace eui {
          */
         private onStageTouchEnd(event: egret.Event): void {
             let stage = event.$currentTarget;
-            stage.removeEventListener(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancle, this);
-            stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
+            stage.off(egret.TouchEvent.TOUCH_CANCEL, this.onTouchCancle, this);
+            stage.off(egret.TouchEvent.TOUCH_END, this.onStageTouchEnd, this);
             this.touchCaptured = false;
             this.invalidateState();
         }

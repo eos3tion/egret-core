@@ -259,10 +259,10 @@ namespace egret {
             this.lastTimeStamp = timeStamp;
             this._currentCount++;
             let complete = (this.repeatCount > 0 && this._currentCount >= this.repeatCount);
-            TimerEvent.dispatchTimerEvent(this, TimerEvent.TIMER);
+            TimerEvent.dispatchTimerEvent(this, EventType.TIMER);
             if (complete) {
                 this.stop();
-                TimerEvent.dispatchTimerEvent(this, TimerEvent.TIMER_COMPLETE);
+                TimerEvent.dispatchTimerEvent(this, EventType.TIMER_COMPLETE);
             }
             return false;
         }

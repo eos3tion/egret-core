@@ -121,13 +121,13 @@ namespace eui {
         $setDataProvider(value:ICollection):boolean{
             let dp = this.$dataProvider;
             if(dp&&dp instanceof eui.ViewStack){
-                dp.removeEventListener(PropertyEvent.PROPERTY_CHANGE,this.onViewStackIndexChange,this);
-                this.removeEventListener(egret.Event.CHANGE,this.onIndexChanged,this);
+                dp.off(PropertyEvent.PROPERTY_CHANGE,this.onViewStackIndexChange,this);
+                this.off(egret.EventType.CHANGE,this.onIndexChanged,this);
             }
 
             if(value&&value instanceof eui.ViewStack){
-                value.addEventListener(PropertyEvent.PROPERTY_CHANGE,this.onViewStackIndexChange,this);
-                this.addEventListener(egret.Event.CHANGE,this.onIndexChanged,this);
+                value.on(PropertyEvent.PROPERTY_CHANGE,this.onViewStackIndexChange,this);
+                this.on(egret.EventType.CHANGE,this.onIndexChanged,this);
             }
             return super.$setDataProvider(value);
         }

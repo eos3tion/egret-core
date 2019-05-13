@@ -288,7 +288,7 @@ namespace eui {
 
             if (dispatchChangedEvents && retVal) {
                 if (values[sys.ListBaseKeys.dispatchChangeAfterSelection]) {
-                    this.dispatchEventWith(egret.Event.CHANGE)
+                    this.dispatchEventWith(egret.EventType.CHANGE)
                     values[sys.ListBaseKeys.dispatchChangeAfterSelection] = false;
                 }
                 PropertyEvent.dispatchPropertyEvent(this,PropertyEvent.PROPERTY_CHANGE,"selectedIndex");

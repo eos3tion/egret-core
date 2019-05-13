@@ -163,8 +163,8 @@ namespace eui {
          */
         public $onAddToStage(stage: egret.Stage, nestLevel: number): void {
             sys.UIComponentImpl.prototype["$onAddToStage"].call(this, stage, nestLevel);
-            this.addEventListener(egret.FocusEvent.FOCUS_IN, this.onfocusIn, this);
-            this.addEventListener(egret.FocusEvent.FOCUS_OUT, this.onfocusOut, this);
+            this.on(egret.FocusEvent.FOCUS_IN, this.onfocusIn, this);
+            this.on(egret.FocusEvent.FOCUS_OUT, this.onfocusOut, this);
         }
         /**
          * @private
@@ -172,8 +172,8 @@ namespace eui {
          */
         public $onRemoveFromStage(): void {
             super.$onRemoveFromStage();
-            this.removeEventListener(egret.FocusEvent.FOCUS_IN, this.onfocusIn, this);
-            this.removeEventListener(egret.FocusEvent.FOCUS_OUT, this.onfocusOut, this);
+            this.off(egret.FocusEvent.FOCUS_IN, this.onfocusIn, this);
+            this.off(egret.FocusEvent.FOCUS_OUT, this.onfocusOut, this);
         }
         /**
          * @private
