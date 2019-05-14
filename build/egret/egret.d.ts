@@ -171,6 +171,7 @@ declare namespace egret {
          * @platform Web,Native
          */
         off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void;
+        $off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void;
         /**
          * @language zh_CN
          * 派发一个指定参数的事件。
@@ -239,6 +240,11 @@ declare namespace egret {
          *
          */
         removeAllListeners(): void;
+    }
+    interface EventDispatcher {
+        addEventListener(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number): any;
+        removeEventListener(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): any;
+        hasEventListener(type: string | number): boolean;
     }
 }
 declare namespace egret.sys {
@@ -1229,7 +1235,7 @@ declare namespace egret {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void;
+        $off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void;
         /**
          * @inheritDoc
          * @version Egret 2.4
@@ -1261,6 +1267,8 @@ declare namespace egret {
          * @platform Web,Native
          */
         willTrigger(type: string): boolean;
+        removeListeners(type: any, useCapture: any): void;
+        removeAllListeners: (this: DisplayObject) => void;
     }
 }
 declare namespace egret {

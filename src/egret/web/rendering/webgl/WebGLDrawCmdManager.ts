@@ -142,7 +142,7 @@ namespace egret.web {
         /**
          * 压入绘制texture指令
          */
-        public pushDrawTexture(texture: any, count: number, maxTextureCount: number, filter?: any, textureWidth?: number, textureHeight?: number) {
+        public pushDrawTexture(texture: WebGLTexture, count: number, maxTextureCount: number, filter?: any, textureWidth?: number, textureHeight?: number) {
             let { drawDataLen, drawData } = this;
             let idx = 0;
             if (filter) {
@@ -159,9 +159,9 @@ namespace egret.web {
             } else {
                 //检查纹理数组
                 let needNew = true;
-                if (drawDataLen) {
+                if (drawDataLen && !texture.isRenderTarget) {
                     let last = drawData[drawDataLen - 1] as TextureDrawData;
-                    if (last.type == DRAWABLE_TYPE.TEXTURE && !last.filter) {
+                    if (last.type == DRAWABLE_TYPE.TEXTURE && !last.filter && !last.texture.isRenderTarget) {
                         let texs = last.texs;
                         idx = texs.indexOf(texture);
                         if (idx > -1) {

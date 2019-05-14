@@ -280,6 +280,9 @@ var egret;
          * @platform Web,Native
          */
         EventDispatcher.prototype.off = function (type, listener, thisObject, useCapture) {
+            this.$off(type, listener, thisObject, useCapture);
+        };
+        EventDispatcher.prototype.$off = function (type, listener, thisObject, useCapture) {
             var values = this.$EventDispatcher;
             var eventMap = useCapture ? values[2 /* captureEventsMap */] : values[1 /* eventsMap */];
             var list = eventMap[type];
@@ -436,6 +439,10 @@ var egret;
     }(egret.HashObject));
     egret.EventDispatcher = EventDispatcher;
     __reflect(EventDispatcher.prototype, "egret.EventDispatcher", ["egret.IEventDispatcher"]);
+    var ept = EventDispatcher.prototype;
+    ept.addEventListener = ept.on;
+    ept.removeEventListener = ept.off;
+    ept.hasEventListener = ept.hasListen;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -642,6 +649,13 @@ var egret;
             _this.$renderNode = null;
             _this.$renderDirty = false;
             _this.$renderMode = null;
+            _this.removeAllListeners = function () {
+                var values = this.$EventDispatcher;
+                values[1 /**eventsMap */] = {};
+                values[2 /**captureEventsMap */] = {};
+                arrayRemove(DisplayObject.$enterFrameCallBackList, this);
+                arrayRemove(DisplayObject.$renderCallBackList, this);
+            };
             return _this;
         }
         Object.defineProperty(DisplayObject.prototype, "name", {
@@ -2221,8 +2235,8 @@ var egret;
          * @version Egret 2.4
          * @platform Web,Native
          */
-        DisplayObject.prototype.off = function (type, listener, thisObject, useCapture) {
-            _super.prototype.off.call(this, type, listener, thisObject, useCapture);
+        DisplayObject.prototype.$off = function (type, listener, thisObject, useCapture) {
+            _super.prototype.$off.call(this, type, listener, thisObject, useCapture);
             var isEnterFrame = (type == "enterFrame" /* ENTER_FRAME */);
             if ((isEnterFrame || type == "render" /* RENDER */) && !this.hasListen(type)) {
                 var list = isEnterFrame ? DisplayObject.$enterFrameCallBackList : DisplayObject.$renderCallBackList;
@@ -2307,6 +2321,19 @@ var egret;
             }
             return false;
         };
+        DisplayObject.prototype.removeListeners = function (type, useCapture) {
+            var list;
+            if ("enterFrame" == type) {
+                list = DisplayObject.$enterFrameCallBackList;
+            }
+            else if ("render" == type) {
+                list = DisplayObject.$renderCallBackList;
+            }
+            if (list) {
+                arrayRemove(list, this);
+            }
+            _super.prototype.removeListeners.call(this, type, useCapture);
+        };
         /**
          * @private
          * The default touchEnabled property of DisplayObject
@@ -2336,6 +2363,12 @@ var egret;
     }(egret.EventDispatcher));
     egret.DisplayObject = DisplayObject;
     __reflect(DisplayObject.prototype, "egret.DisplayObject");
+    function arrayRemove(list, item) {
+        var idx = list.indexOf(item);
+        if (idx > -1) {
+            list.splice(idx, 1);
+        }
+    }
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //

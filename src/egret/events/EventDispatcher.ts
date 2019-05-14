@@ -193,7 +193,9 @@ namespace egret {
          * @platform Web,Native
          */
         off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void {
-
+            this.$off(type, listener, thisObject, useCapture);
+        }
+        $off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean) {
             let values = this.$EventDispatcher;
             let eventMap: Object = useCapture ? values[Keys.captureEventsMap] : values[Keys.eventsMap];
             let list: egret.sys.EventBin[] = eventMap[type];
@@ -361,6 +363,18 @@ namespace egret {
         }
     }
 
+    export interface EventDispatcher {
+
+        addEventListener(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean, priority?: number);
+        removeEventListener(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean);
+
+        hasEventListener(type: string | number): boolean;
+    }
+
+    let ept = EventDispatcher.prototype;
+    ept.addEventListener = ept.on;
+    ept.removeEventListener = ept.off;
+    ept.hasEventListener = ept.hasListen;
 
 }
 

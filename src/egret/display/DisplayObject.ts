@@ -1889,8 +1889,8 @@ namespace egret {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void {
-            super.off(type, listener, thisObject, useCapture);
+        $off(type: string | number, listener: Function, thisObject?: any, useCapture?: boolean): void {
+            super.$off(type, listener, thisObject, useCapture);
             let isEnterFrame: boolean = (type == EventType.ENTER_FRAME);
             if ((isEnterFrame || type == EventType.RENDER) && !this.hasListen(type)) {
                 let list = isEnterFrame ? DisplayObject.$enterFrameCallBackList : DisplayObject.$renderCallBackList;
@@ -1981,6 +1981,33 @@ namespace egret {
             return false;
         }
 
+        removeListeners(type, useCapture) {
+            let list: DisplayObject[];
+            if ("enterFrame" == type) {
+                list = DisplayObject.$enterFrameCallBackList;
+            } else if ("render" == type) {
+                list = DisplayObject.$renderCallBackList;
+            }
+            if (list) {
+                arrayRemove(list, this);
+            }
+            super.removeListeners(type, useCapture);
+        }
+
+        removeAllListeners = function (this: DisplayObject) {
+            let values = this.$EventDispatcher;
+            values[1/**eventsMap */] = {};
+            values[2/**captureEventsMap */] = {};
+            arrayRemove(DisplayObject.$enterFrameCallBackList, this);
+            arrayRemove(DisplayObject.$renderCallBackList, this);
+        }
+    }
+
+    function arrayRemove<T>(list: T[], item: T) {
+        let idx = list.indexOf(item);
+        if (idx > -1) {
+            list.splice(idx, 1);
+        }
     }
 
 }

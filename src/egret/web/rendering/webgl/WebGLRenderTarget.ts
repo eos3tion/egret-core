@@ -26,8 +26,12 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+interface WebGLTexture {
+    isRenderTarget: boolean;
+}
 
 namespace egret.web {
+
 
     /**
      * @private
@@ -110,10 +114,12 @@ namespace egret.web {
         public initFrameBuffer(): void {
             if (!this.frameBuffer) {
                 let gl = this.gl;
-                this.texture = this.createTexture();
+                let texture = this.createTexture();
+                texture.isRenderTarget = true;
                 this.frameBuffer = gl.createFramebuffer();
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+                this.texture = texture;
             }
         }
 

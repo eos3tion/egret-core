@@ -93,7 +93,7 @@ namespace egret.web {
          * 获取缓存完成的mesh索引数组
          */
         public getMeshIndices(): any {
-            return this.indicesForMesh;
+            return this.indicesForMesh.subarray(0, this.indexIndex);
         }
 
         /**
@@ -168,16 +168,19 @@ namespace egret.web {
                     d = d1 * d;
                 }
             }
-
+            const vertSize = this.vertSize;
+            let index = this.vertexIndex * vertSize;
+            // 计算索引位置与赋值
+            let vertices = this.vertices;
             if (meshVertices) {
-                // 计算索引位置与赋值
-                let vertices = this.vertices;
-                let index = this.vertexIndex * this.vertSize;
+
+
                 // 缓存顶点数组
                 let i = 0, iD = 0, l = 0;
                 let u = 0, v = 0, x = 0, y = 0;
+
                 for (i = 0, l = meshUVs.length; i < l; i += 2) {
-                    iD = index + i * 5 / 2;
+                    iD = index + i * vertSize / 2;
                     x = meshVertices[i];
                     y = meshVertices[i + 1];
                     u = meshUVs[i];
@@ -214,8 +217,6 @@ namespace egret.web {
                 let h = sourceHeight;
                 sourceX = sourceX / width;
                 sourceY = sourceY / height;
-                let vertices = this.vertices;
-                let index = this.vertexIndex * this.vertSize;
                 if (rotated) {
                     let temp = sourceWidth;
                     sourceWidth = sourceHeight / width;

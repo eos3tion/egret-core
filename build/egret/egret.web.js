@@ -192,7 +192,7 @@ var egret;
             return HtmlSound;
         }(egret.EventDispatcher));
         web.HtmlSound = HtmlSound;
-        __reflect(HtmlSound.prototype, "egret.web.HtmlSound", ["egret.Sound"]);
+        __reflect(HtmlSound.prototype, "egret.web.HtmlSound", ["egret.Sound", "egret.EventDispatcher"]);
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -534,7 +534,7 @@ var egret;
             return WebAudioSound;
         }(egret.EventDispatcher));
         web.WebAudioSound = WebAudioSound;
-        __reflect(WebAudioSound.prototype, "egret.web.WebAudioSound", ["egret.Sound"]);
+        __reflect(WebAudioSound.prototype, "egret.web.WebAudioSound", ["egret.Sound", "egret.EventDispatcher"]);
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1770,7 +1770,7 @@ var egret;
             return WebImageLoader;
         }(egret.EventDispatcher));
         web.WebImageLoader = WebImageLoader;
-        __reflect(WebImageLoader.prototype, "egret.web.WebImageLoader", ["egret.ImageLoader"]);
+        __reflect(WebImageLoader.prototype, "egret.web.WebImageLoader", ["egret.ImageLoader", "egret.EventDispatcher"]);
         egret.ImageLoader = WebImageLoader;
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
@@ -2146,7 +2146,7 @@ var egret;
             return HTML5StageText;
         }(egret.EventDispatcher));
         web.HTML5StageText = HTML5StageText;
-        __reflect(HTML5StageText.prototype, "egret.web.HTML5StageText", ["egret.StageText"]);
+        __reflect(HTML5StageText.prototype, "egret.web.HTML5StageText", ["egret.StageText", "egret.EventDispatcher"]);
         egret.StageText = HTML5StageText;
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
@@ -4207,7 +4207,7 @@ var egret;
             return WebDeviceOrientation;
         }(egret.EventDispatcher));
         web.WebDeviceOrientation = WebDeviceOrientation;
-        __reflect(WebDeviceOrientation.prototype, "egret.web.WebDeviceOrientation", ["egret.DeviceOrientation"]);
+        __reflect(WebDeviceOrientation.prototype, "egret.web.WebDeviceOrientation", ["egret.DeviceOrientation", "egret.EventDispatcher"]);
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
 egret.DeviceOrientation = egret.web.WebDeviceOrientation;
@@ -4341,7 +4341,7 @@ var egret;
             return WebMotion;
         }(egret.EventDispatcher));
         web.WebMotion = WebMotion;
-        __reflect(WebMotion.prototype, "egret.web.WebMotion", ["egret.Motion"]);
+        __reflect(WebMotion.prototype, "egret.web.WebMotion", ["egret.Motion", "egret.EventDispatcher"]);
         egret.Motion = egret.web.WebMotion;
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
@@ -4430,9 +4430,9 @@ var egret;
                 else {
                     //检查纹理数组
                     var needNew = true;
-                    if (drawDataLen) {
+                    if (drawDataLen && !texture.isRenderTarget) {
                         var last = drawData[drawDataLen - 1];
-                        if (last.type == 0 /* TEXTURE */ && !last.filter) {
+                        if (last.type == 0 /* TEXTURE */ && !last.filter && !last.texture.isRenderTarget) {
                             var texs = last.texs;
                             idx = texs.indexOf(texture);
                             if (idx > -1) {
@@ -4740,7 +4740,7 @@ var egret;
              * 获取缓存完成的mesh索引数组
              */
             WebGLVertexArrayObject.prototype.getMeshIndices = function () {
-                return this.indicesForMesh;
+                return this.indicesForMesh.subarray(0, this.indexIndex);
             };
             /**
              * 切换成mesh索引缓存方式
@@ -4804,15 +4804,16 @@ var egret;
                         d = d1 * d;
                     }
                 }
+                var vertSize = this.vertSize;
+                var index = this.vertexIndex * vertSize;
+                // 计算索引位置与赋值
+                var vertices = this.vertices;
                 if (meshVertices) {
-                    // 计算索引位置与赋值
-                    var vertices = this.vertices;
-                    var index = this.vertexIndex * this.vertSize;
                     // 缓存顶点数组
                     var i = 0, iD = 0, l = 0;
                     var u = 0, v = 0, x = 0, y = 0;
                     for (i = 0, l = meshUVs.length; i < l; i += 2) {
-                        iD = index + i * 5 / 2;
+                        iD = index + i * vertSize / 2;
                         x = meshVertices[i];
                         y = meshVertices[i + 1];
                         u = meshUVs[i];
@@ -4849,8 +4850,6 @@ var egret;
                     var h = sourceHeight;
                     sourceX = sourceX / width;
                     sourceY = sourceY / height;
-                    var vertices = this.vertices;
-                    var index = this.vertexIndex * this.vertSize;
                     if (rotated) {
                         var temp = sourceWidth;
                         sourceWidth = sourceHeight / width;
@@ -4965,34 +4964,6 @@ var egret;
         __reflect(WebGLVertexArrayObject.prototype, "egret.web.WebGLVertexArrayObject");
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
     var web;
@@ -5060,10 +5031,12 @@ var egret;
             WebGLRenderTarget.prototype.initFrameBuffer = function () {
                 if (!this.frameBuffer) {
                     var gl = this.gl;
-                    this.texture = this.createTexture();
+                    var texture = this.createTexture();
+                    texture.isRenderTarget = true;
                     this.frameBuffer = gl.createFramebuffer();
                     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-                    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+                    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+                    this.texture = texture;
                 }
             };
             WebGLRenderTarget.prototype.createTexture = function () {
