@@ -342,7 +342,7 @@ namespace egret {
          * 
          * @memberOf EventDispatcher
          */
-        removeListeners(type: string | number, useCapture: boolean) {
+        removeListeners(type: string | number, useCapture?: boolean) {
             let eventMap = this.$getEventMap(useCapture);
             let list: egret.sys.EventBin[] = eventMap[type];
             if (list) {

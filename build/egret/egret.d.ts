@@ -233,7 +233,7 @@ declare namespace egret {
          *
          * @memberOf EventDispatcher
          */
-        removeListeners(type: string | number, useCapture: boolean): void;
+        removeListeners(type: string | number, useCapture?: boolean): void;
         /**
          * 删除所有事件监听
          *
