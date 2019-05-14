@@ -27,7 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 interface WebGLTexture {
-    isRenderTarget: boolean;
+    isFrameBuffer: boolean;
 }
 
 namespace egret.web {
@@ -101,6 +101,8 @@ namespace egret.web {
 
         public activate(): void {
             let gl = this.gl;
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFrameBuffer());
         }
 
@@ -115,7 +117,7 @@ namespace egret.web {
             if (!this.frameBuffer) {
                 let gl = this.gl;
                 let texture = this.createTexture();
-                texture.isRenderTarget = true;
+                texture.isFrameBuffer = true;
                 this.frameBuffer = gl.createFramebuffer();
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
                 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);

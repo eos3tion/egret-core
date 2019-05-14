@@ -4430,9 +4430,9 @@ var egret;
                 else {
                     //检查纹理数组
                     var needNew = true;
-                    if (drawDataLen && !texture.isRenderTarget) {
+                    if (drawDataLen && !texture.isFrameBuffer) {
                         var last = drawData[drawDataLen - 1];
-                        if (last.type == 0 /* TEXTURE */ && !last.filter && !last.texture.isRenderTarget) {
+                        if (last.type == 0 /* TEXTURE */ && !last.filter) {
                             var texs = last.texs;
                             idx = texs.indexOf(texture);
                             if (idx > -1) {
@@ -5020,6 +5020,8 @@ var egret;
             };
             WebGLRenderTarget.prototype.activate = function () {
                 var gl = this.gl;
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, this.texture);
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFrameBuffer());
             };
             WebGLRenderTarget.prototype.getFrameBuffer = function () {
@@ -5032,7 +5034,7 @@ var egret;
                 if (!this.frameBuffer) {
                     var gl = this.gl;
                     var texture = this.createTexture();
-                    texture.isRenderTarget = true;
+                    texture.isFrameBuffer = true;
                     this.frameBuffer = gl.createFramebuffer();
                     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
                     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
@@ -5793,7 +5795,7 @@ var egret;
                         uni_1.setValue(i);
                     }
                 }
-                var uni = uniforms["projectionVector"];
+                var uni = uniforms.projectionVector;
                 if (uni) {
                     uni.setValue({ x: this.projectionX, y: this.projectionY });
                 }

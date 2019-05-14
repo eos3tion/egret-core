@@ -896,7 +896,7 @@ namespace egret.web {
                     uni.setValue(i);
                 }
             }
-            let uni = uniforms["projectionVector"];
+            let uni = uniforms.projectionVector;
             if (uni) {
                 uni.setValue({ x: this.projectionX, y: this.projectionY });
             }
