@@ -26,6 +26,11 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+
+interface WebGLTexture {
+    smoothing?: boolean;
+}
+
 namespace egret.web {
     /**
      * @private
@@ -46,6 +51,57 @@ namespace egret.web {
         SMOOTHING
     }
 
+    export interface DrawData {
+        type: DRAWABLE_TYPE;
+    }
+
+    export interface BlendDrawData {
+        type: DRAWABLE_TYPE.BLEND;
+        value: string;
+    }
+
+    export interface CountableDrawData extends DrawData {
+
+        count: number;
+    }
+
+    export interface TextureDrawData extends CountableDrawData {
+        type: DRAWABLE_TYPE.TEXTURE;
+        texture: WebGLTexture;
+        filter: Filter;
+
+        textureWidth: number;
+        textureHeight: number;
+
+        /**
+         * 纹理数组
+         */
+        texs: WebGLTexture[];
+
+    }
+
+    export interface ChangeSmoothingData extends CountableDrawData {
+        texture: WebGLTexture;
+        smoothing: boolean;
+    }
+
+    export interface SizedDrawData extends DrawData {
+        type: DRAWABLE_TYPE.RESIZE_TARGET | DRAWABLE_TYPE.ACT_BUFFER;
+
+        height: number;
+        width: number;
+
+        buffer: WebGLRenderBuffer;
+    }
+
+    export interface EnableScissorDrawData {
+        type: DRAWABLE_TYPE.ENABLE_SCISSOR;
+        height: number;
+        width: number;
+        x: number;
+        y: number;
+    }
+
     /**
      * @private
      * 绘制指令管理器
@@ -56,7 +112,7 @@ namespace egret.web {
         /**
          * 用于缓存绘制命令的数组
          */
-        public drawData = [];
+        public drawData = [] as DrawData[];
 
         public drawDataLen = 0;
 
@@ -67,104 +123,151 @@ namespace egret.web {
         /**
          * 压入绘制矩形指令
          */
-        public pushDrawRect():void {
-            if(this.drawDataLen == 0 || this.drawData[this.drawDataLen - 1].type != DRAWABLE_TYPE.RECT) {
-                let data = this.drawData[this.drawDataLen] || {};
+        public pushDrawRect(): void {
+            let { drawDataLen, drawData } = this;
+            let last = drawData[drawDataLen - 1] as CountableDrawData;
+            let count = 2;
+            if (drawDataLen == 0 || last.type != DRAWABLE_TYPE.RECT) {
+                let data = (drawData[drawDataLen] || {}) as CountableDrawData;
                 data.type = DRAWABLE_TYPE.RECT;
-                data.count = 0;
-                this.drawData[this.drawDataLen] = data;
-                this.drawDataLen++;
+                data.count = count;
+                drawData[drawDataLen] = data;
+                drawDataLen++;
+                this.drawDataLen = drawDataLen;
+            } else {
+                last.count += count;
             }
-            this.drawData[this.drawDataLen - 1].count += 2;
         }
 
         /**
          * 压入绘制texture指令
          */
-        public pushDrawTexture(texture:any, count:number = 2, filter?:any, textureWidth?:number, textureHeight?:number):void {
-            if(filter) {
+        public pushDrawTexture(texture: any, count: number, maxTextureCount: number, filter?: any, textureWidth?: number, textureHeight?: number) {
+            let { drawDataLen, drawData } = this;
+            let idx = 0;
+            if (filter) {
                 // 目前有滤镜的情况下不会合并绘制
-                let data = this.drawData[this.drawDataLen] || {};
+                let data = (drawData[drawDataLen] || {}) as TextureDrawData;
                 data.type = DRAWABLE_TYPE.TEXTURE;
                 data.texture = texture;
                 data.filter = filter;
                 data.count = count;
                 data.textureWidth = textureWidth;
                 data.textureHeight = textureHeight;
-                this.drawData[this.drawDataLen] = data;
-                this.drawDataLen++;
+                drawData[drawDataLen] = data;
+                this.drawDataLen = drawDataLen + 1;
             } else {
-
-                if (this.drawDataLen == 0 || this.drawData[this.drawDataLen - 1].type != DRAWABLE_TYPE.TEXTURE || texture != this.drawData[this.drawDataLen - 1].texture || this.drawData[this.drawDataLen - 1].filter) {
-                    let data = this.drawData[this.drawDataLen] || {};
+                //检查纹理数组
+                let needNew = true;
+                if (drawDataLen) {
+                    let last = drawData[drawDataLen - 1] as TextureDrawData;
+                    if (last.type == DRAWABLE_TYPE.TEXTURE && !last.filter) {
+                        let texs = last.texs;
+                        idx = texs.indexOf(texture);
+                        if (idx > -1) {
+                            needNew = false;
+                        } else {
+                            let len = texs.length;
+                            if (len < maxTextureCount) {
+                                texs[len] = texture;
+                                idx = len;
+                                needNew = false;
+                            }
+                        }
+                        if (!needNew) {//无需创建新的
+                            last.count += count;
+                        }
+                    }
+                }
+                if (needNew) {
+                    idx = 0;
+                    let data = (drawData[drawDataLen] || {}) as TextureDrawData;
                     data.type = DRAWABLE_TYPE.TEXTURE;
                     data.texture = texture;
-                    data.count = 0;
-                    this.drawData[this.drawDataLen] = data;
-                    this.drawDataLen++;
+                    data.count = count;
+                    data.texs = [texture];
+                    drawData[drawDataLen] = data;
+                    this.drawDataLen = drawDataLen + 1;
                 }
-                this.drawData[this.drawDataLen - 1].count += count;
+
+
+                // if (drawDataLen == 0 || last.type != DRAWABLE_TYPE.TEXTURE || texture != last.texture || last.filter) {
+                //     let data = (drawData[drawDataLen] || {}) as TextureDrawData;
+                //     data.type = DRAWABLE_TYPE.TEXTURE;
+                //     data.texture = texture;
+                //     data.count = count;
+                //     drawData[drawDataLen] = data;
+                //     this.drawDataLen = drawDataLen + 1;
+                // } else {
+                //     last.count += count;
+                // }
 
             }
+            return idx;
         }
 
-        public pushChangeSmoothing(texture:WebGLTexture, smoothing:boolean):void {
-            texture["smoothing"] = smoothing;
-            let data = this.drawData[this.drawDataLen] || {};
+        public pushChangeSmoothing(texture: WebGLTexture, smoothing: boolean): void {
+            texture.smoothing = smoothing;
+            let { drawDataLen, drawData } = this;
+            let data = (drawData[drawDataLen] || {}) as ChangeSmoothingData;
             data.type = DRAWABLE_TYPE.SMOOTHING;
             data.texture = texture;
             data.smoothing = smoothing;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /**
          * 压入pushMask指令
          */
-        public pushPushMask(count:number = 1):void {
-            let data = this.drawData[this.drawDataLen] || {};
+        public pushPushMask(count = 1): void {
+            let { drawDataLen, drawData } = this;
+            let data = (drawData[drawDataLen] || {}) as CountableDrawData;
             data.type = DRAWABLE_TYPE.PUSH_MASK;
             data.count = count * 2;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /**
          * 压入popMask指令
          */
-        public pushPopMask(count:number = 1):void {
-            let data = this.drawData[this.drawDataLen] || {};
+        public pushPopMask(count: number = 1): void {
+            let { drawDataLen, drawData } = this;
+            let data = (drawData[drawDataLen] || {}) as CountableDrawData;
             data.type = DRAWABLE_TYPE.POP_MASK;
             data.count = count * 2;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /**
          * 压入混色指令
          */
-        public pushSetBlend(value:string):void {
-            let len = this.drawDataLen;
+        public pushSetBlend(value: string): void {
+            let { drawDataLen, drawData } = this;
+            let len = drawDataLen;
             // 有无遍历到有效绘图操作
             let drawState = false;
-            for(let i = len - 1; i >= 0; i--) {
-                let data = this.drawData[i];
+            for (let i = len - 1; i >= 0; i--) {
+                let data = drawData[i];
 
-                if(data){
-                    if(data.type == DRAWABLE_TYPE.TEXTURE || data.type == DRAWABLE_TYPE.RECT) {
+                if (data) {
+                    let type = data.type;
+                    if (type == DRAWABLE_TYPE.TEXTURE || type == DRAWABLE_TYPE.RECT) {
                         drawState = true;
                     }
 
                     // 如果与上一次blend操作之间无有效绘图，上一次操作无效
-                    if(!drawState && data.type == DRAWABLE_TYPE.BLEND) {
-                        this.drawData.splice(i, 1);
-                        this.drawDataLen--;
+                    if (!drawState && type == DRAWABLE_TYPE.BLEND) {
+                        drawData.splice(i, 1);
+                        drawDataLen--;
                         continue;
                     }
 
                     // 如果与上一次blend操作重复，本次操作无效
-                    if(data.type == DRAWABLE_TYPE.BLEND) {
-                        if(data.value == value) {
+                    if (type == DRAWABLE_TYPE.BLEND) {
+                        if ((data as BlendDrawData).value == value) {
                             return;
                         } else {
                             break;
@@ -173,55 +276,59 @@ namespace egret.web {
                 }
             }
 
-            let _data = this.drawData[this.drawDataLen] || {};
-            _data.type = DRAWABLE_TYPE.BLEND;
-            _data.value = value;
-            this.drawData[this.drawDataLen] = _data;
-            this.drawDataLen++;
+            let data = (drawData[drawDataLen] || {}) as BlendDrawData;
+            data.type = DRAWABLE_TYPE.BLEND;
+            data.value = value;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /*
          * 压入resize render target命令
          */
-        public pushResize(buffer:WebGLRenderBuffer, width:number, height:number) {
-            let data = this.drawData[this.drawDataLen] || {};
+        public pushResize(buffer: WebGLRenderBuffer, width: number, height: number) {
+            let { drawDataLen, drawData } = this;
+            let data = (drawData[drawDataLen] || {}) as SizedDrawData;
             data.type = DRAWABLE_TYPE.RESIZE_TARGET;
             data.buffer = buffer;
             data.width = width;
             data.height = height;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /*
          * 压入clear color命令
          */
         public pushClearColor() {
-            let data = this.drawData[this.drawDataLen] || {};
+            let { drawDataLen, drawData } = this;
+            let data = (drawData[drawDataLen] || {}) as DrawData;
             data.type = DRAWABLE_TYPE.CLEAR_COLOR;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /**
          * 压入激活buffer命令
          */
-        public pushActivateBuffer(buffer:WebGLRenderBuffer) {
-            let len = this.drawDataLen;
+        public pushActivateBuffer(buffer: WebGLRenderBuffer) {
+            let { drawDataLen, drawData } = this;
+            let len = drawDataLen;
             // 有无遍历到有效绘图操作
             let drawState = false;
-            for(let i = len - 1; i >= 0; i--) {
-                let data = this.drawData[i];
+            for (let i = len - 1; i >= 0; i--) {
+                let data = drawData[i];
 
-                if(data){
-                    if(data.type != DRAWABLE_TYPE.BLEND && data.type != DRAWABLE_TYPE.ACT_BUFFER) {
+                if (data) {
+                    let type = data.type;
+                    if (type != DRAWABLE_TYPE.BLEND && type != DRAWABLE_TYPE.ACT_BUFFER) {
                         drawState = true;
                     }
 
                     // 如果与上一次buffer操作之间无有效绘图，上一次操作无效
-                    if(!drawState && data.type == DRAWABLE_TYPE.ACT_BUFFER) {
-                        this.drawData.splice(i, 1);
-                        this.drawDataLen--;
+                    if (!drawState && type == DRAWABLE_TYPE.ACT_BUFFER) {
+                        drawData.splice(i, 1);
+                        drawDataLen--;
                         continue;
                     }
 
@@ -236,57 +343,53 @@ namespace egret.web {
                 }
             }
 
-            let _data = this.drawData[this.drawDataLen] || {};
-            _data.type = DRAWABLE_TYPE.ACT_BUFFER;
-            _data.buffer = buffer;
-            _data.width = buffer.rootRenderTarget.width;
-            _data.height = buffer.rootRenderTarget.height;
-            this.drawData[this.drawDataLen] = _data;
-            this.drawDataLen++;
+            let data = (drawData[drawDataLen] || {}) as SizedDrawData;
+            data.type = DRAWABLE_TYPE.ACT_BUFFER;
+            data.buffer = buffer;
+            let rootRenderTarget = buffer.rootRenderTarget;
+            data.width = rootRenderTarget.width;
+            data.height = rootRenderTarget.height;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /*
          * 压入enabel scissor命令
          */
-        public pushEnableScissor(x:number, y:number, width:number, height:number) {
-            let data = this.drawData[this.drawDataLen] || {};
+        public pushEnableScissor(x: number, y: number, width: number, height: number) {
+            let { drawDataLen, drawData } = this;
+            let data = (drawData[drawDataLen] || {}) as EnableScissorDrawData;
             data.type = DRAWABLE_TYPE.ENABLE_SCISSOR;
             data.x = x;
             data.y = y;
             data.width = width;
             data.height = height;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /*
          * 压入disable scissor命令
          */
         public pushDisableScissor() {
-            let data = this.drawData[this.drawDataLen] || {};
+            let { drawDataLen, drawData } = this;
+            let data = drawData[drawDataLen] || {} as DrawData;
             data.type = DRAWABLE_TYPE.DISABLE_SCISSOR;
-            this.drawData[this.drawDataLen] = data;
-            this.drawDataLen++;
+            drawData[drawDataLen] = data;
+            this.drawDataLen = drawDataLen + 1;
         }
 
         /**
          * 清空命令数组
          */
-        public clear():void {
-            for(let i = 0; i < this.drawDataLen; i++) {
-                let data = this.drawData[i];
-
-                data.type = 0;
+        public clear(): void {
+            let { drawDataLen, drawData } = this;
+            for (let i = 0; i < drawDataLen; i++) {
+                let data = drawData[i] as any;
                 data.count = 0;
                 data.texture = null;
                 data.filter = null;
-                data.uv = null;
-                data.value = "";
-                data.buffer = null;
-                data.width = 0;
-                data.height = 0;
             }
-
             this.drawDataLen = 0;
         }
 
