@@ -71,6 +71,10 @@ namespace egret.web {
          * WebGLRenderContext单例
          */
         private static instance: WebGLRenderContext;
+        /**
+         * 默认shader
+         */
+        private defaultFragShader: string;
         public static getInstance(width: number, height: number): WebGLRenderContext {
             if (this.instance) {
                 return this.instance;
@@ -80,6 +84,11 @@ namespace egret.web {
         }
 
         public $maxTextureSize: number;
+
+        /**
+         * 最大纹理可使用数量
+         */
+        $maxTextureCount: number;
 
         /**
          * 顶点数组管理器
@@ -270,6 +279,35 @@ namespace egret.web {
 
             let gl = this.context;
             this.$maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+            let maxTextureCount = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+            this.$maxTextureCount = maxTextureCount;
+            let defaultFragShader = [`precision lowp float;`,
+                `varying vec2 vTextureCoord;`,
+                `varying vec4 vColor;`,
+                `varying float vTexIdx;`]
+            for (let i = 0; i < maxTextureCount; i++) {
+                defaultFragShader.push(`uniform sampler2D tex${i};`);
+            }
+
+            defaultFragShader.push(
+                `void main() {`,
+                `vec4 color;`,
+            );
+            for (let i = 0; i < maxTextureCount; i++) {
+                defaultFragShader.push(`if(vTexIdx==${i}.0){`,
+                    `color = texture2D(tex${i}, vTextureCoord);`,
+                    `}`,
+                )
+                if (i < maxTextureCount - 1) {
+                    defaultFragShader.push(`else`);
+                }
+            }
+
+            defaultFragShader.push(
+                `gl_FragColor = color * vColor;`,
+                `}`
+            );
+            this.defaultFragShader = defaultFragShader.join("\n");
         }
 
         private handleContextLost() {
@@ -316,7 +354,7 @@ namespace egret.web {
             gl.colorMask(true, true, true, true);
 
             // 目前只使用0号材质单元，默认开启
-            gl.activeTexture(gl.TEXTURE0);
+            // gl.activeTexture(gl.TEXTURE0);
         }
 
         /**
@@ -338,7 +376,7 @@ namespace egret.web {
         /**
          * 开启scissor检测
          */
-        public enableScissorTest(rect: egret.Rectangle): void {
+        public enableScissorTest(rect: Rect): void {
             let gl = this.context;
             gl.enable(gl.SCISSOR_TEST);
             gl.scissor(rect.x, rect.y, rect.width, rect.height);
@@ -355,7 +393,7 @@ namespace egret.web {
         /**
          * 获取像素信息
          */
-        public getPixels(x, y, width, height, pixels): void {
+        public getPixels(x: number, y: number, width: number, height: number, pixels: ArrayBufferView): void {
             let gl = this.context;
             gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         }
@@ -468,12 +506,11 @@ namespace egret.web {
                 return;
             }
 
-            let texture: WebGLTexture;
-            let offsetX;
-            let offsetY;
-            if (image["texture"] || (image.source && image.source["texture"])) {
-                // 如果是render target
-                texture = image["texture"] || image.source["texture"];
+            let offsetX: number;
+            let offsetY: number;
+            let texture: WebGLTexture = image["texture"] || (image.source && image.source["texture"])
+            let isRenderTarget = !!texture;
+            if (texture) {// 如果是render target
                 buffer.saveTransform();
                 offsetX = buffer.$offsetX;
                 offsetY = buffer.$offsetY;
@@ -495,7 +532,7 @@ namespace egret.web {
                 imageSourceWidth, imageSourceHeight,
                 undefined, undefined, undefined, undefined, rotated, smoothing);
 
-            if (image.source && image.source["texture"]) {
+            if (isRenderTarget) {
                 buffer.$offsetX = offsetX;
                 buffer.$offsetY = offsetY;
                 buffer.restoreTransform();
@@ -516,12 +553,11 @@ namespace egret.web {
                 return;
             }
 
-            let texture: WebGLTexture;
-            let offsetX;
-            let offsetY;
-            if (image["texture"] || (image.source && image.source["texture"])) {
-                // 如果是render target
-                texture = image["texture"] || image.source["texture"];
+            let offsetX: number;
+            let offsetY: number;
+            let texture: WebGLTexture = image["texture"] || (image.source && image.source["texture"])
+            let isRenderTarget = !!texture;
+            if (texture) {// 如果是render target
                 buffer.saveTransform();
                 offsetX = buffer.$offsetX;
                 offsetY = buffer.$offsetY;
@@ -542,7 +578,7 @@ namespace egret.web {
                 destX, destY, destWidth, destHeight,
                 imageSourceWidth, imageSourceHeight, meshUVs, meshVertices, meshIndices, bounds, rotated, smoothing);
 
-            if (image["texture"] || (image.source && image.source["texture"])) {
+            if (isRenderTarget) {
                 buffer.$offsetX = offsetX;
                 buffer.$offsetY = offsetY;
                 buffer.restoreTransform();
@@ -571,7 +607,7 @@ namespace egret.web {
                 }
             }
 
-            if (smoothing != undefined && texture["smoothing"] != smoothing) {
+            if (smoothing != undefined && texture.smoothing != smoothing) {
                 drawCmdManager.pushChangeSmoothing(texture, smoothing);
             }
 
@@ -581,11 +617,11 @@ namespace egret.web {
 
             let count = meshIndices ? meshIndices.length / 3 : 2;
             // 应用$filter，因为只可能是colorMatrixFilter，最后两个参数可不传
-            drawCmdManager.pushDrawTexture(texture, count, this.$filter, textureWidth, textureHeight);
+            let idx = drawCmdManager.pushDrawTexture(texture, count, this.$maxTextureCount, this.$filter, textureWidth, textureHeight);
 
             vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight,
                 destX, destY, destWidth, destHeight, textureWidth, textureHeight,
-                meshUVs, meshVertices, meshIndices, rotated);
+                meshUVs, meshVertices, meshIndices, rotated, idx);
         }
 
         /**
@@ -692,7 +728,7 @@ namespace egret.web {
                 let type = data.type;
                 // 计算draw call
                 if (type == DRAWABLE_TYPE.ACT_BUFFER) {
-                    this.activatedBuffer = data.buffer;
+                    this.activatedBuffer = (data as SizedDrawData).buffer;
                 } else if (type == DRAWABLE_TYPE.TEXTURE || type == DRAWABLE_TYPE.RECT || type == DRAWABLE_TYPE.PUSH_MASK || type == DRAWABLE_TYPE.POP_MASK) {
                     let buffer = this.activatedBuffer;
                     if (buffer && buffer.$computeDrawCall) {
@@ -737,13 +773,13 @@ namespace egret.web {
                         } else if (filter.type === "glow") {
                             program = EgretWebGLProgram.getProgram(gl, EgretShaderLib.default_vert, EgretShaderLib.glow_frag, "glow");
                         }
+                        this.activeProgram(gl, program);
+                        this.syncUniforms(program, filter, data);
                     } else {
-                        program = EgretWebGLProgram.getProgram(gl, EgretShaderLib.default_vert, EgretShaderLib.texture_frag, "texture");
+                        program = EgretWebGLProgram.getProgram(gl, EgretShaderLib.default_vert, this.defaultFragShader, "texture");
+                        this.activeProgram(gl, program);
+                        this.syncUniForTexture(program, data);
                     }
-
-                    this.activeProgram(gl, program);
-                    this.syncUniforms(program, filter, data);
-
                     offset += this.drawTextureElements(data, offset);
                     break;
                 case DRAWABLE_TYPE.RECT:
@@ -832,16 +868,37 @@ namespace egret.web {
                 for (let key in attribute) {
                     const location = attribute[key].location;
                     if (key === "aVertexPosition") {
-                        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 5 * 4, 0);
+                        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 6 * 4, 0);
                     } else if (key === "aTextureCoord") {
-                        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 5 * 4, 2 * 4);
+                        gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 6 * 4, 2 * 4);
                     } else if (key === "aColor") {
-                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 5 * 4, 4 * 4);
+                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 6 * 4, 4 * 4);
+                    } else if (key === "aTexIdx") {
+                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 6 * 4, 5 * 4);
                     }
                     gl.enableVertexAttribArray(location);
                 }
 
                 this.currentProgram = program;
+            }
+        }
+
+        private syncUniForTexture(program: EgretWebGLProgram, data: TextureDrawData) {
+            let uniforms = program.uniforms;
+            let gl = this.context;
+            const { texs } = data;
+            for (let i = 0; i < texs.length; i++) {
+                let uni = uniforms[`tex${i}`];
+                if (uni) {
+                    let tex = texs[i];
+                    gl.activeTexture(gl.TEXTURE0 + i);
+                    gl.bindTexture(gl.TEXTURE_2D, tex);
+                    uni.setValue(i);
+                }
+            }
+            let uni = uniforms["projectionVector"];
+            if (uni) {
+                uni.setValue({ x: this.projectionX, y: this.projectionY });
             }
         }
 
@@ -1069,7 +1126,7 @@ namespace egret.web {
             this.vao.cacheArrays(output, 0, 0, width, height, 0, 0, width, height, width, height);
             output.restoreTransform();
 
-            this.drawCmdManager.pushDrawTexture(input.rootRenderTarget.texture, 2, filter, width, height);
+            this.drawCmdManager.pushDrawTexture(input.rootRenderTarget.texture, 2, this.$maxTextureCount, filter, width, height);
 
             // 释放掉input
             if (input != originInput) {

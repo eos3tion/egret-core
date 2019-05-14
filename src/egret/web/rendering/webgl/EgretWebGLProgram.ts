@@ -29,7 +29,7 @@
 
 namespace egret.web {
 
-    function loadShader(gl:WebGLRenderingContext, type:number, source:string):WebGLShader {
+    function loadShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader {
         let shader = gl.createShader(type);
 
         gl.shaderSource(shader, source);
@@ -37,7 +37,7 @@ namespace egret.web {
         gl.compileShader(shader);
 
         let compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-        if(!compiled) {
+        if (!compiled) {
             console.log("shader not compiled!");
             console.log(gl.getShaderInfoLog(shader));
         }
@@ -45,7 +45,7 @@ namespace egret.web {
         return shader;
     }
 
-    function createWebGLProgram(gl:WebGLRenderingContext, vertexShader:WebGLShader, fragmentShader:WebGLShader):WebGLProgram {
+    function createWebGLProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram {
         let program = gl.createProgram();
 
         gl.attachShader(program, vertexShader);
@@ -56,8 +56,8 @@ namespace egret.web {
         return program;
     }
 
-    function extractAttributes(gl:WebGLRenderingContext, program:WebGLProgram):Attributes {
-        let attributes:Attributes = {};
+    function extractAttributes(gl: WebGLRenderingContext, program: WebGLProgram): Attributes {
+        let attributes: Attributes = {};
 
         let totalAttributes = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
 
@@ -71,12 +71,12 @@ namespace egret.web {
         return attributes;
     }
 
-    function extractUniforms(gl:WebGLRenderingContext, program:WebGLProgram):Uniforms {
-        let uniforms:Uniforms = {};
+    function extractUniforms(gl: WebGLRenderingContext, program: WebGLProgram): Uniforms {
+        let uniforms: Uniforms = {};
 
         let totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
 
-        for(let i = 0; i < totalUniforms; i++) {
+        for (let i = 0; i < totalUniforms; i++) {
             let uniformData = gl.getActiveUniform(program, i);
             let name = uniformData.name;
             let uniform = new EgretWebGLUniform(gl, program, uniformData);
@@ -89,52 +89,52 @@ namespace egret.web {
     /**
      * @private
      */
-    export type ProgramCache = {[index:string]:EgretWebGLProgram};
+    export type ProgramCache = { [index: string]: EgretWebGLProgram };
 
     /**
      * @private
      */
-    export type Uniforms = {[index:string]:EgretWebGLUniform};
+    export type Uniforms = { [index: string]: EgretWebGLUniform };
 
     /**
      * @private
      */
-    export type Attributes = {[index:string]:EgretWebGLAttribute};
-
+    export type Attributes = { [index: string]: EgretWebGLAttribute };
+    const programCache: ProgramCache = {};
     /**
      * @private
      */
     export class EgretWebGLProgram {
 
-        private static programCache:ProgramCache = {};
+
 
         /**
          * 获取所需的WebGL Program
          * @param key {string} 对于唯一的program程序，对应唯一的key 
          */
-        public static getProgram(gl:WebGLRenderingContext, vertSource:string, fragSource:string, key:string):EgretWebGLProgram {
+        public static getProgram(gl: WebGLRenderingContext, vertSource: string, fragSource: string, key: string): EgretWebGLProgram {
 
-            if(!this.programCache[key]) {
-                this.programCache[key] = new EgretWebGLProgram(gl, vertSource, fragSource);
+            if (!programCache[key]) {
+                programCache[key] = new EgretWebGLProgram(gl, vertSource, fragSource);
             }
 
-            return this.programCache[key];
+            return programCache[key];
         }
 
-        public static deleteProgram(gl:WebGLRenderingContext, vertSource:string, fragSource:string, key:string):void {
+        public static deleteProgram(gl: WebGLRenderingContext, vertSource: string, fragSource: string, key: string): void {
             // TODO delete
         }
- 
-        private vshaderSource:string;
-        private fshaderSource:string;
-        private vertexShader:WebGLShader;
-        private fragmentShader:WebGLShader;
 
-        public id:WebGLProgram;
-        public attributes:Attributes;
-        public uniforms:Uniforms;
+        private vshaderSource: string;
+        private fshaderSource: string;
+        private vertexShader: WebGLShader;
+        private fragmentShader: WebGLShader;
 
-        private constructor(gl:WebGLRenderingContext, vertSource:string, fragSource:string) {
+        public id: WebGLProgram;
+        public attributes: Attributes;
+        public uniforms: Uniforms;
+
+        private constructor(gl: WebGLRenderingContext, vertSource: string, fragSource: string) {
             this.vshaderSource = vertSource;
 
             this.fshaderSource = fragSource;

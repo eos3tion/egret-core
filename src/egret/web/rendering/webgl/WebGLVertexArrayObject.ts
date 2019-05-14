@@ -38,7 +38,7 @@ namespace egret.web {
         private size: number = 2000;
         private vertexMaxSize: number = this.size * 4;
         private indicesMaxSize: number = this.size * 6;
-        private vertSize: number = 5;
+        private vertSize: number = 6;
 
         private vertices: Float32Array = null;
         private indices: Uint16Array = null;
@@ -131,7 +131,8 @@ namespace egret.web {
          */
         public cacheArrays(buffer: WebGLRenderBuffer, sourceX: number, sourceY: number, sourceWidth: number, sourceHeight: number,
             destX: number, destY: number, destWidth: number, destHeight: number, textureSourceWidth: number, textureSourceHeight: number,
-            meshUVs?: number[], meshVertices?: number[], meshIndices?: number[], rotated?: boolean): void {
+            meshUVs?: number[], meshVertices?: number[], meshIndices?: number[], rotated?: boolean, texIdx?: number): void {
+            texIdx = texIdx | 0;
             let alpha = buffer.globalAlpha;
             //计算出绘制矩阵，之后把矩阵还原回之前的
             let locWorldTransform = buffer.globalMatrix;
@@ -195,6 +196,8 @@ namespace egret.web {
                     }
                     // alpha
                     vertices[iD + 4] = alpha;
+
+                    vertices[iD + 5] = texIdx;
                 }
                 // 缓存索引数组
                 if (this.hasMesh) {
@@ -225,6 +228,9 @@ namespace egret.web {
                     vertices[index++] = sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
+
                     // xy
                     vertices[index++] = a * w + tx;
                     vertices[index++] = b * w + ty;
@@ -233,6 +239,9 @@ namespace egret.web {
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
+
                     // xy
                     vertices[index++] = a * w + c * h + tx;
                     vertices[index++] = d * h + b * w + ty;
@@ -241,6 +250,9 @@ namespace egret.web {
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
+
                     // xy
                     vertices[index++] = c * h + tx;
                     vertices[index++] = d * h + ty;
@@ -249,6 +261,8 @@ namespace egret.web {
                     vertices[index++] = sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
                 }
                 else {
                     sourceWidth = sourceWidth / width;
@@ -261,6 +275,9 @@ namespace egret.web {
                     vertices[index++] = sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
+
                     // xy
                     vertices[index++] = a * w + tx;
                     vertices[index++] = b * w + ty;
@@ -269,6 +286,9 @@ namespace egret.web {
                     vertices[index++] = sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
+
                     // xy
                     vertices[index++] = a * w + c * h + tx;
                     vertices[index++] = d * h + b * w + ty;
@@ -277,6 +297,9 @@ namespace egret.web {
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
+
                     // xy
                     vertices[index++] = c * h + tx;
                     vertices[index++] = d * h + ty;
@@ -285,6 +308,8 @@ namespace egret.web {
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
                     vertices[index++] = alpha;
+                    // texIdx
+                    vertices[index++] = texIdx;
                 }
                 // 缓存索引数组
                 if (this.hasMesh) {
