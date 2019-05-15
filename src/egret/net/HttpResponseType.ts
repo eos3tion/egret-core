@@ -38,12 +38,13 @@ namespace egret {
      */
     /**
      * URLLoaderDataFormat 类提供了一些用于指定如何接收已下载数据的值。
+     * https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/responseType
      * @see egret.HttpRequest
      * @version Egret 2.4
      * @platform Web,Native
      * @language zh_CN
      */
-    export class HttpResponseType{
+    export const enum HttpResponseType {
 
         /**
          * Specifies that downloaded data is received as text. This is the default value of HttpRequest.responseType
@@ -57,7 +58,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static TEXT:string = "text";
+        TEXT = "text",
         /**
          * Specifies that downloaded data is received as raw binary data.
          * @version Egret 2.4
@@ -70,7 +71,17 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static ARRAY_BUFFER:string = "arraybuffer";
+        ARRAY_BUFFER = "arraybuffer",
 
+        JSON = "json",
+
+        Blob = "blob",
+
+        Document = "document",
+
+        /**
+         * 等同于 `text`
+         */
+        Empty = ""
     }
 }
