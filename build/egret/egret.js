@@ -649,13 +649,6 @@ var egret;
             _this.$renderNode = null;
             _this.$renderDirty = false;
             _this.$renderMode = null;
-            _this.removeAllListeners = function () {
-                var values = this.$EventDispatcher;
-                values[1 /**eventsMap */] = {};
-                values[2 /**captureEventsMap */] = {};
-                arrayRemove(DisplayObject.$enterFrameCallBackList, this);
-                arrayRemove(DisplayObject.$renderCallBackList, this);
-            };
             return _this;
         }
         Object.defineProperty(DisplayObject.prototype, "name", {
@@ -2333,6 +2326,13 @@ var egret;
                 arrayRemove(list, this);
             }
             _super.prototype.removeListeners.call(this, type, useCapture);
+        };
+        DisplayObject.prototype.removeAllListeners = function () {
+            var values = this.$EventDispatcher;
+            values[1 /**eventsMap */] = {};
+            values[2 /**captureEventsMap */] = {};
+            arrayRemove(DisplayObject.$enterFrameCallBackList, this);
+            arrayRemove(DisplayObject.$renderCallBackList, this);
         };
         /**
          * @private

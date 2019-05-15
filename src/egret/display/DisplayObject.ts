@@ -1981,7 +1981,7 @@ namespace egret {
             return false;
         }
 
-        removeListeners(type, useCapture) {
+        removeListeners(type: string | number, useCapture?: boolean) {
             let list: DisplayObject[];
             if ("enterFrame" == type) {
                 list = DisplayObject.$enterFrameCallBackList;
@@ -1994,7 +1994,7 @@ namespace egret {
             super.removeListeners(type, useCapture);
         }
 
-        removeAllListeners = function (this: DisplayObject) {
+        removeAllListeners() {
             let values = this.$EventDispatcher;
             values[1/**eventsMap */] = {};
             values[2/**captureEventsMap */] = {};

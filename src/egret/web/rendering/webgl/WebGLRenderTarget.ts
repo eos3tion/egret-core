@@ -26,9 +26,6 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-interface WebGLTexture {
-    isFrameBuffer: boolean;
-}
 
 namespace egret.web {
 
@@ -117,7 +114,6 @@ namespace egret.web {
             if (!this.frameBuffer) {
                 let gl = this.gl;
                 let texture = this.createTexture();
-                texture.isFrameBuffer = true;
                 this.frameBuffer = gl.createFramebuffer();
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
                 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);

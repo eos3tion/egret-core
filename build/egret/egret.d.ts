@@ -1267,8 +1267,8 @@ declare namespace egret {
          * @platform Web,Native
          */
         willTrigger(type: string): boolean;
-        removeListeners(type: any, useCapture: any): void;
-        removeAllListeners: (this: DisplayObject) => void;
+        removeListeners(type: string | number, useCapture?: boolean): void;
+        removeAllListeners(): void;
     }
 }
 declare namespace egret {

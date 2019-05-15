@@ -159,7 +159,7 @@ namespace egret.web {
             } else {
                 //检查纹理数组
                 let needNew = true;
-                if (drawDataLen && !texture.isFrameBuffer) {
+                if (drawDataLen) {
                     let last = drawData[drawDataLen - 1] as TextureDrawData;
                     if (last.type == DRAWABLE_TYPE.TEXTURE && !last.filter) {
                         let texs = last.texs;
