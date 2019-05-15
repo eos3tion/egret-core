@@ -19,8 +19,8 @@
 //  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 //  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
 //  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,LOSS OF USE, DATA,
+//  OR PROFITS, OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 //  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 //  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -42,7 +42,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export class VerticalAlign{
+    export const enum VerticalAlign {
 
         /**
          * Vertically align content to the top of the container.
@@ -56,7 +56,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static TOP:string = "top";
+        TOP = "top",
 
         /**
          * Vertically align content to the bottom of the container.
@@ -70,7 +70,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static BOTTOM:string = "bottom";
+        BOTTOM = "bottom",
 
         /**
          * Vertically align content in the middle of the container.
@@ -84,7 +84,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static MIDDLE:string = "middle";
+        MIDDLE = "middle",
 
         /**
          * Vertical alignment with both edges
@@ -100,7 +100,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static JUSTIFY:string = "justify";
+        JUSTIFY = "justify",
 
         /**
          * Align the content of the child items, relative to the container. This operation will adjust uniformly the size of all the child items to be the Content Height \" of the container \".
@@ -118,6 +118,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static CONTENT_JUSTIFY:string = "contentJustify";
+        CONTENT_JUSTIFY = "contentJustify",
     }
 }

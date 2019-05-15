@@ -221,14 +221,15 @@ namespace egret {
          * 
          * @param event 
          */
-        private updateTextHandler(event: Event): void {
-            let values = this._text.$TextField;
+        private updateTextHandler(): void {
+            let _tf = this._text;
             let textValue = this.stageText.$getText();
             let isChanged: boolean = false;
             let reg: RegExp;
             let result: string[];
-            if (values[sys.TextKeys.restrictAnd] != null) {//内匹配
-                reg = new RegExp("[" + values[sys.TextKeys.restrictAnd] + "]", "g");
+            let _restrictAnd = _tf._restrictAnd;
+            if (_restrictAnd != null) {//内匹配
+                reg = new RegExp("[" + _restrictAnd + "]", "g");
                 result = textValue.match(reg);
                 if (result) {
                     textValue = result.join("");
@@ -238,8 +239,9 @@ namespace egret {
                 }
                 isChanged = true;
             }
-            if (values[sys.TextKeys.restrictNot] != null) {//外匹配
-                reg = new RegExp("[^" + values[sys.TextKeys.restrictNot] + "]", "g");
+            let _restrictNot = _tf._restrictNot;
+            if (_restrictNot != null) {//外匹配
+                reg = new RegExp("[^" + _restrictNot + "]", "g");
                 result = textValue.match(reg);
                 if (result) {
                     textValue = result.join("");
@@ -297,7 +299,7 @@ namespace egret {
                 return;
             }
 
-            this.stageText.$setText(this._text.$TextField[egret.sys.TextKeys.text]);
+            this.stageText.$setText(this._text._text);
 
             //整体修改
             this.stageText.$resetStageText();

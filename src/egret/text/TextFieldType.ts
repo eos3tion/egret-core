@@ -41,7 +41,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
 	 */
-    export class TextFieldType{
+    export const enum TextFieldType {
 
 		/**
          * Used to specify dynamic text
@@ -55,7 +55,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
 		 */
-        public static DYNAMIC:string = "dynamic";
+        DYNAMIC = "dynamic",
 
 		/**
          * Used to specify the input text
@@ -69,7 +69,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
 		 */
-        public static INPUT:string = "input";
+        INPUT = "input",
 
 
     }

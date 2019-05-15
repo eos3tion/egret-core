@@ -42,7 +42,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
 	 */
-    export class TextFieldInputType {
+    export const enum TextFieldInputType {
 
 		/**
          * The default
@@ -56,7 +56,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
 		 */
-        public static TEXT:string = "text";
+        TEXT = "text",
 
 		/**
          * Telephone Number Inputs
@@ -70,7 +70,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
 		 */
-        public static TEL:string = "tel";
+        TEL = "tel",
         
         /**
          * Password Inputs
@@ -84,6 +84,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
 		 */
-        public static PASSWORD:string = "password";
+        PASSWORD = "password",
     }
 }

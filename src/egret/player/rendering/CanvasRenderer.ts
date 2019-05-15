@@ -763,12 +763,12 @@ namespace egret {
                         context.shadowOffsetY = shadow[3] || 0;
                     }
                 }
-                context.strokeStyle = toColorString(strokeColor);
+                context.fillText(text, x + $offsetX, y + $offsetY);
                 if (stroke) {
-                    context.lineWidth = stroke * 2;
+                    context.strokeStyle = toColorString(strokeColor);
+                    context.lineWidth = stroke;
                     context.strokeText(text, x + $offsetX, y + $offsetY);
                 }
-                context.fillText(text, x + $offsetX, y + $offsetY);
             }
         }
 
@@ -908,15 +908,16 @@ namespace egret {
     }
 
     /**
-     * @private
-     * 获取字体字符串
+     * 
+     * 获取字体字符串  
+     * 已包含 `italic` `bold` `size` `fontFamily` 4个信息
      */
-    export function getFontString(node: sys.TextNode, format: sys.TextFormat): string {
-        let italic: boolean = format.italic == null ? node.italic : format.italic;
-        let bold: boolean = format.bold == null ? node.bold : format.bold;
-        let size: number = format.size == null ? node.size : format.size;
-        let fontFamily: string = format.fontFamily || node.fontFamily;
-        let font: string = italic ? "italic " : "normal ";
+    export function getFontString(...formats: sys.TextFormat[]): string {
+        let italic = getOptional("italic", formats);
+        let bold = getOptional("bold", formats);
+        let size = getOptional("size", formats) || 0;
+        let fontFamily = getOptional("fontFamily", formats) || "";
+        let font = italic ? "italic " : "normal ";
         font += bold ? "bold " : "normal ";
         font += size + "px " + fontFamily;
         return font;
@@ -926,7 +927,7 @@ namespace egret {
      * @private
      * 获取RGBA字符串
      */
-    export function getRGBAString(color: number, alpha: number): string {
+    export function getRGBAString(color: number, alpha = 1): string {
         let red = color >> 16;
         let green = (color >> 8) & 0xFF;
         let blue = color & 0xFF;
