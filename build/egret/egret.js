@@ -12158,56 +12158,6 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * The HttpResponseType class provides values that specify how downloaded data is received.
-     * @see egret.HttpRequest
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * URLLoaderDataFormat 类提供了一些用于指定如何接收已下载数据的值。
-     * @see egret.HttpRequest
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    var HttpResponseType = /** @class */ (function () {
-        function HttpResponseType() {
-        }
-        /**
-         * Specifies that downloaded data is received as text. This is the default value of HttpRequest.responseType
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 返回字符串。HttpRequest.responseType属性的默认值。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        HttpResponseType.TEXT = "text";
-        /**
-         * Specifies that downloaded data is received as raw binary data.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 返回二进制的ArrayBuffer对象。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        HttpResponseType.ARRAY_BUFFER = "arraybuffer";
-        return HttpResponseType;
-    }());
-    egret.HttpResponseType = HttpResponseType;
-    __reflect(HttpResponseType.prototype, "egret.HttpResponseType");
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.

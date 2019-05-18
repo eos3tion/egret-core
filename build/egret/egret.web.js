@@ -1654,7 +1654,7 @@ var egret;
                         request = this.request = new egret.web.WebHttpRequest();
                         request.on("complete" /* COMPLETE */, this.onBlobLoaded, this);
                         request.on("ioError" /* IO_ERROR */, this.onBlobError, this);
-                        request.responseType = "blob";
+                        request.responseType = "blob" /* Blob */;
                     }
                     if (true) {
                         this.currentURL = url;
