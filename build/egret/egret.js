@@ -18495,6 +18495,9 @@ var egret;
             bounds.setTo(0, 0, w, h);
         };
         TextField.prototype.onRender = function () {
+            if (!this._textLinesChanged) {
+                return;
+            }
             this.clear();
             if (this._type == "input" /* INPUT */) {
                 this.inputUtils._updateProperties();
@@ -18861,22 +18864,24 @@ var egret;
                 }
                 drawX = Math.round((maxWidth - line.width) * hAlign);
                 var elements = line.elements;
+                var sheet = this.textSheet;
                 for (var j = 0, elementsLength = elements.length; j < elementsLength; j++) {
                     var element = elements[j];
                     var style = element.style;
                     var text = element.text;
+                    var key = sheet.getKey(getFormat(this, style));
                     for (var i_1 = 0; i_1 < text.length; i_1++) {
                         var char = text[i_1];
-                        var bmp = getCharBmp(char, this, style);
+                        var bmp = getCharBmp(char, sheet, key);
                         if (bmp) {
                             bmp.x = drawX;
                             bmp.y = drawY;
-                            drawX += bmp.width - 1;
+                            drawX += bmp.fontWidth;
                             this.addChild(bmp);
                         }
                     }
                     if (style.underline) {
-                        underLineData.push(drawX, drawY + (h) / 2, element.width, element.style.textColor);
+                        underLineData.push(drawX, drawY + h, element.width, element.style.textColor);
                     }
                 }
                 drawY += h + _lineSpacing;
@@ -18981,14 +18986,15 @@ var egret;
      * @param tf
      * @param style
      */
-    function getCharBmp(char, tf, style) {
-        var texture = tf.textSheet.getTexture(char, getFormat(tf, style));
+    function getCharBmp(char, sheet, key) {
+        var texture = sheet.getTexture(char, key);
         if (texture) {
             var bmp = recyclable(egret.Bitmap);
             bmp.isText = true;
             bmp.texture = texture;
             bmp.width = texture.textureWidth;
             bmp.height = texture.textureHeight;
+            bmp.fontWidth = texture.fontWidth;
             return bmp;
         }
     }
@@ -19345,20 +19351,33 @@ var egret;
         bmd.$deleteSource = false;
         var ctx = canvas.getContext("2d");
         var packer = new jy.ShortSideBinPacker(sheetSize, sheetSize);
-        var texs = {};
+        var formatDict = {};
         return {
-            getTexture: function (char, format) {
+            getKey: function (format) {
                 var sheetFormat = getFormat(format);
-                return _getTexture(char, sheetFormat);
+                var sheetKey = sheetFormat.key;
+                var d = formatDict[sheetKey];
+                if (!d) {
+                    formatDict[sheetKey] = d = {
+                        sheetFormat: sheetFormat,
+                        texs: {}
+                    };
+                }
+                return sheetKey;
+            },
+            getTexture: function (char, sheetKey) {
+                var d = formatDict[sheetKey];
+                if (d) {
+                    return _getTexture(char, d);
+                }
             },
             dispose: function () {
                 bmd.$dispose();
             }
         };
-        function _getTexture(char, sheetFormat) {
-            var key = sheetFormat.key, format = sheetFormat.format, font = sheetFormat.font;
-            key = key + "_" + char;
-            var tex = texs[key];
+        function _getTexture(char, d) {
+            var _a = d.sheetFormat, format = _a.format, font = _a.font, texs = d.texs;
+            var tex = texs[char];
             if (!tex) {
                 var stroke = format.stroke;
                 var mul2 = 0, ox = 0, oy = 0;
@@ -19393,10 +19412,11 @@ var egret;
                 var fillColor = egret.toColorString(format.textColor | 0xffffff);
                 var gradients = format.gradients;
                 var x = bin.x, y = bin.y;
+                var y1 = y + 1;
                 //先填充文本，再stroke描边效果会比较好
                 var fillStyle = void 0;
                 if (gradients) {
-                    fillStyle = ctx.createLinearGradient(x, y, x, y + size);
+                    fillStyle = ctx.createLinearGradient(x, y1, x, y1 + size);
                     for (var i = 0; i < gradients.length; i++) {
                         var colorStop = gradients[i];
                         fillStyle.addColorStop(colorStop[0], colorStop[1]);
@@ -19407,10 +19427,10 @@ var egret;
                     var strokeColor = format.strokeColor | 0;
                     ctx.strokeStyle = egret.toColorString(strokeColor);
                     ctx.lineWidth = stroke + 1; //stroke 增加1像素
-                    ctx.strokeText(char, x, y);
+                    ctx.strokeText(char, x, y1);
                 }
                 ctx.fillStyle = fillStyle || fillColor;
-                ctx.fillText(char, x, y);
+                ctx.fillText(char, x, y1);
                 tex = new egret.Texture;
                 tex.disposeBitmapData = false;
                 tex.bitmapData = bmd;
@@ -19418,8 +19438,10 @@ var egret;
                     egret.WebGLUtils.deleteWebGLTexture(bmd);
                     bmd.webGLTexture = null;
                 }
-                tex.$initData(x, y, fontWidth, height - 1, 0, 0, width, height, width, height);
-                texs[key] = tex;
+                height--;
+                tex.$initData(x, y, width, height, 0, 0, width, height, width, height);
+                tex.fontWidth = fontWidth;
+                texs[char] = tex;
             }
             return tex;
         }
@@ -19427,42 +19449,38 @@ var egret;
     egret.getTextSheet = getTextSheet;
     egret.DefaultTextSheet = getTextSheet(2048);
     function getFormat(format) {
-        var sheetFormat = format.sheetFormat;
-        if (!sheetFormat) {
-            var font = egret.getFontString(format);
-            var key = font;
-            var gradients = format.gradients;
-            var color = void 0;
-            if (gradients) {
-                if (gradients.length == 1) {
-                    format.textColor = parseInt(gradients[0][1].substr(1), 16);
-                    gradients = undefined;
-                }
-                else {
-                    color = gradients.join("|");
-                }
+        var font = egret.getFontString(format);
+        var key = font;
+        var gradients = format.gradients;
+        var color;
+        if (gradients) {
+            if (gradients.length == 1) {
+                format.textColor = parseInt(gradients[0][1].substr(1), 16);
+                gradients = undefined;
             }
-            if (!gradients) {
-                color = format.textColor + "";
+            else {
+                color = gradients.join("|");
             }
-            key += " 0:" + color;
-            var shadow = format.shadow;
-            if (shadow) {
-                key += " 1:" + format.shadow.toString();
-            }
-            var stroke = format.stroke;
-            if (stroke) {
-                var strokeColor = format.strokeColor | 0;
-                format.strokeColor = strokeColor;
-                key += " 2:" + format.stroke + "," + strokeColor;
-            }
-            format.sheetFormat = sheetFormat = {
-                font: font,
-                key: key,
-                format: format
-            };
         }
-        return sheetFormat;
+        if (!gradients) {
+            color = format.textColor + "";
+        }
+        key += " 0:" + color;
+        var shadow = format.shadow;
+        if (shadow) {
+            key += " 1:" + format.shadow.toString();
+        }
+        var stroke = format.stroke;
+        if (stroke) {
+            var strokeColor = format.strokeColor | 0;
+            format.strokeColor = strokeColor;
+            key += " 2:" + format.stroke + "," + strokeColor;
+        }
+        return {
+            key: key,
+            font: font,
+            format: format
+        };
     }
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,9 @@
 namespace egret {
 
+    interface FormatTextureEntity {
+        sheetFormat: TextSheetFormat,
+        texs: { [char: string]: FontTexture }
+    }
 
     /**
      * 用于在一张纹理上，处理大量不同样式的文本
@@ -11,20 +15,33 @@ namespace egret {
         bmd.$deleteSource = false;
         let ctx = canvas.getContext("2d");
         const packer = new jy.ShortSideBinPacker(sheetSize, sheetSize);
-        const texs = {} as { [char: string]: Texture };
+        const formatDict = {} as { [sheetKey: string]: FormatTextureEntity }
         return {
-            getTexture(char: string, format: sys.TextFormat) {
+            getKey(format: sys.TextFormat) {
                 let sheetFormat = getFormat(format);
-                return _getTexture(char, sheetFormat);
+                let sheetKey = sheetFormat.key;
+                let d = formatDict[sheetKey];
+                if (!d) {
+                    formatDict[sheetKey] = d = {
+                        sheetFormat,
+                        texs: {}
+                    }
+                }
+                return sheetKey
+            },
+            getTexture(char: string, sheetKey: string) {
+                let d = formatDict[sheetKey];
+                if (d) {
+                    return _getTexture(char, d)
+                }
             },
             dispose() {
                 bmd.$dispose();
             }
         }
-        function _getTexture(char: string, sheetFormat: TextSheetFormat) {
-            let { key, format, font } = sheetFormat;
-            key = key + "_" + char;
-            let tex = texs[key];
+        function _getTexture(char: string, d: FormatTextureEntity) {
+            let { sheetFormat: { format, font }, texs } = d;
+            let tex = texs[char];
             if (!tex) {
                 const stroke = format.stroke;
                 let mul2 = 0, ox = 0, oy = 0;
@@ -59,10 +76,11 @@ namespace egret {
                 const fillColor = toColorString(format.textColor | 0xffffff);
                 const gradients = format.gradients;
                 let { x, y } = bin;
+                let y1 = y + 1;
                 //先填充文本，再stroke描边效果会比较好
                 let fillStyle: CanvasGradient;
                 if (gradients) {
-                    fillStyle = ctx.createLinearGradient(x, y, x, y + size);
+                    fillStyle = ctx.createLinearGradient(x, y1, x, y1 + size);
                     for (let i = 0; i < gradients.length; i++) {
                         const colorStop = gradients[i];
                         fillStyle.addColorStop(colorStop[0], colorStop[1]);
@@ -74,19 +92,21 @@ namespace egret {
                     let strokeColor = format.strokeColor | 0;
                     ctx.strokeStyle = toColorString(strokeColor);
                     ctx.lineWidth = stroke + 1;//stroke 增加1像素
-                    ctx.strokeText(char, x, y);
+                    ctx.strokeText(char, x, y1);
                 }
                 ctx.fillStyle = fillStyle || fillColor;
-                ctx.fillText(char, x, y);
-                tex = new Texture;
+                ctx.fillText(char, x, y1);
+                tex = new Texture as FontTexture;
                 tex.disposeBitmapData = false;
                 tex.bitmapData = bmd;
                 if (bmd.webGLTexture) {//清理webgl纹理，让渲染可以重置，重新上传到gpu
                     egret.WebGLUtils.deleteWebGLTexture(bmd);
                     bmd.webGLTexture = null;
                 }
-                tex.$initData(x, y, fontWidth, height - 1, 0, 0, width, height, width, height);
-                texs[key] = tex;
+                height--;
+                tex.$initData(x, y, width, height, 0, 0, width, height, width, height);
+                tex.fontWidth = fontWidth;
+                texs[char] = tex;
             }
             return tex;
         }
@@ -95,6 +115,10 @@ namespace egret {
     export const DefaultTextSheet = getTextSheet(2048);
 
     export type TextSheet = typeof DefaultTextSheet;
+
+    export interface FontTexture extends Texture {
+        fontWidth: number;
+    }
 
     export interface TextSheetFormat {
         font: string;
@@ -109,41 +133,38 @@ namespace egret {
     }
 
     function getFormat(format: sys.TextFormat) {
-        let sheetFormat = format.sheetFormat;
-        if (!sheetFormat) {
-            let font = getFontString(format);
-            let key = font;
-            let gradients = format.gradients;
-            let color: string;
-            if (gradients) {
-                if (gradients.length == 1) {
-                    format.textColor = parseInt(gradients[0][1].substr(1), 16);
-                    gradients = undefined;
-                } else {
-                    color = gradients.join("|");
-                }
-            }
-            if (!gradients) {
-                color = format.textColor + "";
-            }
-            key += " 0:" + color;
-
-            let shadow = format.shadow;
-            if (shadow) {
-                key += " 1:" + format.shadow.toString();
-            }
-            let stroke = format.stroke;
-            if (stroke) {
-                let strokeColor = format.strokeColor | 0;
-                format.strokeColor = strokeColor;
-                key += " 2:" + format.stroke + "," + strokeColor;
-            }
-            format.sheetFormat = sheetFormat = {
-                font,
-                key,
-                format
+        let font = getFontString(format);
+        let key = font;
+        let gradients = format.gradients;
+        let color: string;
+        if (gradients) {
+            if (gradients.length == 1) {
+                format.textColor = parseInt(gradients[0][1].substr(1), 16);
+                gradients = undefined;
+            } else {
+                color = gradients.join("|");
             }
         }
-        return sheetFormat;
+        if (!gradients) {
+            color = format.textColor + "";
+        }
+        key += " 0:" + color;
+
+        let shadow = format.shadow;
+        if (shadow) {
+            key += " 1:" + format.shadow.toString();
+        }
+        let stroke = format.stroke;
+        if (stroke) {
+            let strokeColor = format.strokeColor | 0;
+            format.strokeColor = strokeColor;
+            key += " 2:" + format.stroke + "," + strokeColor;
+        }
+
+        return {
+            key,
+            font,
+            format
+        };
     }
 }

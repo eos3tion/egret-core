@@ -11571,7 +11571,8 @@ declare namespace egret {
          * 文本纹理构建器
          */
         textSheet: {
-            getTexture(char: string, format: sys.TextFormat): Texture;
+            getKey(format: sys.TextFormat): string;
+            getTexture(char: string, sheetKey: string): FontTexture;
             dispose(): void;
         };
         /**
@@ -12505,14 +12506,19 @@ declare namespace egret {
      * 用于在一张纹理上，处理大量不同样式的文本
      */
     function getTextSheet(sheetSize?: number): {
-        getTexture(char: string, format: sys.TextFormat): Texture;
+        getKey(format: sys.TextFormat): string;
+        getTexture(char: string, sheetKey: string): FontTexture;
         dispose(): void;
     };
     const DefaultTextSheet: {
-        getTexture(char: string, format: sys.TextFormat): Texture;
+        getKey(format: sys.TextFormat): string;
+        getTexture(char: string, sheetKey: string): FontTexture;
         dispose(): void;
     };
     type TextSheet = typeof DefaultTextSheet;
+    interface FontTexture extends Texture {
+        fontWidth: number;
+    }
     interface TextSheetFormat {
         font: string;
         format: sys.TextFormat;

@@ -1413,6 +1413,9 @@ namespace egret {
         }
 
         onRender(): void {
+            if (!this._textLinesChanged) {
+                return;
+            }
             this.clear();
             if (this._type == TextFieldType.INPUT) {
                 this.inputUtils._updateProperties();
@@ -1832,24 +1835,27 @@ namespace egret {
                 }
                 drawX = Math.round((maxWidth - line.width) * hAlign);
                 let elements = line.elements;
+                let sheet = this.textSheet;
                 for (let j = 0, elementsLength = elements.length; j < elementsLength; j++) {
                     let element = elements[j];
                     let style = element.style;
                     let text = element.text;
+                    let key = sheet.getKey(getFormat(this, style))
                     for (let i = 0; i < text.length; i++) {
                         const char = text[i];
-                        let bmp = getCharBmp(char, this, style);
+
+                        let bmp = getCharBmp(char, sheet, key);
                         if (bmp) {
                             bmp.x = drawX;
                             bmp.y = drawY;
-                            drawX += bmp.width - 1;
+                            drawX += bmp.fontWidth;
                             this.addChild(bmp);
                         }
                     }
                     if (style.underline) {
                         underLineData.push(
                             drawX,
-                            drawY + (h) / 2,
+                            drawY + h,
                             element.width,
                             element.style.textColor
                         );
@@ -1933,6 +1939,8 @@ namespace egret {
     interface FontBitmap extends Bitmap {
         isText: true;
 
+        fontWidth: number;
+
         recycle();
     }
 
@@ -1965,14 +1973,15 @@ namespace egret {
      * @param tf 
      * @param style 
      */
-    function getCharBmp(char: string, tf: TextField, style: sys.TextFormat) {
-        let texture = tf.textSheet.getTexture(char, getFormat(tf, style));
+    function getCharBmp(char: string, sheet: TextSheet, key: string) {
+        let texture = sheet.getTexture(char, key);
         if (texture) {
             let bmp = recyclable(Bitmap) as FontBitmap;
             bmp.isText = true;
             bmp.texture = texture;
             bmp.width = texture.textureWidth;
             bmp.height = texture.textureHeight;
+            bmp.fontWidth = texture.fontWidth;
             return bmp;
         }
 
