@@ -2458,10 +2458,6 @@ var egret;
          */
         var context = null;
         /**
-         * @private
-         */
-        var fontCache = {};
-        /**
          * 测量文本在指定样式下的宽度。
          * @param text 要测量的文本内容。
          * @param fontFamily 字体名称
@@ -6514,9 +6510,6 @@ var egret;
                         case 1 /* BitmapNode */:
                             this.renderBitmap(node, buffer);
                             break;
-                        case 2 /* TextNode */:
-                            this.renderText(node, buffer);
-                            break;
                         case 3 /* GraphicsNode */:
                             this.renderGraphics(node, buffer);
                             break;
@@ -6967,9 +6960,6 @@ var egret;
                         case 1 /* BitmapNode */:
                             this.renderBitmap(node, buffer);
                             break;
-                        case 2 /* TextNode */:
-                            this.renderText(node, buffer);
-                            break;
                         case 3 /* GraphicsNode */:
                             this.renderGraphics(node, buffer);
                             break;
@@ -7021,9 +7011,6 @@ var egret;
                 switch (node.type) {
                     case 1 /* BitmapNode */:
                         this.renderBitmap(node, buffer);
-                        break;
-                    case 2 /* TextNode */:
-                        this.renderText(node, buffer);
                         break;
                     case 3 /* GraphicsNode */:
                         this.renderGraphics(node, buffer, forHitTest);
@@ -7189,83 +7176,6 @@ var egret;
                     buffer.$offsetY = offsetY;
                     egret.Matrix.release(savedMatrix);
                 }
-            };
-            /**
-             * @private
-             */
-            WebGLRenderer.prototype.renderText = function (node, buffer) {
-                var width = node.width - node.x;
-                var height = node.height - node.y;
-                if (width <= 0 || height <= 0 || !width || !height || node.drawData.length == 0) {
-                    return;
-                }
-                var canvasScaleX = egret.sys.DisplayList.$canvasScaleX;
-                var canvasScaleY = egret.sys.DisplayList.$canvasScaleY;
-                var maxTextureSize = buffer.context.$maxTextureSize;
-                if (width * canvasScaleX > maxTextureSize) {
-                    canvasScaleX *= maxTextureSize / (width * canvasScaleX);
-                }
-                if (height * canvasScaleY > maxTextureSize) {
-                    canvasScaleY *= maxTextureSize / (height * canvasScaleY);
-                }
-                width *= canvasScaleX;
-                height *= canvasScaleY;
-                var x = node.x * canvasScaleX;
-                var y = node.y * canvasScaleY;
-                if (node.$canvasScaleX != canvasScaleX || node.$canvasScaleY != canvasScaleY) {
-                    node.$canvasScaleX = canvasScaleX;
-                    node.$canvasScaleY = canvasScaleY;
-                    node.dirtyRender = true;
-                }
-                if (!this.canvasRenderBuffer || !this.canvasRenderBuffer.context) {
-                    this.canvasRenderer = new egret.CanvasRenderer();
-                    this.canvasRenderBuffer = new web.CanvasRenderBuffer(width, height);
-                }
-                else if (node.dirtyRender) {
-                    this.canvasRenderBuffer.resize(width, height);
-                }
-                if (!this.canvasRenderBuffer.context) {
-                    return;
-                }
-                if (canvasScaleX != 1 || canvasScaleY != 1) {
-                    this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-                }
-                if (x || y) {
-                    if (node.dirtyRender) {
-                        this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, -x, -y);
-                    }
-                    buffer.transform(1, 0, 0, 1, x / canvasScaleX, y / canvasScaleY);
-                }
-                else if (canvasScaleX != 1 || canvasScaleY != 1) {
-                    this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-                }
-                if (node.dirtyRender) {
-                    var surface = this.canvasRenderBuffer.surface;
-                    this.canvasRenderer.renderText(node, this.canvasRenderBuffer.context);
-                    // 拷贝canvas到texture
-                    var texture = node.$texture;
-                    if (!texture) {
-                        texture = buffer.context.createTexture(surface);
-                        node.$texture = texture;
-                    }
-                    else {
-                        // 重新拷贝新的图像
-                        buffer.context.updateTexture(texture, surface);
-                    }
-                    // 保存材质尺寸
-                    node.$textureWidth = surface.width;
-                    node.$textureHeight = surface.height;
-                }
-                var textureWidth = node.$textureWidth;
-                var textureHeight = node.$textureHeight;
-                buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
-                if (x || y) {
-                    if (node.dirtyRender) {
-                        this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-                    }
-                    buffer.transform(1, 0, 0, 1, -x / canvasScaleX, -y / canvasScaleY);
-                }
-                node.dirtyRender = false;
             };
             /**
              * @private

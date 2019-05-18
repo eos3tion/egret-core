@@ -34,10 +34,6 @@ namespace egret.web {
      * @private
      */
     let context:CanvasRenderingContext2D = null;
-    /**
-     * @private
-     */
-    let fontCache:any = {};
 
     /**
      * 测量文本在指定样式下的宽度。

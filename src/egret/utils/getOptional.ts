@@ -1,4 +1,4 @@
-namespace egret {
+namespace jy {
     /**
      * 获取指定数据
      * @param key 

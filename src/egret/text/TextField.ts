@@ -27,184 +27,65 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-namespace egret.sys {
-    /**
-     * @private
-     */
-    export const enum TextKeys {
-        /**
-         * @private
-         */
-        fontSize,
-        /**
-         * @private
-         */
-        lineSpacing,
-        /**
-         * @private
-         */
-        textColor,
-        /**
-         * @private
-         */
-        textFieldWidth,
-        /**
-         * @private
-         */
-        textFieldHeight,
-        /**
-         * @private
-         */
-        textWidth,
-        /**
-         * @private
-         */
-        textHeight,
-        /**
-         * @private
-         */
-        textDrawWidth,
-        /**
-         * @private
-         */
-        fontFamily,
-        /**
-         * @private
-         */
-        textAlign,
-        /**
-         * @private
-         */
-        verticalAlign,
-        /**
-         * @private
-         */
-        textColorString,
-        /**
-         * @private
-         */
-        fontString,
-        /**
-         * @private
-         */
-        text,
-        /**
-         * @private
-         */
-        measuredWidths,
-        /**
-         * @private
-         */
-        bold,
-        /**
-         * @private
-         */
-        italic,
-        /**
-         * @private
-         */
-        fontStringChanged,
-        /**
-         * @private
-         */
-        textLinesChanged,
-        /**
-         * @private
-         */
-        wordWrap,
-        /**
-         * @private
-         */
-        displayAsPassword,
-        /**
-         * @private
-         */
-        maxChars,
-        /**
-         * @private
-         */
-        selectionActivePosition,
-        /**
-         * @private
-         */
-        selectionAnchorPosition,
-        /**
-         * @private
-         */
-        type,
-        /**
-         * @private
-         */
-        strokeColor,
-        /**
-         * @private
-         */
-        strokeColorString,
-        /**
-         * @private
-         */
-        stroke,
-        /**
-         * @private
-         */
-        scrollV,
-        /**
-         * @private
-         */
-        numLines,
-        /**
-         * @private
-         */
-        multiline,
-        /**
-         * @private
-         */
-        border,
-        /**
-         * @private
-         */
-        borderColor,
-        /**
-         * @private
-         */
-        background,
-        /**
-         * @private
-         */
-        backgroundColor,
-        /**
-         * @private
-         */
-        restrictAnd,
-        /**
-         * @private
-         */
-        restrictNot,
-        /**
-         * @private
-         */
-        inputType,
-        /**
-         * @private
-         */
-        textLinesChangedForNativeRender
-    }
-}
-
 namespace egret {
+    import recyclable = jy.recyclable;
+    import Recyclable = jy.Recyclable;
+    import ColorUtil = jy.ColorUtil;
 
-    let SplitRegex = new RegExp("(?=[\\u00BF-\\u1FFF\\u2C00-\\uD7FF]|\\b|\\s)(?![。，！、》…）)}”】\\.\\,\\!\\?\\]\\:])");
+    /**
+  * default fontFamily
+  * @version Egret 2.4
+  * @platform Web,Native
+  * @language en_US
+  */
+    /**
+     * 默认文本字体
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @language zh_CN
+     */
+    const default_fontFamily = "Arial";
+
+    /**
+     * default size in pixels of text
+     * @version Egret 3.2.1
+     * @platform Web,Native
+     * @language en_US
+     */
+    /**
+     * 默认文本字号大小
+     * @version Egret 3.2.1
+     * @platform Web,Native
+     * @language zh_CN
+     */
+    const default_size = 30;
+
+    /**
+     * default color of the text.
+     * @version Egret 3.2.1
+     * @platform Web,Native
+     * @language en_US
+     */
+    /**
+     * 默认文本颜色
+     * @version Egret 3.2.1
+     * @platform Web,Native
+     * @language zh_CN
+     */
+    const default_textColor = 0xffffff;
+
+    const SplitRegex = new RegExp("(?=[\\u00BF-\\u1FFF\\u2C00-\\uD7FF]|\\b|\\s)(?![。，！、》…）)}”】\\.\\,\\!\\?\\]\\:])");
 
     /**
      * @private
      * 根据样式测量文本宽度
      */
-    function measureTextWidth(text, style?: ITextStyle): number {
+    function measureTextWidth(text: string, tf: TextField, style?: ITextStyle): number {
         style = style || <egret.ITextStyle>{};
-        let italic: boolean = style.italic == null ? this._italic : style.italic;
-        let bold: boolean = style.bold == null ? this._bold : style.bold;
-        let size: number = style.size == null ? this._fontSize : style.size;
-        let fontFamily: string = style.fontFamily || this._fontFamily || TextField.default_fontFamily;
+        let italic = style.italic == null ? tf._italic : style.italic;
+        let bold = style.bold == null ? tf._bold : style.bold;
+        let size = style.size == null ? tf._fontSize : style.size;
+        let fontFamily = style.fontFamily || tf._fontFamily || default_fontFamily;
         return sys.measureText(text, fontFamily, size, bold, italic);
     }
 
@@ -234,49 +115,15 @@ namespace egret {
      * @includeExample egret/text/TextField.ts
      * @language zh_CN
      */
-    export class TextField extends DisplayObject {
+    export class TextField extends egret.DisplayObjectContainer implements sys.TextFormat {
 
         /**
-         * default fontFamily
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
+         * 文本纹理构建器
          */
-        /**
-         * 默认文本字体
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static default_fontFamily: string = "Arial";
+        textSheet = DefaultTextSheet;
 
-        /**
-         * default size in pixels of text
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 默认文本字号大小
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static default_size: number = 30;
 
-        /**
-         * default color of the text.
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 默认文本颜色
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        public static default_textColor: number = 0xffffff;
+
 
         /**
          * @version Egret 2.4
@@ -284,21 +131,18 @@ namespace egret {
          */
         constructor() {
             super();
-            let textNode = new sys.TextNode();
-            textNode.fontFamily = TextField.default_fontFamily;
-            this.textNode = textNode;
-            this.$renderNode = textNode;
         }
-
-        _fontSize = TextField.default_size;
+        _gradients: ColorStop[] = null;
+        _shadow: TextShadow = null;
+        _fontSize = default_size;
         _lineSpacing = 0;
-        _textColor = TextField.default_textColor;
+        _textColor = default_textColor;
         _textFieldWidth = NaN;
         _textFieldHeight = NaN;
         _textWidth = 0;
         _textHeight = 0;
         _textDrawWidth = 0;
-        _fontFamily = TextField.default_fontFamily;
+        _fontFamily = default_fontFamily;
         _textAlign = "left";
         _verticalAlign = "top";
         _textColorString = "#ffffff";
@@ -1283,14 +1127,6 @@ namespace egret {
             return isNaN(this._textFieldHeight) ? this.$getContentBounds().height : this._textFieldHeight;
         }
 
-        /**
-         * @private
-         */
-        private textNode: sys.TextNode;
-        /**
-         * @private
-         */
-        public $graphicsNode: sys.GraphicsNode = null;
 
         /**
          * Specifies whether the text field has a border.
@@ -1443,58 +1279,49 @@ namespace egret {
          *
          */
         private fillBackground(lines?: number[]): void {
-            let graphics = this.$graphicsNode;
-            if (graphics) {
-                graphics.clear();
+            //渲染背景
+            if (this._background) {
+                //添加一个底
+                this.addChild(getTextBmp(this.$getWidth(), this.$getHeight(), this._backgroundColor));
             }
-            if (this._background || this._border || (lines && lines.length > 0)) {
-                if (!graphics) {
-                    graphics = this.$graphicsNode = new sys.GraphicsNode();
-                    let groupNode = new sys.GroupNode();
-                    groupNode.addNode(graphics);
-                    groupNode.addNode(this.textNode);
-                    this.$renderNode = groupNode;
-                }
-                let fillPath: sys.Path2D;
-                let strokePath: sys.Path2D;
-                //渲染背景
-                if (this._background) {
-                    fillPath = graphics.beginFill(this._backgroundColor);
-                    fillPath.drawRect(0, 0, this.$getWidth(), this.$getHeight());
-                }
-                //渲染边框
-                if (this._border) {
-                    strokePath = graphics.lineStyle(1, this._borderColor);
-                    //1像素和3像素线条宽度的情况，会向右下角偏移0.5像素绘制。少画一像素宽度，正好能不超出文本测量边界。
-                    strokePath.drawRect(0, 0, this.$getWidth() - 1, this.$getHeight() - 1);
-                }
-                //渲染下划线
-                if (lines && lines.length > 0) {
-                    let textColor = this._textColor;
-                    let lastColor = -1;
-                    let length = lines.length;
-                    for (let i = 0; i < length; i += 4) {
-                        let x: number = lines[i];
-                        let y: number = lines[i + 1];
-                        let w: number = lines[i + 2];
-                        let color: number = lines[i + 3] || textColor;
-                        if (lastColor < 0 || lastColor != color) {
-                            lastColor = color;
-                            strokePath = graphics.lineStyle(2, color, 1, CapsStyle.NONE);
-                        }
-                        strokePath.moveTo(x, y);
-                        strokePath.lineTo(x + w, y);
+            //渲染边框
+            if (this._border) {
+                //画 上下左右 4条边
+                let color = this._borderColor;
+                let borderSize = 1;
+                let w = this.$getWidth();
+                let h = this.$getHeight();
+                //上
+                this.addChild(getTextBmp(w, borderSize, color));
+
+                //下
+                this.addChild(getTextBmp(w, borderSize, color, 0, h - borderSize));
+
+                //左
+                this.addChild(getTextBmp(borderSize, h, color));
+
+                //右
+                this.addChild(getTextBmp(borderSize, h, color, w - borderSize));
+            }
+            //渲染下划线
+            if (lines && lines.length > 0) {
+                let textColor = this._textColor;
+                let lastColor = -1;
+                let lineSize = 1;
+                let length = lines.length;
+                for (let i = 0; i < length; i += 4) {
+                    let x = lines[i];
+                    let y = lines[i + 1];
+                    let w = lines[i + 2];
+                    let color = lines[i + 3] || textColor;
+                    if (lastColor < 0 || lastColor != color) {
+                        lastColor = color;
+                        this.addChild(getTextBmp(w, lineSize, color, x, y));
                     }
+
                 }
             }
-            if (graphics) {
-                let bounds = this.$getRenderBounds();
-                graphics.x = bounds.x;
-                graphics.y = bounds.y;
-                graphics.width = bounds.width;
-                graphics.height = bounds.height;
-                Rectangle.release(bounds);
-            }
+
         }
 
         /**
@@ -1527,11 +1354,6 @@ namespace egret {
             if (this._type == TextFieldType.INPUT) {
                 this.inputUtils._removeStageText();
             }
-
-            if (this.textNode) {
-                this.textNode.clean();
-            }
-
         }
 
         /**
@@ -1590,7 +1412,8 @@ namespace egret {
             bounds.setTo(0, 0, w, h);
         }
 
-        $updateRenderNode(): void {
+        onRender(): void {
+            this.clear();
             if (this._type == TextFieldType.INPUT) {
                 this.inputUtils._updateProperties();
                 if (this.$isTyping) {
@@ -1599,23 +1422,10 @@ namespace egret {
                 }
             }
             else if (this._textFieldWidth == 0) {
-                let graphics = this.$graphicsNode;
-                if (graphics) {
-                    graphics.clear();
-                }
                 return;
             }
 
-            let underLines = this.drawText();
-            this.fillBackground(underLines);
-            //tudo 宽高很小的情况下webgl模式绘制异常
-            let bounds = this.$getRenderBounds();
-            let node = this.textNode;
-            node.x = bounds.x;
-            node.y = bounds.y;
-            node.width = Math.ceil(bounds.width);
-            node.height = Math.ceil(bounds.height);
-            Rectangle.release(bounds);
+            this.fillBackground(this.drawText());
         }
 
         /**
@@ -1764,39 +1574,42 @@ namespace egret {
             }
         }
 
+
+
         /**
          * @private
          */
-        private linesArr: Array<egret.ILineElement> = [];
+        private linesArr = [] as ILineElement[];
 
-        $getLinesArr(): Array<egret.ILineElement> {
+        $getLinesArr() {
             if (!this._textLinesChanged) {
                 return this.linesArr;
             }
 
-            this._textLinesChanged = false;
-            let text2Arr: Array<egret.ITextElement> = this.textArr;
 
-            this.linesArr.length = 0;
+
+            let linesArr = this.linesArr;
+            linesArr.length = 0;
             this._textHeight = 0;
             this._textWidth = 0;
 
-            let textFieldWidth: number = this._textFieldWidth;
+            let textFieldWidth = this._textFieldWidth;
             //宽度被设置为0
             if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
                 this._numLines = 0;
                 return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
             }
+            this._textLinesChanged = false;
+            let text2Arr = this.textArr;
+            let lineW = 0;
+            let lineCharNum = 0;
+            let lineH = 0;
+            let lineCount = 0;
+            let lineElement: ILineElement;
+            let isInput = this._type == egret.TextFieldType.INPUT;
 
-            let linesArr: Array<egret.ILineElement> = this.linesArr;
-            let lineW: number = 0;
-            let lineCharNum: number = 0;
-            let lineH: number = 0;
-            let lineCount: number = 0;
-            let lineElement: egret.ILineElement;
-
-            for (let i: number = 0, text2ArrLength: number = text2Arr.length; i < text2ArrLength; i++) {
-                let element: egret.ITextElement = text2Arr[i];
+            for (let i = 0, text2ArrLength = text2Arr.length; i < text2ArrLength; i++) {
+                let element = text2Arr[i];
                 //可能设置为没有文本，忽略绘制
                 if (!element.text) {
                     if (lineElement) {
@@ -1808,175 +1621,108 @@ namespace egret {
                     }
                     continue;
                 }
-                element.style = element.style || <egret.ITextStyle>{};
+                let style = element.style;
+                if (!style) {
+                    element.style = style = <egret.ITextStyle>{};
+                }
+                let _fontSize = this._fontSize;
+                let eSize = style.size || _fontSize;
 
-                let text: string = element.text.toString();
-                let textArr: string[] = text.split(/(?:\r\n|\r|\n)/);
+                let text = element.text + "";
 
-                for (let j: number = 0, textArrLength: number = textArr.length; j < textArrLength; j++) {
+                let textArr = text.split(/(?:\r\n|\r|\n)/);
+
+                for (let j = 0, textArrLength = textArr.length; j < textArrLength; j++) {
                     if (linesArr[lineCount] == null) {
-                        lineElement = { width: 0, height: 0, elements: [], charNum: 0, hasNextLine: false };
-                        linesArr[lineCount] = lineElement;
+                        linesArr[lineCount] = lineElement = { width: 0, height: 0, elements: [], charNum: 0, hasNextLine: false };
                         lineW = 0;
                         lineH = 0;
                         lineCharNum = 0;
                     }
+                    let elements = lineElement.elements;
 
-                    if (this._type == egret.TextFieldType.INPUT) {
-                        lineH = this._fontSize;
+                    if (isInput) {
+                        lineH = _fontSize;
                     }
                     else {
-                        lineH = Math.max(lineH, element.style.size || this._fontSize);
+                        if (lineH < eSize) {
+                            lineH = eSize;
+                        }
                     }
 
-                    let isNextLine: boolean = true;
-                    if (textArr[j] == "") {
+                    let isNextLine = true;
+                    let textArrData = textArr[j];
+                    if (textArrData == "") {
                         if (j == textArrLength - 1) {
                             isNextLine = false;
                         }
                     }
                     else {
-                        let w: number = measureTextWidth(textArr[j], element.style);
-                        if (isNaN(textFieldWidth)) {//没有设置过宽
-                            lineW += w;
-                            lineCharNum += textArr[j].length;
-                            lineElement.elements.push(<egret.IWTextElement>{
-                                width: w,
-                                text: textArr[j],
-                                style: element.style
-                            });
-
-                            if (j == textArrLength - 1) {
-                                isNextLine = false;
-                            }
+                        let k = 0;
+                        let ww = 0;
+                        let words: string[] | string = textArrData;
+                        if (this._wordWrap) {
+                            words = textArrData.split(SplitRegex);
                         }
-                        else {
-                            if (lineW + w <= textFieldWidth) {//在设置范围内
-                                lineElement.elements.push(<egret.IWTextElement>{
-                                    width: w,
-                                    text: textArr[j],
-                                    style: element.style
-                                });
-                                lineW += w;
-                                lineCharNum += textArr[j].length;
+                        let wl = words.length;
+                        let charNum = 0;
+                        for (; k < wl; k++) {
+                            let [word, w, has4BytesUnicode, codeLen] = getCodePointData(words, k, wl, style)
 
-                                if (j == textArrLength - 1) {
-                                    isNextLine = false;
-                                }
+                            if (lineW != 0 && lineW + w > textFieldWidth && lineW + k != 0) {
+                                break;
                             }
-                            else {
-                                let k: number = 0;
-                                let ww: number = 0;
-                                let word: string = textArr[j];
-                                let words: string[];
-                                if (this._wordWrap) {
-                                    words = word.split(SplitRegex);
-                                }
-                                else {
-                                    words = word.match(/./g);
-                                }
-                                let wl: number = words.length;
-                                let charNum = 0;
-                                for (; k < wl; k++) {
-
-                                    // detect 4 bytes unicode, refer https://mths.be/punycode
-                                    var codeLen = words[k].length;
-                                    var has4BytesUnicode = false;
-                                    if (codeLen == 1 && k < wl - 1) // when there is 2 bytes high surrogate
-                                    {
-                                        var charCodeHigh = words[k].charCodeAt(0);
-                                        var charCodeLow = words[k + 1].charCodeAt(0);
-                                        if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
-                                            var realWord = words[k] + words[k + 1];
-                                            codeLen = 2;
-                                            has4BytesUnicode = true;
-                                            w = measureTextWidth(realWord, element.style);
-                                        } else {
-                                            w = measureTextWidth(words[k], element.style);
-                                        }
-                                    } else {
-                                        w = measureTextWidth(words[k], element.style);
-                                    }
-
-                                    // w = measureTextWidth(words[k], values, element.style);
-                                    if (lineW != 0 && lineW + w > textFieldWidth && lineW + k != 0) {
+                            if (ww + w > textFieldWidth) {//纯英文，一个词就超出宽度的情况
+                                for (var k2 = 0, wl2 = word.length; k2 < wl2; k2++) {
+                                    let [, w, has4BytesUnicode2, codeLen] = getCodePointData(word, k2, wl2, style);
+                                    if (k2 > 0 && lineW + w > textFieldWidth) {
                                         break;
                                     }
-                                    if (ww + w > textFieldWidth) {//纯英文，一个词就超出宽度的情况
-                                        var words2: Array<string> = words[k].match(/./g);
-                                        for (var k2 = 0, wl2 = words2.length; k2 < wl2; k2++) {
+                                    charNum += codeLen;
+                                    ww += w;
+                                    lineW += w;
+                                    lineCharNum += charNum;
 
-                                            // detect 4 bytes unicode, refer https://mths.be/punycode
-                                            var codeLen = words2[k2].length;
-                                            var has4BytesUnicode2 = false;
-                                            if (codeLen == 1 && k2 < wl2 - 1) // when there is 2 bytes high surrogate
-                                            {
-                                                var charCodeHigh = words2[k2].charCodeAt(0);
-                                                var charCodeLow = words2[k2 + 1].charCodeAt(0);
-                                                if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
-                                                    var realWord = words2[k2] + words2[k2 + 1];
-                                                    codeLen = 2;
-                                                    has4BytesUnicode2 = true;
-                                                    w = measureTextWidth(realWord, element.style);
-                                                } else {
-                                                    w = measureTextWidth(words2[k2], element.style);
-                                                }
-                                            } else {
-                                                w = measureTextWidth(words2[k2], element.style);
-                                            }
-                                            // w = measureTextWidth(words2[k2], values, element.style);
-
-                                            if (k2 > 0 && lineW + w > textFieldWidth) {
-                                                break;
-                                            }
-                                            // charNum += words2[k2].length;
-                                            charNum += codeLen;
-                                            ww += w;
-                                            lineW += w;
-                                            lineCharNum += charNum;
-
-                                            if (has4BytesUnicode2) {
-                                                k2++;
-                                            }
-                                        }
-                                    } else {
-                                        // charNum += words[k].length;
-                                        charNum += codeLen;
-                                        ww += w;
-                                        lineW += w;
-                                        lineCharNum += charNum;
+                                    if (has4BytesUnicode2) {
+                                        k2++;
                                     }
-
-                                    if (has4BytesUnicode) {
-                                        k++;
-                                    }
-
                                 }
+                            } else {
+                                charNum += codeLen;
+                                ww += w;
+                                lineW += w;
+                                lineCharNum += charNum;
+                            }
 
-                                if (k > 0) {
-                                    lineElement.elements.push(<egret.IWTextElement>{
-                                        width: ww,
-                                        text: word.substring(0, charNum),
-                                        style: element.style
-                                    });
+                            if (has4BytesUnicode) {
+                                k++;
+                            }
 
-                                    let leftWord: string = word.substring(charNum);
-                                    let m: number;
-                                    let lwleng = leftWord.length;
-                                    for (m = 0; m < lwleng; m++) {
-                                        if (leftWord.charAt(m) != " ") {
-                                            break;
-                                        }
-                                    }
-                                    textArr[j] = leftWord.substring(m);
-                                }
-                                if (textArr[j] != "") {
-                                    j--;
-                                    isNextLine = false;
+                        }
+
+                        if (k > 0) {
+                            elements.push(<egret.IWTextElement>{
+                                width: ww,
+                                text: textArrData.substring(0, charNum),
+                                style: style
+                            });
+
+                            let leftWord: string = textArrData.substring(charNum);
+                            let m: number;
+                            let lwleng = leftWord.length;
+                            for (m = 0; m < lwleng; m++) {
+                                if (leftWord.charAt(m) != " ") {
+                                    break;
                                 }
                             }
+                            textArr[j] = leftWord.substring(m);
+                        }
+                        if (textArr[j] != "") {
+                            j--;
+                            isNextLine = false;
                         }
                     }
+
 
                     if (isNextLine) {
                         lineCharNum++;
@@ -2011,6 +1757,24 @@ namespace egret {
 
             this._numLines = linesArr.length;
             return linesArr;
+
+            function getCodePointData(words: string[] | string, k: number, wl: number, style: sys.TextFormat) {
+                let word = words[k];
+                let codeLen = word.length;
+                let has4BytesUnicode = false;
+                if (codeLen == 1 && k < wl - 1) // when there is 2 bytes high surrogate
+                {
+                    let charCodeHigh = word.charCodeAt(0);
+                    let charCodeLow = words[k + 1].charCodeAt(0);
+                    if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
+                        word = word + words[k + 1];
+                        codeLen = 2;
+                        has4BytesUnicode = true;
+                    }
+                }
+                let w = measureTextWidth(word, this, style);
+                return [word, w, has4BytesUnicode, codeLen] as [string, number, boolean, number];
+            }
         }
 
         /**
@@ -2030,24 +1794,15 @@ namespace egret {
          * @private
          * 返回要绘制的下划线列表
          */
-        private drawText(): number[] {
-            let node = this.textNode;
-            //更新文本样式
-            node.bold = this._bold;
-            node.fontFamily = this._fontFamily || TextField.default_fontFamily;
-            node.italic = this._italic;
-            node.size = this._fontSize;
-            node.stroke = this._stroke;
-            node.strokeColor = this._strokeColor;
-            node.textColor = this._textColor;
+        private drawText() {
             //先算出需要的数值
             let lines: Array<egret.ILineElement> = this.$getLinesArr();
             if (this._textWidth == 0) {
-                return [];
+                return
             }
 
-            let maxWidth: number = !isNaN(this._textFieldWidth) ? this._textFieldWidth : this._textWidth;
-            let textHeight: number = TextFieldUtils.$getTextHeight(this);
+            let maxWidth = !isNaN(this._textFieldWidth) ? this._textFieldWidth : this._textWidth;
+            let textHeight = TextFieldUtils.$getTextHeight(this);
 
             let drawY: number = 0;
             let startLine: number = TextFieldUtils.$getStartLine(this);
@@ -2060,12 +1815,13 @@ namespace egret {
             drawY = Math.round(drawY);
             let hAlign: number = TextFieldUtils.$getHalign(this);
 
-            let drawX: number = 0;
+            let drawX = 0;
             let underLineData: number[] = [];
-            for (let i: number = startLine, numLinesLength: number = this._numLines; i < numLinesLength; i++) {
-                let line: egret.ILineElement = lines[i];
-                let h: number = line.height;
-                drawY += h / 2;
+            let _lineSpacing = this._lineSpacing;
+            for (let i = startLine, numLinesLength = this._numLines; i < numLinesLength; i++) {
+                let line = lines[i];
+                let h = line.height;
+
                 if (i != startLine) {
                     if (this._type == egret.TextFieldType.INPUT && !this._multiline) {
                         break;
@@ -2074,15 +1830,23 @@ namespace egret {
                         break;
                     }
                 }
-
                 drawX = Math.round((maxWidth - line.width) * hAlign);
-                for (let j: number = 0, elementsLength: number = line.elements.length; j < elementsLength; j++) {
-                    let element: egret.IWTextElement = line.elements[j];
-                    let size: number = element.style.size || this._fontSize;
-
-                    node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
-
-                    if (element.style.underline) {
+                let elements = line.elements;
+                for (let j = 0, elementsLength = elements.length; j < elementsLength; j++) {
+                    let element = elements[j];
+                    let style = element.style;
+                    let text = element.text;
+                    for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        let bmp = getCharBmp(char, this, style);
+                        if (bmp) {
+                            bmp.x = drawX;
+                            bmp.y = drawY;
+                            drawX += bmp.width - 1;
+                            this.addChild(bmp);
+                        }
+                    }
+                    if (style.underline) {
                         underLineData.push(
                             drawX,
                             drawY + (h) / 2,
@@ -2090,10 +1854,8 @@ namespace egret {
                             element.style.textColor
                         );
                     }
-
-                    drawX += element.width;
                 }
-                drawY += h / 2 + this._lineSpacing;
+                drawY += h + _lineSpacing;
             }
 
             return underLineData;
@@ -2102,11 +1864,13 @@ namespace egret {
         //增加点击事件
         private addEvent(): void {
             this.on(egret.EventType.TOUCH_TAP, this.onTapHandler, this);
+            this.on(egret.EventType.ENTER_FRAME, this.onRender, this);
         }
 
         //释放点击事件
         private removeEvent(): void {
             this.off(egret.EventType.TOUCH_TAP, this.onTapHandler, this);
+            this.off(egret.EventType.ENTER_FRAME, this.onRender, this);
         }
 
         //处理富文本中有href的
@@ -2131,19 +1895,110 @@ namespace egret {
             }
         }
 
+        clear() {
+            let $children = this.$children;
+            for (let i = 0; i < $children.length; i++) {
+                const child = $children[i];
+                if (isFont(child)) {
+                    child.texture = null;
+                    child.recycle();
+                }
+            }
+            this.removeChildren();
+        }
+
         /**
          * 文本渐变
          */
         setGradients(value: ColorStop[]) {
-            this.textNode.gradients = value;
+            this._gradients = value;
         }
+
+        get gradients() {
+            return this._gradients;
+        }
+
         /**
          * 设置文本阴影
          */
         setShadow(value: TextShadow) {
-            this.textNode.shadow = value;
+            this._shadow = value;
+        }
+
+        get shadow() {
+            return this._shadow;
         }
     }
+
+    interface FontBitmap extends Bitmap {
+        isText: true;
+
+        recycle();
+    }
+
+    function isFont(d: DisplayObject): d is FontBitmap {
+        return (d as FontBitmap).isText;
+    }
+
+    /**
+     * 获取一个指定颜色的位图
+     * @param w 
+     * @param h 
+     * @param color 
+     * @param x 
+     * @param y 
+     */
+    function getTextBmp(w: number, h: number, color?: number, x?: number, y?: number) {
+        let bmp = recyclable(Bitmap) as FontBitmap;
+        bmp.isText = true;
+        bmp.texture = ColorUtil.getTexture(color || 0);
+        bmp.width = w || 1;
+        bmp.height = h || 1;
+        bmp.x = x || 0;
+        bmp.y = y || 0;
+        return bmp;
+    }
+
+    /**
+     * 获取一个指定文字的位图
+     * @param char 
+     * @param tf 
+     * @param style 
+     */
+    function getCharBmp(char: string, tf: TextField, style: sys.TextFormat) {
+        let texture = tf.textSheet.getTexture(char, getFormat(tf, style));
+        if (texture) {
+            let bmp = recyclable(Bitmap) as FontBitmap;
+            bmp.isText = true;
+            bmp.texture = texture;
+            bmp.width = texture.textureWidth;
+            bmp.height = texture.textureHeight;
+            return bmp;
+        }
+
+    }
+
+    const formatKeys = ["textColor", "strokeColor", "size", "stroke", "bold", "italic", "fontFamily", "gradients", "shadow"] as (keyof sys.TextFormat)[];
+    function getFormat(tf: TextField, style: sys.TextFormat) {
+        let format = {} as sys.TextFormat;
+        let styles = [style, tf] as sys.TextFormat[];
+
+        for (let i = 0; i < formatKeys.length; i++) {
+            let key = formatKeys[i];
+            format[key] = jy.getOptional(key as keyof typeof style, styles);
+        }
+        return format;
+    }
+
+
+    export interface TextLine {
+        width: number;
+
+        height: number;
+
+        elements: DisplayObject[];
+    }
+
 
     export interface TextField {
         on<Z>(type: "link"

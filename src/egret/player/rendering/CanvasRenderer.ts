@@ -38,6 +38,8 @@ interface CanvasRenderingContext2D {
 }
 
 namespace egret {
+    import getOptional = jy.getOptional;
+
     export interface TextShadow extends Array<string | number> {
         /**
          * Blur
@@ -154,9 +156,6 @@ namespace egret {
                 switch (node.type) {
                     case sys.RenderNodeType.BitmapNode:
                         this.renderBitmap(<sys.BitmapNode>node, context);
-                        break;
-                    case sys.RenderNodeType.TextNode:
-                        this.renderText(<sys.TextNode>node, context);
                         break;
                     case sys.RenderNodeType.GraphicsNode:
                         this.renderGraphics(<sys.GraphicsNode>node, context);
@@ -502,9 +501,6 @@ namespace egret {
                     case sys.RenderNodeType.BitmapNode:
                         this.renderBitmap(<sys.BitmapNode>node, context);
                         break;
-                    case sys.RenderNodeType.TextNode:
-                        this.renderText(<sys.TextNode>node, context);
-                        break;
                     case sys.RenderNodeType.GraphicsNode:
                         this.renderGraphics(<sys.GraphicsNode>node, context);
                         break;
@@ -550,10 +546,6 @@ namespace egret {
             switch (node.type) {
                 case sys.RenderNodeType.BitmapNode:
                     drawCalls = this.renderBitmap(<sys.BitmapNode>node, context);
-                    break;
-                case sys.RenderNodeType.TextNode:
-                    drawCalls = 1;
-                    this.renderText(<sys.TextNode>node, context);
                     break;
                 case sys.RenderNodeType.GraphicsNode:
                     drawCalls = this.renderGraphics(<sys.GraphicsNode>node, context, forHitTest);
@@ -723,53 +715,6 @@ namespace egret {
 
         private renderMesh(node: sys.MeshNode, context: any): number {
             return 0;
-        }
-
-        public renderText(node: sys.TextNode, context: CanvasRenderingContext2D): void {
-            context.textAlign = "left";
-            context.textBaseline = "middle";
-            context.lineJoin = "round";//确保描边样式是圆角
-            let drawData = node.drawData;
-            let length = drawData.length;
-            let pos = 0;
-            const { $offsetX, $offsetY } = context;
-            while (pos < length) {
-                let x = drawData[pos++];
-                let y = drawData[pos++];
-                let text = drawData[pos++];
-                let format: sys.TextFormat = drawData[pos++];
-                context.font = getFontString(node, format);
-                let textColor = format.textColor == null ? node.textColor : format.textColor;
-                let strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
-                let stroke = format.stroke == null ? node.stroke : format.stroke;
-                let gradients = format.gradients || node.gradients;
-                let style;
-                if (gradients) {
-                    let hh = (format.size || node.size) >> 1;//textBaseline = "middle" 是从中间渲染，所以基于高度要上下补值
-                    style = context.createLinearGradient(x, y - hh, x, y + hh);
-                    for (let i = 0; i < gradients.length; i++) {
-                        const colorStop = gradients[i];
-                        style.addColorStop(colorStop[0], colorStop[1]);
-                    }
-                }
-                context.fillStyle = style || toColorString(textColor);
-                let shadow = format.shadow || node.shadow;
-                if (shadow) {
-                    let shadowBlur = shadow[0];
-                    if (shadowBlur) {
-                        context.shadowBlur = shadowBlur;
-                        context.shadowColor = shadow[1] || "black";
-                        context.shadowOffsetX = shadow[2] || 0;
-                        context.shadowOffsetY = shadow[3] || 0;
-                    }
-                }
-                context.fillText(text, x + $offsetX, y + $offsetY);
-                if (stroke) {
-                    context.strokeStyle = toColorString(strokeColor);
-                    context.lineWidth = stroke;
-                    context.strokeText(text, x + $offsetX, y + $offsetY);
-                }
-            }
         }
 
         private renderingMask = false;

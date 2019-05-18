@@ -120,9 +120,6 @@ namespace egret.web {
                     case sys.RenderNodeType.BitmapNode:
                         this.renderBitmap(<sys.BitmapNode>node, buffer);
                         break;
-                    case sys.RenderNodeType.TextNode:
-                        this.renderText(<sys.TextNode>node, buffer);
-                        break;
                     case sys.RenderNodeType.GraphicsNode:
                         this.renderGraphics(<sys.GraphicsNode>node, buffer);
                         break;
@@ -600,9 +597,6 @@ namespace egret.web {
                     case sys.RenderNodeType.BitmapNode:
                         this.renderBitmap(<sys.BitmapNode>node, buffer);
                         break;
-                    case sys.RenderNodeType.TextNode:
-                        this.renderText(<sys.TextNode>node, buffer);
-                        break;
                     case sys.RenderNodeType.GraphicsNode:
                         this.renderGraphics(<sys.GraphicsNode>node, buffer);
                         break;
@@ -657,9 +651,6 @@ namespace egret.web {
             switch (node.type) {
                 case sys.RenderNodeType.BitmapNode:
                     this.renderBitmap(<sys.BitmapNode>node, buffer);
-                    break;
-                case sys.RenderNodeType.TextNode:
-                    this.renderText(<sys.TextNode>node, buffer);
                     break;
                 case sys.RenderNodeType.GraphicsNode:
                     this.renderGraphics(<sys.GraphicsNode>node, buffer, forHitTest);
@@ -837,90 +828,6 @@ namespace egret.web {
 
         private canvasRenderer: CanvasRenderer;
         private canvasRenderBuffer: CanvasRenderBuffer;
-
-        /**
-         * @private
-         */
-        private renderText(node: sys.TextNode, buffer: WebGLRenderBuffer): void {
-            let width = node.width - node.x;
-            let height = node.height - node.y;
-            if (width <= 0 || height <= 0 || !width || !height || node.drawData.length == 0) {
-                return;
-            }
-            let canvasScaleX = sys.DisplayList.$canvasScaleX;
-            let canvasScaleY = sys.DisplayList.$canvasScaleY;
-            let maxTextureSize = buffer.context.$maxTextureSize;
-            if (width * canvasScaleX > maxTextureSize) {
-                canvasScaleX *= maxTextureSize / (width * canvasScaleX);
-            }
-            if (height * canvasScaleY > maxTextureSize) {
-                canvasScaleY *= maxTextureSize / (height * canvasScaleY);
-            }
-            width *= canvasScaleX;
-            height *= canvasScaleY;
-            let x = node.x * canvasScaleX;
-            let y = node.y * canvasScaleY;
-            if (node.$canvasScaleX != canvasScaleX || node.$canvasScaleY != canvasScaleY) {
-                node.$canvasScaleX = canvasScaleX;
-                node.$canvasScaleY = canvasScaleY;
-                node.dirtyRender = true;
-            }
-            if (!this.canvasRenderBuffer || !this.canvasRenderBuffer.context) {
-                this.canvasRenderer = new CanvasRenderer();
-                this.canvasRenderBuffer = new CanvasRenderBuffer(width, height);
-            }
-            else if (node.dirtyRender) {
-                this.canvasRenderBuffer.resize(width, height);
-            }
-
-            if (!this.canvasRenderBuffer.context) {
-                return;
-            }
-
-            if (canvasScaleX != 1 || canvasScaleY != 1) {
-                this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-            }
-
-            if (x || y) {
-                if (node.dirtyRender) {
-                    this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, -x, -y);
-                }
-                buffer.transform(1, 0, 0, 1, x / canvasScaleX, y / canvasScaleY);
-            }
-            else if (canvasScaleX != 1 || canvasScaleY != 1) {
-                this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-            }
-
-            if (node.dirtyRender) {
-                let surface = this.canvasRenderBuffer.surface;
-                this.canvasRenderer.renderText(node, this.canvasRenderBuffer.context);
-
-                // 拷贝canvas到texture
-                let texture = node.$texture;
-                if (!texture) {
-                    texture = buffer.context.createTexture(surface);
-                    node.$texture = texture;
-                } else {
-                    // 重新拷贝新的图像
-                    buffer.context.updateTexture(texture, surface);
-                }
-                // 保存材质尺寸
-                node.$textureWidth = surface.width;
-                node.$textureHeight = surface.height;
-            }
-
-            let textureWidth = node.$textureWidth;
-            let textureHeight = node.$textureHeight;
-            buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
-
-            if (x || y) {
-                if (node.dirtyRender) {
-                    this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-                }
-                buffer.transform(1, 0, 0, 1, -x / canvasScaleX, -y / canvasScaleY);
-            }
-            node.dirtyRender = false;
-        }
 
         /**
          * @private

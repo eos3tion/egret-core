@@ -1,15 +1,13 @@
-namespace egret {
+namespace jy {
 
-    export class Bin extends Rectangle {
+    export class Bin extends egret.Rectangle {
         /**
          * 是否旋转了90°
          */
         rot = false;
 
         clone() {
-            let bin = new Bin(this.x, this.y, this.width, this.height);
-            bin.rot = this.rot;
-            return bin;
+            return new Bin(this.x, this.y, this.width, this.height);
         }
     }
 
@@ -46,59 +44,59 @@ namespace egret {
          */
         resize(width: number, height: number) {
             let { width: ow, height: oh } = this;
-            if (width < ow || height < oh) {
-                return false;
+            if (width > ow && height > oh) {
+                this.width = width;
+                this.height = height;
+                this.freeRects.push(
+                    /**右侧增加一个高度和原本相同的 */new Bin(ow, 0, width - ow, oh),
+                    /** 下方整块 */new Bin(0, oh, width, height - oh)
+                )
+                return true
             }
-            this.width = width;
-            this.height = height;
-            this.freeRects.push(
-                /**右侧增加一个高度和原本相同的 */new Bin(ow, 0, width - ow, oh),
-                /** 下方整块 */new Bin(0, oh, width, height - oh)
-            )
-            return true
         }
 
         insert(width: number, height: number) {
             let bestShortSideFit = Infinity;
             let bestLongSideFit = 0;
             const { freeRects, rot: rotations } = this;
-            const { min, max, abs } = Math;
+            const { min, max } = Math;
             let bestNode = new Bin;
             for (let i = 0, len = freeRects.length; i < len; i++) {
-                let { width: w, height: h, x, y } = freeRects[i];
+                let { width: rw, height: rh, x: rx, y: ry } = freeRects[i];
                 // Try to place the Rect in upright (non-flipped) orientation.
-                if (w >= width && h >= height) {
-                    let leftoverHoriz = abs(w - width);
-                    let leftoverVert = abs(h - height);
+                if (rw >= width && rh >= height) {
+                    let leftoverHoriz = rw - width;
+                    let leftoverVert = rh - height;
                     let shortSideFit = min(leftoverHoriz, leftoverVert);
                     let longSideFit = max(leftoverHoriz, leftoverVert);
 
                     if (shortSideFit < bestShortSideFit || (shortSideFit == bestShortSideFit && longSideFit < bestLongSideFit)) {
-                        bestNode.x = x;
-                        bestNode.y = y;
+                        bestNode.x = rx;
+                        bestNode.y = ry;
                         bestNode.width = width;
                         bestNode.height = height;
                         bestShortSideFit = shortSideFit;
                         bestLongSideFit = longSideFit;
                     }
                 }
-                if (rotations && w >= height && h >= width) {
-                    let flippedLeftoverHoriz = abs(w - height);
-                    let flippedLeftoverVert = abs(h - width);
+                if (rotations && rw >= height && rh >= width) {
+                    let flippedLeftoverHoriz = rw - height;
+                    let flippedLeftoverVert = rh - width;
                     let flippedShortSideFit = min(flippedLeftoverHoriz, flippedLeftoverVert);
                     let flippedLongSideFit = max(flippedLeftoverHoriz, flippedLeftoverVert);
 
                     if (flippedShortSideFit < bestShortSideFit || (flippedShortSideFit == bestShortSideFit && flippedLongSideFit < bestLongSideFit)) {
-                        bestNode.x = x;
-                        bestNode.y = y;
+                        bestNode.x = rx;
+                        bestNode.y = ry;
                         bestNode.width = height;
                         bestNode.height = width;
+                        bestNode.rot = true;
                         bestShortSideFit = flippedShortSideFit;
                         bestLongSideFit = flippedLongSideFit;
                     }
                 }
             }
-            if (bestNode.width) {
+            if (bestNode.height) {
                 placeRect(bestNode, this);
                 return bestNode;
             }
@@ -107,12 +105,12 @@ namespace egret {
 
     function placeRect(node: Bin, packer: BinPacker): void {
         let { freeRects, usedRects } = packer;
-        let numRectsToProcess = freeRects.length;
-        for (let i = 0; i < numRectsToProcess; i++) {
+        let fRectLen = freeRects.length;
+        for (let i = 0; i < fRectLen; i++) {
             if (splitFreeNode(freeRects[i], node, packer)) {
                 freeRects.splice(i, 1);
-                --i;
-                --numRectsToProcess;
+                i--;
+                fRectLen--;
             }
         }
 
@@ -124,43 +122,43 @@ namespace egret {
     }
 
     function splitFreeNode(freeNode: Bin, usedNode: Bin, packer: BinPacker) {
-        let { freeRects } = packer;
+        let freeRects = packer.freeRects;
         // Test with SAT if the Rects even intersect.
-        let { x, y, right, bottom } = usedNode;
-        let { x: fx, y: fy, right: fr, bottom: fb } = freeNode;
-        if (x >= fr || right <= fx || y >= fb || bottom <= y) {
-            return false;
-        }
+        let { x: usedNode_x, y: usedNode_y, right: usedNode_right, bottom: usedNode_bottom } = usedNode;
+        let { x: freeNode_x, y: freeNode_y, right: freeNode_right, bottom: freeNode_bottom } = freeNode;
+        if (usedNode_x >= freeNode_right || usedNode_right <= freeNode_x
+            || usedNode_y >= freeNode_bottom || usedNode_bottom <= freeNode_y) return false;
         let newNode: Bin;
-        if (x < fr && right > fx) {
+        if (usedNode_x < freeNode_right && usedNode_right > freeNode_x) {
             // New node at the top side of the used node.
-            if (y > fy && y < fb) {
+            if (usedNode_y > freeNode_y && usedNode_y < freeNode_bottom) {
                 newNode = freeNode.clone();
-                newNode.height = y - newNode.y;
+                newNode.height = usedNode_y - freeNode_y;
                 freeRects.push(newNode);
             }
 
             // New node at the bottom side of the used node.
-            if (bottom < fb) {
+            if (usedNode_bottom < freeNode_bottom) {
                 newNode = freeNode.clone();
-                newNode.y = bottom;
-                newNode.height = fb - bottom;
+                newNode.y = usedNode_bottom;
+                newNode.height = freeNode_bottom - usedNode_bottom;
                 freeRects.push(newNode);
             }
         }
 
-        if (y < fb && bottom > fy) {
+        if (usedNode_y < freeNode_bottom && usedNode_bottom > freeNode_y) {
             // New node at the left side of the used node.
-            if (x > fx && x < fr) {
+            if (usedNode_x > freeNode_x && usedNode_x < freeNode_right) {
                 newNode = freeNode.clone();
-                newNode.width = x - newNode.x;
+                newNode.width = usedNode_x - freeNode_x;
                 freeRects.push(newNode);
             }
+
             // New node at the right side of the used node.
-            if (right < fr) {
+            if (usedNode_right < freeNode_right) {
                 newNode = freeNode.clone();
-                newNode.x = right;
-                newNode.width = fr - right;
+                newNode.x = usedNode_right;
+                newNode.width = freeNode_right - usedNode_right;
                 freeRects.push(newNode);
             }
         }
@@ -170,18 +168,20 @@ namespace egret {
 
     function pruneFreeList(packer: BinPacker) {
         let { freeRects } = packer;
-        let len = freeRects.length;
-        for (let i = 0; i < freeRects.length; i++)
-            for (let j = i + 1; j < len; j++) {
-                let a = freeRects[i];
+        for (let i = 0; i < freeRects.length; i++) {
+            let a = freeRects[i];
+            for (let j = i + 1; j < freeRects.length; j++) {
                 let b = freeRects[j]
                 if (b.containsRect(a)) {
                     freeRects.splice(i, 1);
-                    break;
+                    i--;
+                    break
                 }
                 if (a.containsRect(b)) {
                     freeRects.splice(j, 1);
+                    j--;
                 }
             }
+        }
     }
 }

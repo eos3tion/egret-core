@@ -47,19 +47,5 @@ namespace egret {
      * @includeExample egret/utils/toColorString.ts
      * @language zh_CN
      */
-    export function toColorString(value:number):string {
-        if (value < 0)
-            value = 0;
-        if (value > 16777215)
-            value = 16777215;
-
-        let color:string = value.toString(16).toUpperCase();
-        while (color.length > 6) {
-            color = color.slice(1, color.length);
-        }
-        while (color.length < 6) {
-            color = "0" + color;
-        }
-        return "#" + color;
-    }
+    export var toColorString = jy.ColorUtil.getColorString;
 }
