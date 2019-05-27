@@ -889,12 +889,13 @@ namespace egret.web {
             const { texs } = data;
             for (let i = 0; i < texs.length; i++) {
                 let uni = uniforms[`tex${i}`];
+                gl.activeTexture(gl.TEXTURE0 + i);
+                let tex: WebGLTexture;
                 if (uni) {
-                    let tex = texs[i];
-                    gl.activeTexture(gl.TEXTURE0 + i);
-                    gl.bindTexture(gl.TEXTURE_2D, tex);
+                    tex = texs[i];
                     uni.setValue(i);
                 }
+                gl.bindTexture(gl.TEXTURE_2D, tex);
             }
             let uni = uniforms.projectionVector;
             if (uni) {
