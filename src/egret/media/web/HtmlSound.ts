@@ -34,7 +34,7 @@ namespace egret.web {
      * @inheritDoc
      */
     export class HtmlSound extends egret.EventDispatcher implements egret.Sound {
- 
+
 
         /**
          * @private
@@ -102,7 +102,7 @@ namespace egret.web {
             }
 
             function onAudioLoaded(): void {
-                HtmlSound.$recycle(this.url, audio);
+                HtmlSound.$recycle(self.url, audio);
                 removeListeners();
                 if (ua.indexOf("firefox") >= 0) {//火狐兼容
                     audio.pause();
@@ -111,7 +111,7 @@ namespace egret.web {
                 if (ua.indexOf("edge") >= 0) {//Edge兼容
                     document.body.appendChild(audio);
                 }
-                
+
 
                 self.loaded = true;
                 self.dispatchEventWith(egret.EventType.COMPLETE);
