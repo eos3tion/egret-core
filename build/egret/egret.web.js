@@ -5815,13 +5815,14 @@ var egret;
                 var texs = data.texs;
                 for (var i = 0; i < texs.length; i++) {
                     var uni_1 = uniforms["tex" + i];
-                    gl.activeTexture(gl.TEXTURE0 + i);
-                    var tex = void 0;
                     if (uni_1) {
-                        tex = texs[i];
-                        uni_1.setValue(i);
+                        var tex = texs[i];
+                        if (tex) {
+                            gl.activeTexture(gl.TEXTURE0 + i);
+                            gl.bindTexture(gl.TEXTURE_2D, tex);
+                            uni_1.setValue(i);
+                        }
                     }
-                    gl.bindTexture(gl.TEXTURE_2D, tex);
                 }
                 var uni = uniforms.projectionVector;
                 if (uni) {
