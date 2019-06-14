@@ -82,7 +82,7 @@ namespace egret {
             return WebGLUtils.canUseWebGL;
         }
 
-        public static deleteWebGLTexture(bitmapData): void {
+        public static deleteWebGLTexture(bitmapData: any): void {
             if (bitmapData) {
                 let gl = bitmapData.glContext;
                 if (gl) {

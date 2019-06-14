@@ -101,7 +101,7 @@ var egret;
                     delete HtmlSound.clearAudios[this.url];
                 }
                 function onAudioLoaded() {
-                    HtmlSound.$recycle(this.url, audio);
+                    HtmlSound.$recycle(self.url, audio);
                     removeListeners();
                     if (ua.indexOf("firefox") >= 0) { //火狐兼容
                         audio.pause();
@@ -4641,6 +4641,7 @@ var egret;
                 for (var i = 0; i < drawDataLen; i++) {
                     var data = drawData[i];
                     data.count = 0;
+                    data.texs = null;
                     data.texture = null;
                     data.filter = null;
                 }
@@ -5410,6 +5411,7 @@ var egret;
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.bindTexture(gl.TEXTURE_2D, null);
                 return texture;
             };
             /**

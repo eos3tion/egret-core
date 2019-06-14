@@ -387,6 +387,7 @@ namespace egret.web {
             for (let i = 0; i < drawDataLen; i++) {
                 let data = drawData[i] as any;
                 data.count = 0;
+                data.texs = null;
                 data.texture = null;
                 data.filter = null;
             }
