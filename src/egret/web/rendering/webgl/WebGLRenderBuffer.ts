@@ -66,7 +66,7 @@ namespace egret.web {
             this.context = WebGLRenderContext.getInstance(width, height);
 
             // buffer 对应的 render target
-            this.rootRenderTarget = new WebGLRenderTarget(this.context.context, 3, 3);
+            this.rootRenderTarget = new WebGLRenderTarget(this.context, 3, 3);
             if (width && height) {
                 this.resize(width, height);
             }

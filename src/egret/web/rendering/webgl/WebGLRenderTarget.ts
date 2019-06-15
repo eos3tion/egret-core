@@ -55,10 +55,12 @@ namespace egret.web {
          * If frame buffer is enabled, the default is true
          */
         public useFrameBuffer: boolean = true;
+        context: WebGLRenderContext;
 
-        public constructor(gl: WebGLRenderingContext, width: number, height: number) {
+        public constructor(context: WebGLRenderContext, width: number, height: number) {
             super();
-            this.gl = gl;
+            this.context = context;
+            this.gl = context.context;
             this._resize(width, height);
         }
 
@@ -113,26 +115,12 @@ namespace egret.web {
         public initFrameBuffer(): void {
             if (!this.frameBuffer) {
                 let gl = this.gl;
-                let texture = this.createTexture();
+                let texture = this.context.createTexture2(this.width, this.height)
                 this.frameBuffer = gl.createFramebuffer();
                 gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
                 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
                 this.texture = texture;
             }
-        }
-
-        private createTexture() {
-            let gl = this.gl;
-
-            let texture = gl.createTexture();
-            texture.glContext = gl;
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            return texture;
         }
 
         public clear(bind?: boolean) {

@@ -75,6 +75,7 @@ namespace egret.web {
          * 默认shader
          */
         private defaultFragShader: string;
+        emptyTexture: WebGLTexture;
         public static getInstance(width: number, height: number): WebGLRenderContext {
             if (this.instance) {
                 return this.instance;
@@ -308,6 +309,7 @@ namespace egret.web {
                 `}`
             );
             this.defaultFragShader = defaultFragShader.join("\n");
+            this.emptyTexture = this.createTexture2(1, 1);
         }
 
         private handleContextLost() {
@@ -424,6 +426,20 @@ namespace egret.web {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            return texture;
+        }
+
+        createTexture2(width: number, height: number) {
+            let gl = this.context;
+            let texture = gl.createTexture();
+            texture.glContext = gl;
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             gl.bindTexture(gl.TEXTURE_2D, null);
             return texture;
         }
@@ -886,17 +902,18 @@ namespace egret.web {
 
         private syncUniForTexture(program: EgretWebGLProgram, data: TextureDrawData) {
             let uniforms = program.uniforms;
-            let gl = this.context;
+            const { context, emptyTexture, $maxTextureCount } = this;
             const { texs } = data;
-            for (let i = 0; i < texs.length; i++) {
+            for (let i = 0; i < $maxTextureCount; i++) {
                 let uni = uniforms[`tex${i}`];
                 if (uni) {
                     let tex = texs[i];
-                    if (tex) {
-                        gl.activeTexture(gl.TEXTURE0 + i);
-                        gl.bindTexture(gl.TEXTURE_2D, tex);
-                        uni.setValue(i);
+                    if (!tex) {
+                        tex = emptyTexture;
                     }
+                    context.activeTexture(context.TEXTURE0 + i);
+                    context.bindTexture(context.TEXTURE_2D, tex);
+                    uni.setValue(i);
                 }
             }
             let uni = uniforms.projectionVector;

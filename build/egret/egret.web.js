@@ -5004,14 +5004,15 @@ var egret;
          */
         var WebGLRenderTarget = /** @class */ (function (_super) {
             __extends(WebGLRenderTarget, _super);
-            function WebGLRenderTarget(gl, width, height) {
+            function WebGLRenderTarget(context, width, height) {
                 var _this = _super.call(this) || this;
                 _this.clearColor = [0, 0, 0, 0];
                 /**
                  * If frame buffer is enabled, the default is true
                  */
                 _this.useFrameBuffer = true;
-                _this.gl = gl;
+                _this.context = context;
+                _this.gl = context.context;
                 _this._resize(width, height);
                 return _this;
             }
@@ -5062,24 +5063,12 @@ var egret;
             WebGLRenderTarget.prototype.initFrameBuffer = function () {
                 if (!this.frameBuffer) {
                     var gl = this.gl;
-                    var texture = this.createTexture();
+                    var texture = this.context.createTexture2(this.width, this.height);
                     this.frameBuffer = gl.createFramebuffer();
                     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
                     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
                     this.texture = texture;
                 }
-            };
-            WebGLRenderTarget.prototype.createTexture = function () {
-                var gl = this.gl;
-                var texture = gl.createTexture();
-                texture.glContext = gl;
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                return texture;
             };
             WebGLRenderTarget.prototype.clear = function (bind) {
                 var gl = this.gl;
@@ -5312,6 +5301,7 @@ var egret;
                 }
                 defaultFragShader.push("gl_FragColor = color * vColor;", "}");
                 this.defaultFragShader = defaultFragShader.join("\n");
+                this.emptyTexture = this.createTexture2(1, 1);
             };
             WebGLRenderContext.prototype.handleContextLost = function () {
                 this.contextLost = true;
@@ -5407,6 +5397,19 @@ var egret;
                 gl.bindTexture(gl.TEXTURE_2D, texture);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmapData);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.bindTexture(gl.TEXTURE_2D, null);
+                return texture;
+            };
+            WebGLRenderContext.prototype.createTexture2 = function (width, height) {
+                var gl = this.context;
+                var texture = gl.createTexture();
+                texture.glContext = gl;
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -5813,17 +5816,18 @@ var egret;
             };
             WebGLRenderContext.prototype.syncUniForTexture = function (program, data) {
                 var uniforms = program.uniforms;
-                var gl = this.context;
+                var _a = this, context = _a.context, emptyTexture = _a.emptyTexture, $maxTextureCount = _a.$maxTextureCount;
                 var texs = data.texs;
-                for (var i = 0; i < texs.length; i++) {
+                for (var i = 0; i < $maxTextureCount; i++) {
                     var uni_1 = uniforms["tex" + i];
                     if (uni_1) {
                         var tex = texs[i];
-                        if (tex) {
-                            gl.activeTexture(gl.TEXTURE0 + i);
-                            gl.bindTexture(gl.TEXTURE_2D, tex);
-                            uni_1.setValue(i);
+                        if (!tex) {
+                            tex = emptyTexture;
                         }
+                        context.activeTexture(context.TEXTURE0 + i);
+                        context.bindTexture(context.TEXTURE_2D, tex);
+                        uni_1.setValue(i);
                     }
                 }
                 var uni = uniforms.projectionVector;
@@ -6103,7 +6107,7 @@ var egret;
                 // 获取webglRenderContext
                 _this.context = web.WebGLRenderContext.getInstance(width, height);
                 // buffer 对应的 render target
-                _this.rootRenderTarget = new web.WebGLRenderTarget(_this.context.context, 3, 3);
+                _this.rootRenderTarget = new web.WebGLRenderTarget(_this.context, 3, 3);
                 if (width && height) {
                     _this.resize(width, height);
                 }
