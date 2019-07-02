@@ -926,32 +926,34 @@ namespace egret.web {
             let uniforms = program.uniforms;
             let gl = this.context;
             const { textureWidth, textureHeight } = data;
-            for (let key in uniforms) {
-                let out = null;
-                if (key === "projectionVector") {
-                    out = { x: this.projectionX, y: this.projectionY };
-                } else if (key === "uTextureSize") {
-                    out = { x: textureWidth, y: textureHeight };
-                } else if (key === "uSampler") {
-                    gl.activeTexture(gl.TEXTURE0);
-                    gl.bindTexture(gl.TEXTURE_2D, data.texture);
-                    out = 0;
-                } else if (key[0] == "_") {//纹理
-                    let idx = +key[key.length - 1];//纹理编号
-                    if (idx >= 1) {//索引0给`uSampler`使用
-                        //需要先上传纹理
-                        let v = filter.$uniforms[key] as egret.Texture;
-                        if (v) {
-                            out = idx;
-                            gl.activeTexture(gl.TEXTURE0 + idx);
-                            gl.bindTexture(gl.TEXTURE_2D, this.getWebGLTexture(v.bitmapData));
-                        }
+            let uni = uniforms.projectionVector;
+            if (uni) {
+                uni.setValue({ x: this.projectionX, y: this.projectionY });
+            }
+            uni = uniforms.uTextureSize;
+            if (uni) {
+                uni.setValue({ x: textureWidth, y: textureHeight });
+            }
+            uni = uniforms.tex0;
+            if (uni) {
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                uni.setValue(0);
+            }
+            for (let i = 1; i < this.$maxTextureCount; i++) {
+                let key = "tex" + i;
+                let uni = uniforms[key];
+                if (uni) {
+                    let v = filter.$uniforms[key] as egret.Texture;
+                    if (v) {
+                        gl.activeTexture(gl.TEXTURE0 + i);
+                        gl.bindTexture(gl.TEXTURE_2D, this.getWebGLTexture(v.bitmapData));
+                        uni.setValue(i);
+                    } else {
+                        break;
                     }
                 } else {
-                    out = filter.$uniforms[key];
-                }
-                if (out != null) {
-                    uniforms[key].setValue(out);
+                    break
                 }
             }
         }

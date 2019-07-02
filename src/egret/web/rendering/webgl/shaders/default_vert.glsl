@@ -4,7 +4,6 @@ attribute float aColor;
 attribute float aTexIdx;
 
 uniform vec2 projectionVector;
-// uniform vec2 offsetVector;
 
 varying vec2 vTextureCoord;
 varying vec4 vColor;

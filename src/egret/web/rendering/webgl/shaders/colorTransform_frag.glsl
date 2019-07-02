@@ -3,10 +3,10 @@ varying vec2 vTextureCoord;
 varying vec4 vColor;
 uniform mat4 matrix;
 uniform vec4 colorAdd;
-uniform sampler2D uSampler;
+uniform sampler2D tex0;
 
 void main(void) {
-    vec4 texColor = texture2D(uSampler, vTextureCoord);
+    vec4 texColor = texture2D(tex0, vTextureCoord);
     if(texColor.a > 0.) {
         // 抵消预乘的alpha通道
         texColor = vec4(texColor.rgb / texColor.a, texColor.a);

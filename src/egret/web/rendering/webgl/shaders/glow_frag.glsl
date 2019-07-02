@@ -1,7 +1,7 @@
 precision highp float;
 varying vec2 vTextureCoord;
 
-uniform sampler2D uSampler;
+uniform sampler2D tex0;
 
 uniform float dist;
 uniform float angle;
@@ -9,7 +9,7 @@ uniform vec4 color;
 uniform float alpha;
 uniform float blurX;
 uniform float blurY;
-// uniform vec4 quality;
+
 uniform float strength;
 uniform float inner;
 uniform float knockout;
@@ -27,7 +27,7 @@ void main(void) {
     // TODO 自动调节采样次数？
     const float linearSamplingTimes = 7.0;
     const float circleSamplingTimes = 12.0;
-    vec4 ownColor = texture2D(uSampler, vTextureCoord);
+    vec4 ownColor = texture2D(tex0, vTextureCoord);
     vec4 curColor;
     float totalAlpha = 0.0;
     float maxTotalAlpha = 0.0;
@@ -49,7 +49,7 @@ void main(void) {
             curDistanceX = i * stepX * cosAngle;
             curDistanceY = i * stepY * sinAngle;
             if (vTextureCoord.x + curDistanceX - offsetX >= 0.0 && vTextureCoord.y + curDistanceY + offsetY <= 1.0){
-                curColor = texture2D(uSampler, vec2(vTextureCoord.x + curDistanceX - offsetX, vTextureCoord.y + curDistanceY + offsetY));
+                curColor = texture2D(tex0, vec2(vTextureCoord.x + curDistanceX - offsetX, vTextureCoord.y + curDistanceY + offsetY));
                 totalAlpha += (linearSamplingTimes - i) * curColor.a;
             }
             maxTotalAlpha += (linearSamplingTimes - i);

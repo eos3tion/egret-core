@@ -1,6 +1,6 @@
 precision mediump float;
 uniform vec2 blur;
-uniform sampler2D uSampler;
+uniform sampler2D tex0;
 varying vec2 vTextureCoord;
 uniform vec2 uTextureSize;
 void main()
@@ -15,7 +15,7 @@ void main()
     for (int i = -sampleRadius; i <= sampleRadius; i++) {
         uv.x = vTextureCoord.x + float(i) * blurUv.x;
         uv.y = vTextureCoord.y + float(i) * blurUv.y;
-        color += texture2D(uSampler, uv);
+        color += texture2D(tex0, uv);
     }
 
     color /= float(samples);
