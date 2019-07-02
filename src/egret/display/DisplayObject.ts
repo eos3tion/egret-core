@@ -1506,7 +1506,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public globalToLocal(stageX: number = 0, stageY: number = 0, resultPoint?: Point): Point {
+        public globalToLocal(stageX: number = 0, stageY: number = 0, resultPoint?: Point2) {
             let m = this.$getInvertedConcatenatedMatrix();
             return m.transformPoint(stageX, stageY, resultPoint);
 
@@ -1533,7 +1533,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public localToGlobal(localX: number = 0, localY: number = 0, resultPoint?: Point): Point {
+        public localToGlobal(localX: number = 0, localY: number = 0, resultPoint?: Point2) {
             let m = this.$getConcatenatedMatrix();
             return m.transformPoint(localX, localY, resultPoint);
         }

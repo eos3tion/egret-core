@@ -10454,7 +10454,8 @@ var egret;
             var x = this.a * pointX + this.c * pointY + this.tx;
             var y = this.b * pointX + this.d * pointY + this.ty;
             if (resultPoint) {
-                resultPoint.setTo(x, y);
+                resultPoint.x = x;
+                resultPoint.y = y;
                 return resultPoint;
             }
             return new egret.Point(x, y);

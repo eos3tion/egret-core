@@ -1114,7 +1114,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        globalToLocal(stageX?: number, stageY?: number, resultPoint?: Point): Point;
+        globalToLocal(stageX?: number, stageY?: number, resultPoint?: Point2): Point2;
         /**
          * Converts the point object from the display object's (local) coordinates to the Stage (global) coordinates.
          * @param localX the x value in the local coordinates
@@ -1136,7 +1136,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        localToGlobal(localX?: number, localY?: number, resultPoint?: Point): Point;
+        localToGlobal(localX?: number, localY?: number, resultPoint?: Point2): Point2;
         /**
          * @private
          * 获取显示对象占用的矩形区域集合，通常包括自身绘制的测量区域，如果是容器，还包括所有子项占据的区域。
@@ -7049,7 +7049,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        transformPoint(pointX: number, pointY: number, resultPoint?: Point): Point;
+        transformPoint(pointX: number, pointY: number, resultPoint?: Point2): Point2;
         /**
          * Translates the matrix along the x and y axes, as specified by the dx and dy parameters.
          * @param dx The amount of movement along the x axis to the right, in pixels.

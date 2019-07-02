@@ -502,11 +502,12 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public transformPoint(pointX: number, pointY: number, resultPoint?: Point): Point {
+        public transformPoint(pointX: number, pointY: number, resultPoint?: Point2) {
             let x = this.a * pointX + this.c * pointY + this.tx;
             let y = this.b * pointX + this.d * pointY + this.ty;
             if (resultPoint) {
-                resultPoint.setTo(x, y);
+                resultPoint.x = x;
+                resultPoint.y = y;
                 return resultPoint;
             }
             return new Point(x, y);
