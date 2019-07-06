@@ -1672,7 +1672,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        addChild(child: DisplayObject): DisplayObject;
+        addChild(child: DisplayObject, notifyListeners?: boolean): DisplayObject;
         /**
          * Adds a child DisplayObject instance to this DisplayObjectContainer instance. The child is added at the index position
          * specified. An index of 0 represents the back (bottom) of the display list for this DisplayObjectContainer object.
@@ -1698,7 +1698,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        addChildAt(child: DisplayObject, index: number): DisplayObject;
+        addChildAt(child: DisplayObject, index: number, notifyListeners?: boolean): DisplayObject;
         /**
          * @private
          */
@@ -1806,7 +1806,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        removeChild(child: DisplayObject): DisplayObject;
+        removeChild(child: DisplayObject, notifyListeners?: boolean): DisplayObject;
         /**
          * Removes a child DisplayObject from the specified index position in the child list of the DisplayObjectContainer.
          * The parent property of the removed child is set to null, and the object is garbage collected if no other references
@@ -1828,7 +1828,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        removeChildAt(index: number): DisplayObject;
+        removeChildAt(index: number, notifyListeners?: boolean): DisplayObject;
         /**
          * @private
          */
@@ -1919,7 +1919,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        removeChildren(): void;
+        removeChildren(notifyListeners?: boolean): void;
         /**
          * @private
          * 一个子项被添加到容器内，此方法不仅在操作addChild()时会被回调，在操作setChildIndex()或swapChildren时也会回调。

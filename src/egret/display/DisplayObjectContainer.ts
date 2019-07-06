@@ -108,12 +108,12 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public addChild(child: DisplayObject): DisplayObject {
+        public addChild(child: DisplayObject, notifyListeners = true): DisplayObject {
             let index: number = this.$children.length;
 
             if (child.$parent == this)
                 index--;
-            return this.$doAddChild(child, index);
+            return this.$doAddChild(child, index, notifyListeners);
         }
 
 
@@ -142,7 +142,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public addChildAt(child: DisplayObject, index: number): DisplayObject {
+        public addChildAt(child: DisplayObject, index: number, notifyListeners = true): DisplayObject {
             index = +index | 0;
             if (index < 0 || index >= this.$children.length) {
                 index = this.$children.length;
@@ -150,7 +150,7 @@ namespace egret {
                     index--;
                 }
             }
-            return this.$doAddChild(child, index);
+            return this.$doAddChild(child, index, notifyListeners);
         }
 
         /**
@@ -347,10 +347,10 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public removeChild(child: DisplayObject): DisplayObject {
+        public removeChild(child: DisplayObject, notifyListeners = true): DisplayObject {
             let index = this.$children.indexOf(child);
             if (index >= 0) {
-                return this.$doRemoveChild(index);
+                return this.$doRemoveChild(index, notifyListeners);
             }
             else {
                 DEBUG && $error(1006);
@@ -379,10 +379,10 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public removeChildAt(index: number): DisplayObject {
+        public removeChildAt(index: number, notifyListeners = true): DisplayObject {
             index = +index | 0;
             if (index >= 0 && index < this.$children.length) {
-                return this.$doRemoveChild(index);
+                return this.$doRemoveChild(index, notifyListeners);
             }
             else {
                 DEBUG && $error(1007);
@@ -592,10 +592,10 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public removeChildren(): void {
+        public removeChildren(notifyListeners = true): void {
             let children = this.$children;
             for (let i: number = children.length - 1; i >= 0; i--) {
-                this.$doRemoveChild(i);
+                this.$doRemoveChild(i, notifyListeners);
             }
         }
 

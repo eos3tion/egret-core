@@ -3129,11 +3129,12 @@ var egret;
          * @platform Web,Native
          * @language zh_CN
          */
-        DisplayObjectContainer.prototype.addChild = function (child) {
+        DisplayObjectContainer.prototype.addChild = function (child, notifyListeners) {
+            if (notifyListeners === void 0) { notifyListeners = true; }
             var index = this.$children.length;
             if (child.$parent == this)
                 index--;
-            return this.$doAddChild(child, index);
+            return this.$doAddChild(child, index, notifyListeners);
         };
         /**
          * Adds a child DisplayObject instance to this DisplayObjectContainer instance. The child is added at the index position
@@ -3160,7 +3161,8 @@ var egret;
          * @platform Web,Native
          * @language zh_CN
          */
-        DisplayObjectContainer.prototype.addChildAt = function (child, index) {
+        DisplayObjectContainer.prototype.addChildAt = function (child, index, notifyListeners) {
+            if (notifyListeners === void 0) { notifyListeners = true; }
             index = +index | 0;
             if (index < 0 || index >= this.$children.length) {
                 index = this.$children.length;
@@ -3168,7 +3170,7 @@ var egret;
                     index--;
                 }
             }
-            return this.$doAddChild(child, index);
+            return this.$doAddChild(child, index, notifyListeners);
         };
         /**
          * @private
@@ -3353,10 +3355,11 @@ var egret;
          * @platform Web,Native
          * @language zh_CN
          */
-        DisplayObjectContainer.prototype.removeChild = function (child) {
+        DisplayObjectContainer.prototype.removeChild = function (child, notifyListeners) {
+            if (notifyListeners === void 0) { notifyListeners = true; }
             var index = this.$children.indexOf(child);
             if (index >= 0) {
-                return this.$doRemoveChild(index);
+                return this.$doRemoveChild(index, notifyListeners);
             }
             else {
                 true && egret.$error(1006);
@@ -3384,10 +3387,11 @@ var egret;
          * @platform Web,Native
          * @language zh_CN
          */
-        DisplayObjectContainer.prototype.removeChildAt = function (index) {
+        DisplayObjectContainer.prototype.removeChildAt = function (index, notifyListeners) {
+            if (notifyListeners === void 0) { notifyListeners = true; }
             index = +index | 0;
             if (index >= 0 && index < this.$children.length) {
-                return this.$doRemoveChild(index);
+                return this.$doRemoveChild(index, notifyListeners);
             }
             else {
                 true && egret.$error(1007);
@@ -3588,10 +3592,11 @@ var egret;
          * @platform Web,Native
          * @language zh_CN
          */
-        DisplayObjectContainer.prototype.removeChildren = function () {
+        DisplayObjectContainer.prototype.removeChildren = function (notifyListeners) {
+            if (notifyListeners === void 0) { notifyListeners = true; }
             var children = this.$children;
             for (var i = children.length - 1; i >= 0; i--) {
-                this.$doRemoveChild(i);
+                this.$doRemoveChild(i, notifyListeners);
             }
         };
         /**
