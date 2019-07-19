@@ -11876,54 +11876,6 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * The HttpMethod class provides values that specify whether the HttpRequest object should use the POST method
-     * or the GET method when sending data to a server.
-     * @see egret.HttpRequest
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * HttpRequestMethod 类提供了一些值，这些值可指定在将数据发送到服务器时，
-     * HttpRequest 对象应使用 POST 方法还是 GET 方法。
-     * @see egret.HttpRequest
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    var HttpMethod;
-    (function (HttpMethod) {
-        /**
-         * Specifies that the HttpRequest object is a GET.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 表示 HttpRequest 对象是一个 GET。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        HttpMethod.GET = "GET";
-        /**
-         * Specifies that the HttpRequest object is a POST.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 表示 HttpRequest 对象是一个 POST。
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        HttpMethod.POST = "POST";
-    })(HttpMethod = egret.HttpMethod || (egret.HttpMethod = {}));
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.

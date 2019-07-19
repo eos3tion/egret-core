@@ -45,7 +45,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export namespace HttpMethod {
+    export const enum HttpMethod {
 
         /**
          * Specifies that the HttpRequest object is a GET.
@@ -59,7 +59,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        export const GET = "GET";
+        GET = "GET",
 
         /**
          * Specifies that the HttpRequest object is a POST.
@@ -73,6 +73,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        export const POST = "POST";
+        POST = "POST"
     }
 }
