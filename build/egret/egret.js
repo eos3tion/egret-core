@@ -3207,7 +3207,7 @@ var egret;
                 var list = DisplayObjectContainer.$EVENT_ADD_TO_STAGE_LIST;
                 while (list.length) {
                     var childAddToStage = list.shift();
-                    if (childAddToStage.$stage && notifyListeners) {
+                    if (childAddToStage.$stage) {
                         childAddToStage.dispatchEventWith("addedToStage" /* ADDED_TO_STAGE */);
                     }
                 }
@@ -3416,7 +3416,7 @@ var egret;
                 var list = DisplayObjectContainer.$EVENT_REMOVE_FROM_STAGE_LIST;
                 while (list.length > 0) {
                     var childAddToStage = list.shift();
-                    if (notifyListeners && childAddToStage.$hasAddToStage) {
+                    if (childAddToStage.$hasAddToStage) {
                         childAddToStage.$hasAddToStage = false;
                         childAddToStage.dispatchEventWith("removedFromStage" /* REMOVED_FROM_STAGE */);
                     }

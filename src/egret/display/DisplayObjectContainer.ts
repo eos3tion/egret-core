@@ -191,7 +191,7 @@ namespace egret {
                 let list = DisplayObjectContainer.$EVENT_ADD_TO_STAGE_LIST;
                 while (list.length) {
                     let childAddToStage = list.shift();
-                    if (childAddToStage.$stage && notifyListeners) {
+                    if (childAddToStage.$stage) {
                         childAddToStage.dispatchEventWith(EventType.ADDED_TO_STAGE);
                     }
                 }
@@ -407,7 +407,7 @@ namespace egret {
                 let list = DisplayObjectContainer.$EVENT_REMOVE_FROM_STAGE_LIST
                 while (list.length > 0) {
                     let childAddToStage = list.shift();
-                    if (notifyListeners && childAddToStage.$hasAddToStage) {
+                    if (childAddToStage.$hasAddToStage) {
                         childAddToStage.$hasAddToStage = false;
                         childAddToStage.dispatchEventWith(EventType.REMOVED_FROM_STAGE);
                     }
