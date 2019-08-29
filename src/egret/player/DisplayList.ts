@@ -125,7 +125,9 @@ namespace egret.sys {
                 this.changeSurfaceSize();
             }
             let buffer = this.renderBuffer;
-            buffer.clear();
+            if (egret.sys.autoClear) {
+                buffer.clear();
+            }
             drawCalls = systemRenderer.render(this.root, buffer, this.offsetMatrix);
 
             if (!this.isStage) {//对非舞台画布要保存渲染节点。

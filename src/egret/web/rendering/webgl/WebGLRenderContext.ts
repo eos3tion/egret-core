@@ -50,6 +50,10 @@ namespace egret.web {
     }
 
     /**
+     * WebGLRenderContext单例
+     */
+    let instance: WebGLRenderContext;
+    /**
      * @private
      * WebGL上下文对象，提供简单的绘图接口
      * 抽象出此类，以实现共用一个context
@@ -68,20 +72,17 @@ namespace egret.web {
         public surface: HTMLCanvasElement;
 
         /**
-         * WebGLRenderContext单例
-         */
-        private static instance: WebGLRenderContext;
-        /**
          * 默认shader
          */
         private defaultFragShader: string;
         emptyTexture: WebGLTexture;
         public static getInstance(width: number, height: number): WebGLRenderContext {
-            if (this.instance) {
-                return this.instance;
+            if (!instance) {
+                instance = new WebGLRenderContext(width, height);
+                egret.sys.context = instance;
+                egret.sys.gl = instance.context;
             }
-            this.instance = new WebGLRenderContext(width, height);
-            return this.instance;
+            return instance;
         }
 
         public $maxTextureSize: number;
@@ -179,7 +180,6 @@ namespace egret.web {
          */
         private uploadVerticesArray(array: any): void {
             let gl = this.context;
-
             gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
             // gl.bufferSubData(gl.ARRAY_BUFFER, 0, array);
         }
@@ -191,6 +191,12 @@ namespace egret.web {
             let gl = this.context;
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, array, gl.STATIC_DRAW);
             this.bindIndices = true;
+        }
+
+        rebindBuffer() {
+            let gl = this.context;
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
         }
 
         private vertexBuffer;

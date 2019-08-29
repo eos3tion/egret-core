@@ -5145,6 +5145,10 @@ var egret;
             return canvas;
         }
         /**
+         * WebGLRenderContext单例
+         */
+        var instance;
+        /**
          * @private
          * WebGL上下文对象，提供简单的绘图接口
          * 抽象出此类，以实现共用一个context
@@ -5170,11 +5174,12 @@ var egret;
                 this.setGlobalCompositeOperation("source-over");
             }
             WebGLRenderContext.getInstance = function (width, height) {
-                if (this.instance) {
-                    return this.instance;
+                if (!instance) {
+                    instance = new WebGLRenderContext(width, height);
+                    egret.sys.context = instance;
+                    egret.sys.gl = instance.context;
                 }
-                this.instance = new WebGLRenderContext(width, height);
-                return this.instance;
+                return instance;
             };
             /**
              * 推入一个RenderBuffer并绑定
@@ -5234,6 +5239,11 @@ var egret;
                 var gl = this.context;
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, array, gl.STATIC_DRAW);
                 this.bindIndices = true;
+            };
+            WebGLRenderContext.prototype.rebindBuffer = function () {
+                var gl = this.context;
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
             };
             /**
              * 销毁绘制对象

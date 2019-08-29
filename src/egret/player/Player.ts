@@ -31,6 +31,12 @@ namespace egret.sys {
 
     export let $TempStage: egret.Stage;
 
+    export let context: any;
+
+    export let gl: WebGLRenderingContext;
+
+    export let autoClear = true;
+
     /**
      * @private
      * Egret播放器

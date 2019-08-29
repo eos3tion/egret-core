@@ -12080,7 +12080,9 @@ var egret;
                     this.changeSurfaceSize();
                 }
                 var buffer = this.renderBuffer;
-                buffer.clear();
+                if (egret.sys.autoClear) {
+                    buffer.clear();
+                }
                 drawCalls = sys.systemRenderer.render(this.root, buffer, this.offsetMatrix);
                 if (!this.isStage) { //对非舞台画布要保存渲染节点。
                     var surface = buffer.surface;
@@ -12241,6 +12243,7 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
+        sys.autoClear = true;
         /**
          * @private
          * Egret播放器

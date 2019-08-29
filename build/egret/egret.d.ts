@@ -8830,6 +8830,9 @@ interface FPSData extends Object {
 }
 declare namespace egret.sys {
     let $TempStage: egret.Stage;
+    let context: any;
+    let gl: WebGLRenderingContext;
+    let autoClear: boolean;
     /**
      * @private
      * Egret播放器
