@@ -112,6 +112,7 @@ namespace egret.web {
             let video: HTMLVideoElement;
             if (!this.video || egret.Capabilities.isMobile) {
                 video = document.createElement("video");
+                video.crossOrigin = ""
                 this.video = video;
                 video.controls = null;
             } else {
