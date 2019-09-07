@@ -221,12 +221,6 @@ namespace egret.web {
                 this.setFullScreenMonitor(false);
 
                 egret.startTick(this.markDirty, this);
-
-                if (egret.Capabilities.isMobile) {
-                    this.video.currentTime = 0;
-                    this.onVideoEnded();
-                    return;
-                }
             }
             this.videoPlay();
         }
@@ -286,7 +280,7 @@ namespace egret.web {
             }
         };
 
-        private exitFullscreen(): void {
+        exitFullscreen(): void {
             //退出全屏
             if (document['exitFullscreen']) {
                 document['exitFullscreen']();
@@ -404,9 +398,6 @@ namespace egret.web {
          * @inheritDoc
          */
         public set fullscreen(value: boolean) {
-            if (egret.Capabilities.isMobile) {
-                return;
-            }
             this._fullscreen = !!value;
             if (this.video && this.video.paused == false) {
                 this.checkFullScreen(this._fullscreen);
@@ -436,11 +427,11 @@ namespace egret.web {
                 return;
             let imageLoader = new egret.ImageLoader();
             imageLoader.once(egret.EventType.COMPLETE, e => {
-                let posterData = <HTMLImageElement><any>imageLoader.data;
-                this.posterData = imageLoader.data;
+                let posterData = imageLoader.data;
+                this.posterData = posterData;
                 this.$renderDirty = true;
-                this.posterData.width = this.getPlayWidth();
-                this.posterData.height = this.getPlayHeight();
+                posterData.width = this.getPlayWidth();
+                posterData.height = this.getPlayHeight();
             }, this);
             imageLoader.load(poster);
         }
@@ -454,9 +445,10 @@ namespace egret.web {
             let video = this.video;
             this.loaded = true;
             //video.pause();
-            if (this.posterData) {
-                this.posterData.width = this.getPlayWidth();
-                this.posterData.height = this.getPlayHeight();
+            let posterData = this.posterData;
+            if (posterData) {
+                posterData.width = this.getPlayWidth();
+                posterData.height = this.getPlayHeight();
             }
             video.width = video.videoWidth;
             video.height = video.videoHeight;

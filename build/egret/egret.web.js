@@ -807,9 +807,10 @@ var egret;
                     var video = _this.video;
                     _this.loaded = true;
                     //video.pause();
-                    if (_this.posterData) {
-                        _this.posterData.width = _this.getPlayWidth();
-                        _this.posterData.height = _this.getPlayHeight();
+                    var posterData = _this.posterData;
+                    if (posterData) {
+                        posterData.width = _this.getPlayWidth();
+                        posterData.height = _this.getPlayHeight();
                     }
                     video.width = video.videoWidth;
                     video.height = video.videoHeight;
@@ -944,11 +945,6 @@ var egret;
                     video.setAttribute("webkit-playsinline", "true");
                     this.setFullScreenMonitor(false);
                     egret.startTick(this.markDirty, this);
-                    if (egret.Capabilities.isMobile) {
-                        this.video.currentTime = 0;
-                        this.onVideoEnded();
-                        return;
-                    }
                 }
                 this.videoPlay();
             };
@@ -1103,9 +1099,6 @@ var egret;
                  * @inheritDoc
                  */
                 set: function (value) {
-                    if (egret.Capabilities.isMobile) {
-                        return;
-                    }
                     this._fullscreen = !!value;
                     if (this.video && this.video.paused == false) {
                         this.checkFullScreen(this._fullscreen);
@@ -1140,10 +1133,10 @@ var egret;
                 var imageLoader = new egret.ImageLoader();
                 imageLoader.once("complete" /* COMPLETE */, function (e) {
                     var posterData = imageLoader.data;
-                    _this.posterData = imageLoader.data;
+                    _this.posterData = posterData;
                     _this.$renderDirty = true;
-                    _this.posterData.width = _this.getPlayWidth();
-                    _this.posterData.height = _this.getPlayHeight();
+                    posterData.width = _this.getPlayWidth();
+                    posterData.height = _this.getPlayHeight();
                 }, this);
                 imageLoader.load(poster);
             };
