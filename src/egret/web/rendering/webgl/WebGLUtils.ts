@@ -90,5 +90,16 @@ namespace egret {
                 }
             }
         }
+
+        public static updateEgretTexutre(bmd: egret.BitmapData) {
+            let glTexture = bmd.webGLTexture;
+            if (glTexture) {//清理webgl纹理，让渲染可以重置
+                let gl = glTexture.glContext as WebGLRenderingContext;
+                if (gl) {
+                    gl.bindTexture(gl.TEXTURE_2D, glTexture);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bmd.source);
+                }
+            }
+        }
     }
 }
