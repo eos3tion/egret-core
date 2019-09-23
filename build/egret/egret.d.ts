@@ -14188,5 +14188,6 @@ declare namespace egret {
         private static canUseWebGL;
         static checkCanUseWebGL(): boolean;
         static deleteWebGLTexture(bitmapData: any): void;
+        static updateEgretTexutre(bmd: egret.BitmapData): void;
     }
 }

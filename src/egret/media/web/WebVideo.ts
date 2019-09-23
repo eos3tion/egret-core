@@ -206,7 +206,8 @@ namespace egret.web {
 
             if (playFullScreen) {
                 if (video.parentElement == null) {
-                    video.removeAttribute("webkit-playsinline");
+                    //@ts-ignore
+                    video.webkitPlaysInline = video.playsInline = false;
                     document.body.appendChild(video);
                 }
                 egret.stopTick(this.markDirty, this);
@@ -216,8 +217,8 @@ namespace egret.web {
                 if (video.parentElement != null) {
                     video.parentElement.removeChild(video);
                 }
-                video.setAttribute("webkit-playsinline", "true");
-
+                //@ts-ignore
+                video.webkitPlaysInline = video.playsInline = true;
                 this.setFullScreenMonitor(false);
 
                 egret.startTick(this.markDirty, this);
@@ -237,8 +238,8 @@ namespace egret.web {
                 }
             }
 
-            video.removeAttribute("webkit-playsinline");
-
+            //@ts-ignore
+            video.webkitPlaysInline = video.playsInline = false;
             video[fullscreenType]();
 
             this.setFullScreenMonitor(true);
@@ -525,8 +526,9 @@ namespace egret.web {
                 node.image = bitmapData;
                 node.imageWidth = bitmapData.width;
                 node.imageHeight = bitmapData.height;
-                WebGLUtils.deleteWebGLTexture(bitmapData.webGLTexture);
-                bitmapData.webGLTexture = null;
+                // WebGLUtils.deleteWebGLTexture(bitmapData.webGLTexture);
+                // bitmapData.webGLTexture = null;
+                WebGLUtils.updateEgretTexutre(bitmapData);
                 node.drawImage(0, 0, bitmapData.width, bitmapData.height, 0, 0, width, height);
             }
         }

@@ -21869,6 +21869,16 @@ var egret;
                 }
             }
         };
+        WebGLUtils.updateEgretTexutre = function (bmd) {
+            var glTexture = bmd.webGLTexture;
+            if (glTexture) { //清理webgl纹理，让渲染可以重置
+                var gl = glTexture.glContext;
+                if (gl) {
+                    gl.bindTexture(gl.TEXTURE_2D, glTexture);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bmd.source);
+                }
+            }
+        };
         return WebGLUtils;
     }());
     egret.WebGLUtils = WebGLUtils;
