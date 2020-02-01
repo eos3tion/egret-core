@@ -9,6 +9,6 @@
 3. 将项目 clone  至 `e:\egret-core` 下
     ```shell
     cd /d e:
-    git clone http://gitlab.tpulse.cn//h5game/egret-core.git
+    git clone http://gitlab.tpulse.cn/h5game/egret-core.git
     ```
 4. 将此脚本[egret.cmd](http://common.h5.tpulse.cn/egret.cmd) 拷贝至`%userprofile%\AppData\Roaming\npm` 目录
