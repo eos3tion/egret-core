@@ -1183,7 +1183,8 @@ declare namespace egret.tween {
          * @platform Web,Native
          * @language zh_CN
          */
-        props: any;
+        get props(): any;
+        set props(value: any);
         /**
          * @private
          */
@@ -1200,7 +1201,8 @@ declare namespace egret.tween {
          * @platform Web,Native
          * @language zh_CN
          */
-        target: any;
+        get target(): any;
+        set target(value: any);
         /**
          * @private
          */
@@ -1217,7 +1219,8 @@ declare namespace egret.tween {
          * @platform Web,Native
          * @language zh_CN
          */
-        paths: BasePath[];
+        get paths(): BasePath[];
+        set paths(value: BasePath[]);
         /**
          * Play the Tween
          * @position The starting position, the default is from the last position to play
@@ -1302,7 +1305,8 @@ declare namespace egret.tween {
          * @platform Web,Native
          * @language zh_CN
          */
-        items: TweenItem[];
+        get items(): TweenItem[];
+        set items(value: TweenItem[]);
         private registerEvent;
         /**
          * Play the all TweenItems

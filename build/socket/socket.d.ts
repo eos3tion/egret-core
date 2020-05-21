@@ -371,7 +371,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        readonly connected: boolean;
+        get connected(): boolean;
         /**
          * @private
          */
@@ -388,7 +388,8 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        type: string;
+        get type(): string;
+        set type(value: string);
     }
 }
 declare namespace egret.web {

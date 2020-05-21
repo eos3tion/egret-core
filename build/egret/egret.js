@@ -15041,20 +15041,23 @@ var egret;
                 }
                 context.fillStyle = style || egret.toColorString(textColor);
                 var shadow = format.shadow || node.shadow;
+                var shadowBlur = 0;
                 if (shadow) {
-                    var shadowBlur = shadow[0];
+                    shadowBlur = shadow[0];
                     if (shadowBlur) {
-                        context.shadowBlur = shadowBlur;
-                        context.shadowColor = shadow[1] || "black";
+                        context.shadowColor = shadow[1] || defaultColor;
                         context.shadowOffsetX = shadow[2] || 0;
                         context.shadowOffsetY = shadow[3] || 0;
                     }
                 }
-                context.strokeStyle = egret.toColorString(strokeColor);
+                context.shadowBlur = shadowBlur;
+                var strokeStyle = defaultColor; //strokeStyle: Color or style to use for the lines around shapes. Default #000 (black).
                 if (stroke) {
+                    strokeStyle = egret.toColorString(strokeColor);
                     context.lineWidth = stroke * 2;
                     context.strokeText(text, x + $offsetX, y + $offsetY);
                 }
+                context.strokeStyle = strokeStyle;
                 context.fillText(text, x + $offsetX, y + $offsetY);
             }
         };
@@ -15627,6 +15630,7 @@ var egret;
             setArray(buffer, plane);
         }
     }
+    var defaultColor = "#000";
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
