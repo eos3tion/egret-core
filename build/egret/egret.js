@@ -15041,16 +15041,17 @@ var egret;
                 }
                 context.fillStyle = style || egret.toColorString(textColor);
                 var shadow = format.shadow || node.shadow;
-                var shadowBlur = 0;
+                var shadowBlur = 0, shadowOffsetX = 0, shadowOffsetY = 0, shadowColor = defaultColor;
                 if (shadow) {
-                    shadowBlur = shadow[0];
-                    if (shadowBlur) {
-                        context.shadowColor = shadow[1] || defaultColor;
-                        context.shadowOffsetX = shadow[2] || 0;
-                        context.shadowOffsetY = shadow[3] || 0;
-                    }
+                    shadowBlur = shadow[0] || 0;
+                    shadowColor = shadow[1] || defaultColor;
+                    shadowOffsetX = shadow[2] || 0;
+                    shadowOffsetY = shadow[3] || 0;
                 }
                 context.shadowBlur = shadowBlur;
+                context.shadowColor = shadowColor;
+                context.shadowOffsetX = shadowOffsetX;
+                context.shadowOffsetY = shadowOffsetY;
                 var strokeStyle = defaultColor; //strokeStyle: Color or style to use for the lines around shapes. Default #000 (black).
                 if (stroke) {
                     strokeStyle = egret.toColorString(strokeColor);

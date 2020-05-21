@@ -754,16 +754,17 @@ namespace egret {
                 }
                 context.fillStyle = style || toColorString(textColor);
                 let shadow = format.shadow || node.shadow;
-                let shadowBlur = 0;
+                let shadowBlur = 0, shadowOffsetX = 0, shadowOffsetY = 0, shadowColor = defaultColor;
                 if (shadow) {
-                    shadowBlur = shadow[0];
-                    if (shadowBlur) {
-                        context.shadowColor = shadow[1] || defaultColor;
-                        context.shadowOffsetX = shadow[2] || 0;
-                        context.shadowOffsetY = shadow[3] || 0;
-                    }
+                    shadowBlur = shadow[0] || 0;
+                    shadowColor = shadow[1] || defaultColor;
+                    shadowOffsetX = shadow[2] || 0;
+                    shadowOffsetY = shadow[3] || 0;
                 }
                 context.shadowBlur = shadowBlur;
+                context.shadowColor = shadowColor;
+                context.shadowOffsetX = shadowOffsetX;
+                context.shadowOffsetY = shadowOffsetY;
                 let strokeStyle = defaultColor;//strokeStyle: Color or style to use for the lines around shapes. Default #000 (black).
                 if (stroke) {
                     strokeStyle = toColorString(strokeColor);
