@@ -163,19 +163,21 @@ namespace egret.web {
                     let last = drawData[drawDataLen - 1] as TextureDrawData;
                     if (last.type == DRAWABLE_TYPE.TEXTURE && !last.filter) {
                         let texs = last.texs;
-                        idx = texs.indexOf(texture);
-                        if (idx > -1) {
-                            needNew = false;
-                        } else {
-                            let len = texs.length;
-                            if (len < maxTextureCount) {
-                                texs[len] = texture;
-                                idx = len;
+                        if (texs) {
+                            idx = texs.indexOf(texture);
+                            if (idx > -1) {
                                 needNew = false;
+                            } else {
+                                let len = texs.length;
+                                if (len < maxTextureCount) {
+                                    texs[len] = texture;
+                                    idx = len;
+                                    needNew = false;
+                                }
                             }
-                        }
-                        if (!needNew) {//无需创建新的
-                            last.count += count;
+                            if (!needNew) {//无需创建新的
+                                last.count += count;
+                            }
                         }
                     }
                 }

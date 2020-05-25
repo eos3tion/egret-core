@@ -908,18 +908,20 @@ namespace egret.web {
 
         private syncUniForTexture(program: EgretWebGLProgram, data: TextureDrawData) {
             let uniforms = program.uniforms;
-            const { context, emptyTexture, $maxTextureCount } = this;
             const { texs } = data;
-            for (let i = 0; i < $maxTextureCount; i++) {
-                let uni = uniforms[`tex${i}`];
-                if (uni) {
-                    let tex = texs[i];
-                    if (!tex) {
-                        tex = emptyTexture;
+            if (texs) {
+                const { context, emptyTexture, $maxTextureCount } = this;
+                for (let i = 0; i < $maxTextureCount; i++) {
+                    let uni = uniforms[`tex${i}`];
+                    if (uni) {
+                        let tex = texs[i];
+                        if (!tex) {
+                            tex = emptyTexture;
+                        }
+                        context.activeTexture(context.TEXTURE0 + i);
+                        context.bindTexture(context.TEXTURE_2D, tex);
+                        uni.setValue(i);
                     }
-                    context.activeTexture(context.TEXTURE0 + i);
-                    context.bindTexture(context.TEXTURE_2D, tex);
-                    uni.setValue(i);
                 }
             }
             let uni = uniforms.projectionVector;
