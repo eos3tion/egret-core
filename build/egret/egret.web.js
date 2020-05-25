@@ -4432,20 +4432,22 @@ var egret;
                         var last = drawData[drawDataLen - 1];
                         if (last.type == 0 /* TEXTURE */ && !last.filter) {
                             var texs = last.texs;
-                            idx = texs.indexOf(texture);
-                            if (idx > -1) {
-                                needNew = false;
-                            }
-                            else {
-                                var len = texs.length;
-                                if (len < maxTextureCount) {
-                                    texs[len] = texture;
-                                    idx = len;
+                            if (texs) {
+                                idx = texs.indexOf(texture);
+                                if (idx > -1) {
                                     needNew = false;
                                 }
-                            }
-                            if (!needNew) { //无需创建新的
-                                last.count += count;
+                                else {
+                                    var len = texs.length;
+                                    if (len < maxTextureCount) {
+                                        texs[len] = texture;
+                                        idx = len;
+                                        needNew = false;
+                                    }
+                                }
+                                if (!needNew) { //无需创建新的
+                                    last.count += count;
+                                }
                             }
                         }
                     }
@@ -5824,18 +5826,20 @@ var egret;
             };
             WebGLRenderContext.prototype.syncUniForTexture = function (program, data) {
                 var uniforms = program.uniforms;
-                var _a = this, context = _a.context, emptyTexture = _a.emptyTexture, $maxTextureCount = _a.$maxTextureCount;
                 var texs = data.texs;
-                for (var i = 0; i < $maxTextureCount; i++) {
-                    var uni_1 = uniforms["tex" + i];
-                    if (uni_1) {
-                        var tex = texs[i];
-                        if (!tex) {
-                            tex = emptyTexture;
+                if (texs) {
+                    var _a = this, context = _a.context, emptyTexture = _a.emptyTexture, $maxTextureCount = _a.$maxTextureCount;
+                    for (var i = 0; i < $maxTextureCount; i++) {
+                        var uni_1 = uniforms["tex" + i];
+                        if (uni_1) {
+                            var tex = texs[i];
+                            if (!tex) {
+                                tex = emptyTexture;
+                            }
+                            context.activeTexture(context.TEXTURE0 + i);
+                            context.bindTexture(context.TEXTURE_2D, tex);
+                            uni_1.setValue(i);
                         }
-                        context.activeTexture(context.TEXTURE0 + i);
-                        context.bindTexture(context.TEXTURE_2D, tex);
-                        uni_1.setValue(i);
                     }
                 }
                 var uni = uniforms.projectionVector;
