@@ -740,8 +740,7 @@ namespace egret {
                 let format: sys.TextFormat = drawData[pos++];
                 context.font = getFontString(node, format);
                 let textColor = format.textColor == null ? node.textColor : format.textColor;
-                let strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
-                let stroke = format.stroke == null ? node.stroke : format.stroke;
+
                 let gradients = format.gradients || node.gradients;
                 let style;
                 if (gradients) {
@@ -765,13 +764,17 @@ namespace egret {
                 context.shadowColor = shadowColor;
                 context.shadowOffsetX = shadowOffsetX;
                 context.shadowOffsetY = shadowOffsetY;
+                let strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
+                let stroke = format.stroke == null ? node.stroke : format.stroke;
                 let strokeStyle = defaultColor;//strokeStyle: Color or style to use for the lines around shapes. Default #000 (black).
-                if (stroke) {
+                if (strokeColor) {
                     strokeStyle = toColorString(strokeColor);
+                }
+                context.strokeStyle = strokeStyle;
+                if (stroke) {
                     context.lineWidth = stroke * 2;
                     context.strokeText(text, x + $offsetX, y + $offsetY);
                 }
-                context.strokeStyle = strokeStyle;
                 context.fillText(text, x + $offsetX, y + $offsetY);
             }
         }

@@ -15027,8 +15027,6 @@ var egret;
                 var format = drawData[pos++];
                 context.font = getFontString(node, format);
                 var textColor = format.textColor == null ? node.textColor : format.textColor;
-                var strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
-                var stroke = format.stroke == null ? node.stroke : format.stroke;
                 var gradients = format.gradients || node.gradients;
                 var style = void 0;
                 if (gradients) {
@@ -15052,13 +15050,17 @@ var egret;
                 context.shadowColor = shadowColor;
                 context.shadowOffsetX = shadowOffsetX;
                 context.shadowOffsetY = shadowOffsetY;
+                var strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
+                var stroke = format.stroke == null ? node.stroke : format.stroke;
                 var strokeStyle = defaultColor; //strokeStyle: Color or style to use for the lines around shapes. Default #000 (black).
-                if (stroke) {
+                if (strokeColor) {
                     strokeStyle = egret.toColorString(strokeColor);
+                }
+                context.strokeStyle = strokeStyle;
+                if (stroke) {
                     context.lineWidth = stroke * 2;
                     context.strokeText(text, x + $offsetX, y + $offsetY);
                 }
-                context.strokeStyle = strokeStyle;
                 context.fillText(text, x + $offsetX, y + $offsetY);
             }
         };
