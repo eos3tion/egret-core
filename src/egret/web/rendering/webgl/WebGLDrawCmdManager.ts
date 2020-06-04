@@ -270,6 +270,7 @@ namespace egret.web {
                     // 如果与上一次blend操作重复，本次操作无效
                     if (type == DRAWABLE_TYPE.BLEND) {
                         if ((data as BlendDrawData).value == value) {
+                            this.drawDataLen = drawDataLen;
                             return;
                         } else {
                             break;

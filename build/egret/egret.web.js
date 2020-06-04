@@ -4532,6 +4532,7 @@ var egret;
                         // 如果与上一次blend操作重复，本次操作无效
                         if (type == 4 /* BLEND */) {
                             if (data_1.value == value) {
+                                this.drawDataLen = drawDataLen;
                                 return;
                             }
                             else {
