@@ -3913,8 +3913,15 @@ var egret;
                 var option = this.playerOption;
                 var screenRect = this.container.getBoundingClientRect();
                 var top = 0;
-                var boundingClientWidth = screenRect.width;
-                var boundingClientHeight = screenRect.height;
+                var $canvasScaleFactor = egret.sys.DisplayList.$canvasScaleFactor;
+                var canvasScaleX = 1;
+                var canvasScaleY = 1;
+                if (!option.lowDPI) {
+                    canvasScaleX = $canvasScaleFactor;
+                    canvasScaleY = $canvasScaleFactor;
+                }
+                var boundingClientWidth = screenRect.width * canvasScaleX;
+                var boundingClientHeight = screenRect.height * canvasScaleY;
                 if (boundingClientWidth == 0 || boundingClientHeight == 0) {
                     return;
                 }
@@ -3961,26 +3968,19 @@ var egret;
                     canvas.style.top = top + (boundingClientHeight - displayHeight) / 2 + "px";
                     canvas.style.left = (boundingClientWidth - displayWidth) / 2 + "px";
                 }
-                var scalex = displayWidth / stageWidth, scaley = displayHeight / stageHeight;
-                var $canvasScaleFactor = egret.sys.DisplayList.$canvasScaleFactor;
-                var canvasScaleX = 1;
-                var canvasScaleY = 1;
-                if (!option.lowDPI) {
-                    canvasScaleX = scalex * $canvasScaleFactor;
-                    canvasScaleY = scaley * $canvasScaleFactor;
-                }
+                var scalex = displayWidth / stageWidth / canvasScaleX, scaley = displayHeight / stageHeight / canvasScaleY;
                 if (egret.Capabilities.renderMode == "canvas") {
                     canvasScaleX = Math.ceil(canvasScaleX);
                     canvasScaleY = Math.ceil(canvasScaleY);
                 }
                 var m = egret.Matrix.create();
                 m.identity();
-                m.scale(scalex / canvasScaleX, scaley / canvasScaleY);
+                m.scale(scalex, scaley);
                 m.rotate(rotation * Math.PI / 180);
                 var transform = "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
                 egret.Matrix.release(m);
                 canvas.style[egret.web.getPrefixStyleName("transform")] = transform;
-                egret.sys.DisplayList.$setCanvasScale(canvasScaleX, canvasScaleY);
+                // sys.DisplayList.$setCanvasScale(canvasScaleX, canvasScaleY);
                 this.webTouchHandler.updateScaleMode(scalex, scaley, rotation);
                 this.webInput.$updateSize();
                 this.player.updateStageSize(stageWidth, stageHeight); //不要在这个方法后面修改属性
