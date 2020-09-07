@@ -243,10 +243,10 @@ namespace egret.web {
             }
             let scalex = displayWidth / stageWidth / canvasScaleX,
                 scaley = displayHeight / stageHeight / canvasScaleY;
-            if (egret.Capabilities.renderMode == "canvas") {
-                canvasScaleX = Math.ceil(canvasScaleX);
-                canvasScaleY = Math.ceil(canvasScaleY);
-            }
+
+            canvasScaleX = Math.ceil(canvasScaleX);
+            canvasScaleY = Math.ceil(canvasScaleY);
+
 
             let m = egret.Matrix.create();
             m.identity();
