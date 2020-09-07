@@ -3969,10 +3969,8 @@ var egret;
                     canvas.style.left = (boundingClientWidth - displayWidth) / 2 + "px";
                 }
                 var scalex = displayWidth / stageWidth / canvasScaleX, scaley = displayHeight / stageHeight / canvasScaleY;
-                if (egret.Capabilities.renderMode == "canvas") {
-                    canvasScaleX = Math.ceil(canvasScaleX);
-                    canvasScaleY = Math.ceil(canvasScaleY);
-                }
+                canvasScaleX = Math.ceil(canvasScaleX);
+                canvasScaleY = Math.ceil(canvasScaleY);
                 var m = egret.Matrix.create();
                 m.identity();
                 m.scale(scalex, scaley);
@@ -5145,6 +5143,7 @@ var egret;
             }
             return canvas;
         }
+        web.createCanvas = createCanvas;
         /**
          * WebGLRenderContext单例
          */
@@ -5164,6 +5163,7 @@ var egret;
                 this.vertSize = 5;
                 this.surface = createCanvas(width, height);
                 this.initWebGL();
+                this.textHelper = web.getTextHelper(this);
                 this.$bufferStack = [];
                 var gl = this.context;
                 this.vertexBuffer = gl.createBuffer();
@@ -5642,6 +5642,8 @@ var egret;
              * 清除颜色缓存
              */
             WebGLRenderContext.prototype.clear = function () {
+                var helper = this.textHelper;
+                helper.clear();
                 this.drawCmdManager.pushClearColor();
             };
             /**
@@ -6324,9 +6326,10 @@ var egret;
              * 清空缓冲区数据
              */
             WebGLRenderBuffer.prototype.clear = function () {
-                this.context.pushBuffer(this);
-                this.context.clear();
-                this.context.popBuffer();
+                var context = this.context;
+                context.pushBuffer(this);
+                context.clear();
+                context.popBuffer();
             };
             WebGLRenderBuffer.prototype.setTransform = function (a, b, c, d, tx, ty) {
                 // this.globalMatrix.setTo(a, b, c, d, tx, ty);
@@ -6531,26 +6534,7 @@ var egret;
                     drawCalls++;
                     buffer.$offsetX = offsetX;
                     buffer.$offsetY = offsetY;
-                    switch (node.type) {
-                        case 1 /* BitmapNode */:
-                            this.renderBitmap(node, buffer);
-                            break;
-                        case 2 /* TextNode */:
-                            this.renderText(node, buffer);
-                            break;
-                        case 3 /* GraphicsNode */:
-                            this.renderGraphics(node, buffer);
-                            break;
-                        case 4 /* GroupNode */:
-                            this.renderGroup(node, buffer);
-                            break;
-                        case 5 /* MeshNode */:
-                            this.renderMesh(node, buffer);
-                            break;
-                        case 6 /* NormalBitmapNode */:
-                            this.renderNormalBitmap(node, buffer);
-                            break;
-                    }
+                    this.renderNode(node, buffer);
                     buffer.$offsetX = 0;
                     buffer.$offsetY = 0;
                 }
@@ -6957,7 +6941,9 @@ var egret;
                 //pushRenderTARGET
                 webglBuffer.context.pushBuffer(webglBuffer);
                 webglBuffer.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-                this.renderNode(node, buffer, 0, 0, forHitTest);
+                buffer.$offsetX = 0;
+                buffer.$offsetY = 0;
+                this.renderNode(node, buffer, forHitTest);
                 webglBuffer.context.$drawWebGL();
                 webglBuffer.onRenderFinish();
                 //popRenderTARGET
@@ -6984,26 +6970,7 @@ var egret;
                 var drawCalls = 0;
                 if (node) {
                     drawCalls++;
-                    switch (node.type) {
-                        case 1 /* BitmapNode */:
-                            this.renderBitmap(node, buffer);
-                            break;
-                        case 2 /* TextNode */:
-                            this.renderText(node, buffer);
-                            break;
-                        case 3 /* GraphicsNode */:
-                            this.renderGraphics(node, buffer);
-                            break;
-                        case 4 /* GroupNode */:
-                            this.renderGroup(node, buffer);
-                            break;
-                        case 5 /* MeshNode */:
-                            this.renderMesh(node, buffer);
-                            break;
-                        case 6 /* NormalBitmapNode */:
-                            this.renderNormalBitmap(node, buffer);
-                            break;
-                    }
+                    this.renderNode(node, buffer);
                 }
                 var children = displayObject.$children;
                 if (children) {
@@ -7036,9 +7003,7 @@ var egret;
             /**
              * @private
              */
-            WebGLRenderer.prototype.renderNode = function (node, buffer, offsetX, offsetY, forHitTest) {
-                buffer.$offsetX = offsetX;
-                buffer.$offsetY = offsetY;
+            WebGLRenderer.prototype.renderNode = function (node, buffer, forHitTest) {
                 switch (node.type) {
                     case 1 /* BitmapNode */:
                         this.renderBitmap(node, buffer);
@@ -7106,9 +7071,8 @@ var egret;
                 if (blendMode) {
                     buffer.context.setGlobalCompositeOperation(blendModes[blendMode]);
                 }
-                var originAlpha;
-                if (alpha == alpha) {
-                    originAlpha = buffer.globalAlpha;
+                var originAlpha = buffer.globalAlpha;
+                if (alpha !== +alpha) {
                     buffer.globalAlpha *= alpha;
                 }
                 if (node.filter) {
@@ -7126,9 +7090,7 @@ var egret;
                 if (blendMode) {
                     buffer.context.setGlobalCompositeOperation(defaultCompositeOp);
                 }
-                if (alpha == alpha) {
-                    buffer.globalAlpha = originAlpha;
-                }
+                buffer.globalAlpha = originAlpha;
                 if (m) {
                     var matrix = buffer.globalMatrix;
                     matrix.a = savedMatrix.a;
@@ -7260,26 +7222,13 @@ var egret;
                 else if (canvasScaleX != 1 || canvasScaleY != 1) {
                     this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
                 }
+                var context = buffer.context;
                 if (node.dirtyRender) {
-                    var surface = this.canvasRenderBuffer.surface;
-                    this.canvasRenderer.renderText(node, this.canvasRenderBuffer.context);
-                    // 拷贝canvas到texture
-                    var texture = node.$texture;
-                    if (!texture) {
-                        texture = buffer.context.createTexture(surface);
-                        node.$texture = texture;
-                    }
-                    else {
-                        // 重新拷贝新的图像
-                        buffer.context.updateTexture(texture, surface);
-                    }
-                    // 保存材质尺寸
-                    node.$textureWidth = surface.width;
-                    node.$textureHeight = surface.height;
+                    context.textHelper.render(node, this);
                 }
                 var textureWidth = node.$textureWidth;
                 var textureHeight = node.$textureHeight;
-                buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
+                context.drawTexture(node.$texture, node.sx, node.sy, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
                 if (x || y) {
                     if (node.dirtyRender) {
                         this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
@@ -7396,7 +7345,7 @@ var egret;
                 var length = children.length;
                 for (var i = 0; i < length; i++) {
                     var node = children[i];
-                    this.renderNode(node, buffer, buffer.$offsetX, buffer.$offsetY);
+                    this.renderNode(node, buffer);
                 }
                 if (m) {
                     var matrix = buffer.globalMatrix;
@@ -7886,3 +7835,65 @@ var egret;
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
 ;
+var egret;
+(function (egret) {
+    var web;
+    (function (web) {
+        function getTextHelper(context) {
+            var ref = window["jy"]["ShortSideBinPacker"];
+            if (!ref) {
+                return {
+                    render: function (node, render) {
+                        var surface = render.canvasRenderBuffer.surface;
+                        render.canvasRenderer.renderText(node, render.canvasRenderBuffer.context);
+                        // 拷贝canvas到texture
+                        var texture = node.$texture;
+                        if (!texture) {
+                            texture = context.createTexture(surface);
+                            node.$texture = texture;
+                        }
+                        else {
+                            // 重新拷贝新的图像
+                            context.updateTexture(texture, surface);
+                        }
+                        // 保存材质尺寸
+                        node.$textureWidth = surface.width;
+                        node.$textureHeight = surface.height;
+                        node.sx = 0;
+                        node.sy = 0;
+                        node.remTex = true;
+                    },
+                    clear: function () {
+                    }
+                };
+            }
+            var $width = 2048, $height = 2048;
+            var packer = new ref($width, $height);
+            var textCanvas = web.createCanvas($width, $height);
+            var textContext = textCanvas.getContext("2d");
+            var texture = context.createTexture(textCanvas);
+            return {
+                render: function (node, render) {
+                    var height = node.height, width = node.width;
+                    var _a = packer.insert(width, height), x = _a.x, y = _a.y;
+                    textContext.$offsetX = x;
+                    textContext.$offsetY = y;
+                    render.canvasRenderer.renderText(node, textContext);
+                    node.$textureWidth = $width;
+                    node.$textureHeight = $height;
+                    node.$texture = texture;
+                    node.sx = x;
+                    node.sy = y;
+                    node.remTex = false;
+                },
+                clear: clear,
+            };
+            function clear() {
+                packer.usedRects.length = 0;
+                packer.freeRects.length = 1;
+                textContext.clearRect(0, 0, $width, $height);
+            }
+        }
+        web.getTextHelper = getTextHelper;
+    })(web = egret.web || (egret.web = {}));
+})(egret || (egret = {}));

@@ -14154,6 +14154,18 @@ var egret;
             function TextNode() {
                 var _this = _super.call(this) || this;
                 /**
+                 * 纹理偏移x
+                 */
+                _this.sx = 0;
+                /**
+                 * 纹理偏移y
+                 */
+                _this.sy = 0;
+                /**
+                 * 是否移除webglTexture
+                 */
+                _this.remTex = true;
+                /**
                  * 颜色值
                  */
                 _this.textColor = 0xFFFFFF;
@@ -14200,7 +14212,7 @@ var egret;
              * 清除非绘制的缓存数据
              */
             TextNode.prototype.clean = function () {
-                if (this.$texture) {
+                if (this.$texture && this.remTex) {
                     egret.WebGLUtils.deleteWebGLTexture(this.$texture);
                     this.$texture = null;
                     this.dirtyRender = true;

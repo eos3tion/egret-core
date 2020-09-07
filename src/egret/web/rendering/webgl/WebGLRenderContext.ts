@@ -40,7 +40,7 @@ namespace egret.web {
     /**
      * 创建一个canvas。
      */
-    function createCanvas(width?: number, height?: number) {
+    export function createCanvas(width?: number, height?: number) {
         let canvas = document.createElement("canvas");
         if (!isNaN(width) && !isNaN(height)) {
             canvas.width = width;
@@ -84,6 +84,8 @@ namespace egret.web {
             }
             return instance;
         }
+
+        textHelper: TextHelper;
 
         public $maxTextureSize: number;
 
@@ -206,8 +208,10 @@ namespace egret.web {
 
             this.surface = createCanvas(width, height);
 
+
             this.initWebGL();
 
+            this.textHelper = getTextHelper(this);
             this.$bufferStack = [];
 
             let gl = this.context;
@@ -703,6 +707,8 @@ namespace egret.web {
          * 清除颜色缓存
          */
         public clear(): void {
+            let helper = this.textHelper;
+            helper.clear();
             this.drawCmdManager.pushClearColor();
         }
 

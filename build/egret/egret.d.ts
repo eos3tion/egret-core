@@ -9920,6 +9920,18 @@ declare namespace egret.sys {
      * 文本渲染节点
      */
     class TextNode extends RenderNode {
+        /**
+         * 纹理偏移x
+         */
+        sx: number;
+        /**
+         * 纹理偏移y
+         */
+        sy: number;
+        /**
+         * 是否移除webglTexture
+         */
+        remTex: boolean;
         constructor();
         /**
          * 颜色值
