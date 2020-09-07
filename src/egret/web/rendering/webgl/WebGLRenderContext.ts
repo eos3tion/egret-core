@@ -968,7 +968,7 @@ namespace egret.web {
          * 画texture
          **/
         private drawTextureElements(data: any, offset: number): number {
-            let gl: any = this.context;
+            let gl = this.context;
             // gl.bindTexture(gl.TEXTURE_2D, data.texture);
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
@@ -980,7 +980,7 @@ namespace egret.web {
          * 画rect
          **/
         private drawRectElements(data: any, offset: number): number {
-            let gl: any = this.context;
+            let gl = this.context;
             // gl.bindTexture(gl.TEXTURE_2D, null);
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
@@ -991,7 +991,7 @@ namespace egret.web {
          * 画push mask
          **/
         private drawPushMaskElements(data: any, offset: number): number {
-            let gl: any = this.context;
+            let gl = this.context;
 
             let size = data.count * 3;
 
@@ -1027,7 +1027,7 @@ namespace egret.web {
          * 画pop mask
          **/
         private drawPopMaskElements(data: any, offset: number) {
-            let gl: any = this.context;
+            let gl = this.context;
 
             let size = data.count * 3;
 
@@ -1061,7 +1061,7 @@ namespace egret.web {
          * 设置混色
          */
         private setBlendMode(value: string): void {
-            let gl: any = this.context;
+            let gl = this.context;
             let blendModeWebGL = WebGLRenderContext.blendModesForGL[value];
             if (blendModeWebGL) {
                 gl.blendFunc(blendModeWebGL[0], blendModeWebGL[1]);
