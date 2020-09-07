@@ -151,6 +151,10 @@
           {
             "path": "web/rendering/webgl/shaders/EgretShaderLib.ts",
             "platform": "web"
+          },
+          {
+            "path": "web/TextHelper.ts",
+            "platform": "web"
           }
         ],
         "root": "src/egret",
