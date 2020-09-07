@@ -851,13 +851,15 @@ namespace egret.web {
             }
 
             let context = buffer.context;
-            if (node.dirtyRender) {
-                context.textHelper.render(node, this);
-            }
+            // if (node.dirtyRender) {
+            context.textHelper.render(node, this);
+            // }
 
             let textureWidth = node.$textureWidth;
             let textureHeight = node.$textureHeight;
-            context.drawTexture(node.$texture, node.sx, node.sy, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
+            let ww = node.width;
+            let hh = node.height;
+            context.drawTexture(node.$texture, node.sx, node.sy, ww, hh, 0, 0, ww / canvasScaleX, hh / canvasScaleY, textureWidth, textureHeight);
 
             if (x || y) {
                 if (node.dirtyRender) {

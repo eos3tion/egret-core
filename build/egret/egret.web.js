@@ -5667,6 +5667,7 @@ var egret;
                 if (drawCmdManager.drawDataLen == 0 || this.contextLost) {
                     return;
                 }
+                this.textHelper.update();
                 this.uploadVerticesArray(vao.getVertices());
                 // 有mesh，则使用indicesForMesh
                 if (vao.isMesh()) {
@@ -7223,12 +7224,14 @@ var egret;
                     this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
                 }
                 var context = buffer.context;
-                if (node.dirtyRender) {
-                    context.textHelper.render(node, this);
-                }
+                // if (node.dirtyRender) {
+                context.textHelper.render(node, this);
+                // }
                 var textureWidth = node.$textureWidth;
                 var textureHeight = node.$textureHeight;
-                context.drawTexture(node.$texture, node.sx, node.sy, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
+                var ww = node.width;
+                var hh = node.height;
+                context.drawTexture(node.$texture, node.sx, node.sy, ww, hh, 0, 0, ww / canvasScaleX, hh / canvasScaleY, textureWidth, textureHeight);
                 if (x || y) {
                     if (node.dirtyRender) {
                         this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
@@ -7844,6 +7847,9 @@ var egret;
             if (!ref) {
                 return {
                     render: function (node, render) {
+                        if (!node.dirtyRender) {
+                            return;
+                        }
                         var surface = render.canvasRenderBuffer.surface;
                         render.canvasRenderer.renderText(node, render.canvasRenderBuffer.context);
                         // 拷贝canvas到texture
@@ -7864,14 +7870,17 @@ var egret;
                         node.remTex = true;
                     },
                     clear: function () {
+                    },
+                    update: function () {
                     }
                 };
             }
-            var $width = 2048, $height = 2048;
+            var $width = 1024, $height = 1024;
             var packer = new ref($width, $height);
             var textCanvas = web.createCanvas($width, $height);
             var textContext = textCanvas.getContext("2d");
             var texture = context.createTexture(textCanvas);
+            var changed = false;
             return {
                 render: function (node, render) {
                     var height = node.height, width = node.width;
@@ -7885,14 +7894,25 @@ var egret;
                     node.sx = x;
                     node.sy = y;
                     node.remTex = false;
+                    changed = true;
                 },
-                clear: clear,
+                clear: function () {
+                    packer.usedRects.length = 0;
+                    packer.freeRects.length = 1;
+                    var first = packer.freeRects[0];
+                    first.x = 0;
+                    first.y = 0;
+                    first.width = $width;
+                    first.height = $height;
+                    textContext.clearRect(0, 0, $width, $height);
+                },
+                update: function () {
+                    if (changed) {
+                        context.updateTexture(texture, textCanvas);
+                        changed = false;
+                    }
+                }
             };
-            function clear() {
-                packer.usedRects.length = 0;
-                packer.freeRects.length = 1;
-                textContext.clearRect(0, 0, $width, $height);
-            }
         }
         web.getTextHelper = getTextHelper;
     })(web = egret.web || (egret.web = {}));

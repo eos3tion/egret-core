@@ -740,6 +740,7 @@ namespace egret.web {
             if (drawCmdManager.drawDataLen == 0 || this.contextLost) {
                 return;
             }
+            this.textHelper.update();
 
             this.uploadVerticesArray(vao.getVertices());
 

@@ -38,6 +38,9 @@ namespace egret.web {
         if (!ref) {
             return {
                 render(node: egret.sys.TextNode, render: WebGLRenderer) {
+                    if (!node.dirtyRender) {
+                        return
+                    }
                     let surface = render.canvasRenderBuffer.surface;
                     render.canvasRenderer.renderText(node, render.canvasRenderBuffer.context);
 
@@ -59,15 +62,18 @@ namespace egret.web {
                 },
                 clear() {
 
+                },
+                update() {
+
                 }
             }
-                ;
         }
-        let $width = 2048, $height = 2048;
+        let $width = 1024, $height = 1024;
         let packer = new ref($width, $height);
         let textCanvas = createCanvas($width, $height);
         let textContext = textCanvas.getContext("2d");
         let texture = context.createTexture(textCanvas);
+        let changed = false;
         return {
             render(node: egret.sys.TextNode, render: WebGLRenderer) {
                 let { height, width } = node;
@@ -81,14 +87,24 @@ namespace egret.web {
                 node.sx = x;
                 node.sy = y;
                 node.remTex = false;
+                changed = true;
             },
-            clear,
-        }
-
-        function clear() {
-            packer.usedRects.length = 0;
-            packer.freeRects.length = 1;
-            textContext.clearRect(0, 0, $width, $height);
+            clear() {
+                packer.usedRects.length = 0;
+                packer.freeRects.length = 1;
+                let first = packer.freeRects[0];
+                first.x = 0;
+                first.y = 0;
+                first.width = $width;
+                first.height = $height;
+                textContext.clearRect(0, 0, $width, $height);
+            },
+            update() {
+                if (changed) {
+                    context.updateTexture(texture, textCanvas);
+                    changed = false;
+                }
+            }
         }
     }
 
