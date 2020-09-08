@@ -78,8 +78,8 @@ namespace egret.web {
             render(node: egret.sys.TextNode, render: WebGLRenderer) {
                 let { height, width } = node;
                 let { x, y } = packer.insert(width, height);
-                textContext.$offsetX = x;
-                textContext.$offsetY = y;
+                textContext.$offsetX = x + 2;
+                textContext.$offsetY = y + 2;
                 render.canvasRenderer.renderText(node, textContext);
                 node.$textureWidth = $width;
                 node.$textureHeight = $height;
@@ -102,6 +102,8 @@ namespace egret.web {
             update() {
                 if (changed) {
                     context.updateTexture(texture, textCanvas);
+                    let gl = context.context;
+                    gl.bindTexture(gl.TEXTURE_2D, null);
                     changed = false;
                 }
             }
