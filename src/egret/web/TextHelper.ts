@@ -77,7 +77,7 @@ namespace egret.web {
         return {
             render(node: egret.sys.TextNode, render: WebGLRenderer) {
                 let { height, width } = node;
-                let { x, y } = packer.insert(width, height);
+                let { x, y } = packer.insert(width - 2, height - 2);
                 textContext.$offsetX = x + 2;
                 textContext.$offsetY = y + 2;
                 render.canvasRenderer.renderText(node, textContext);

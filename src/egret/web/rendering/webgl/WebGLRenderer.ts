@@ -686,8 +686,9 @@ namespace egret.web {
             if (blendMode) {
                 buffer.context.setGlobalCompositeOperation(blendModes[blendMode]);
             }
-            let originAlpha = buffer.globalAlpha;
-            if (alpha !== +alpha) {
+            let originAlpha: number;
+            if (alpha === alpha) {//做isNaN判断
+                originAlpha = buffer.globalAlpha
                 buffer.globalAlpha *= alpha;
             }
             if (node.filter) {
@@ -707,7 +708,9 @@ namespace egret.web {
             if (blendMode) {
                 buffer.context.setGlobalCompositeOperation(defaultCompositeOp);
             }
-            buffer.globalAlpha = originAlpha;
+            if (alpha === alpha) {
+                buffer.globalAlpha = originAlpha;
+            }
             if (m) {
                 let matrix = buffer.globalMatrix;
                 matrix.a = savedMatrix.a;

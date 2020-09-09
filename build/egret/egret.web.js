@@ -7079,8 +7079,9 @@ var egret;
                 if (blendMode) {
                     buffer.context.setGlobalCompositeOperation(blendModes[blendMode]);
                 }
-                var originAlpha = buffer.globalAlpha;
-                if (alpha !== +alpha) {
+                var originAlpha;
+                if (alpha === alpha) { //做isNaN判断
+                    originAlpha = buffer.globalAlpha;
                     buffer.globalAlpha *= alpha;
                 }
                 if (node.filter) {
@@ -7098,7 +7099,9 @@ var egret;
                 if (blendMode) {
                     buffer.context.setGlobalCompositeOperation(defaultCompositeOp);
                 }
-                buffer.globalAlpha = originAlpha;
+                if (alpha === alpha) {
+                    buffer.globalAlpha = originAlpha;
+                }
                 if (m) {
                     var matrix = buffer.globalMatrix;
                     matrix.a = savedMatrix.a;
@@ -7891,7 +7894,7 @@ var egret;
             return {
                 render: function (node, render) {
                     var height = node.height, width = node.width;
-                    var _a = packer.insert(width, height), x = _a.x, y = _a.y;
+                    var _a = packer.insert(width - 2, height - 2), x = _a.x, y = _a.y;
                     textContext.$offsetX = x + 2;
                     textContext.$offsetY = y + 2;
                     render.canvasRenderer.renderText(node, textContext);
