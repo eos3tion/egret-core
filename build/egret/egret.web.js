@@ -3969,10 +3969,8 @@ var egret;
                     canvas.style.left = (boundingClientWidth - displayWidth) / 2 + "px";
                 }
                 var scalex = displayWidth / stageWidth / canvasScaleX, scaley = displayHeight / stageHeight / canvasScaleY;
-                if (egret.Capabilities.renderMode == "canvas") {
-                    canvasScaleX = Math.ceil(canvasScaleX);
-                    canvasScaleY = Math.ceil(canvasScaleY);
-                }
+                canvasScaleX = Math.ceil(canvasScaleX);
+                canvasScaleY = Math.ceil(canvasScaleY);
                 var m = egret.Matrix.create();
                 m.identity();
                 m.scale(scalex, scaley);
@@ -4410,7 +4408,7 @@ var egret;
             /**
              * 压入绘制texture指令
              */
-            WebGLDrawCmdManager.prototype.pushDrawTexture = function (texture, count, maxTextureCount, filter, textureWidth, textureHeight) {
+            WebGLDrawCmdManager.prototype.pushDrawTexture = function (texture, count, maxTextureCount, filter, textureWidth, textureHeight, sourceX, sourceY, sourceWidth, sourceHeight) {
                 var _a = this, drawDataLen = _a.drawDataLen, drawData = _a.drawData;
                 var idx = 0;
                 if (filter) {
@@ -4422,6 +4420,10 @@ var egret;
                     data.count = count;
                     data.textureWidth = textureWidth;
                     data.textureHeight = textureHeight;
+                    data.sourceX = sourceX || 0;
+                    data.sourceY = sourceY || 0;
+                    data.sourceWidth = sourceWidth || textureWidth;
+                    data.sourceHeight = sourceHeight || textureHeight;
                     drawData[drawDataLen] = data;
                     this.drawDataLen = drawDataLen + 1;
                 }
@@ -5591,7 +5593,7 @@ var egret;
                 }
                 var count = meshIndices ? meshIndices.length / 3 : 2;
                 // 应用$filter，因为只可能是colorMatrixFilter，最后两个参数可不传
-                var idx = drawCmdManager.pushDrawTexture(texture, count, this.$maxTextureCount, this.$filter, textureWidth, textureHeight);
+                var idx = drawCmdManager.pushDrawTexture(texture, count, this.$maxTextureCount, this.$filter, textureWidth, textureHeight, sourceX, sourceY, sourceWidth, sourceHeight);
                 vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight, textureWidth, textureHeight, meshUVs, meshVertices, meshIndices, rotated, idx);
             };
             /**
@@ -5864,6 +5866,9 @@ var egret;
                         gl.activeTexture(gl.TEXTURE0);
                         gl.bindTexture(gl.TEXTURE_2D, data.texture);
                         out = 0;
+                    }
+                    else if (key === "uTexRect") {
+                        out = { x: data.sourceX, y: data.sourceY, z: data.sourceWidth, w: data.sourceHeight };
                     }
                     else if (key[0] == "_") { //纹理
                         var idx = +key[key.length - 1]; //纹理编号

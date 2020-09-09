@@ -34,6 +34,14 @@ namespace egret {
         y: number;
     }
 
+    export interface Point3 extends Point2 {
+        z: number;
+    }
+
+    export interface Point4 extends Point3 {
+        w: number;
+    }
+
     let pointPool: Point[] = [];
     let DEG_TO_RAD: number = Math.PI / 180;
 

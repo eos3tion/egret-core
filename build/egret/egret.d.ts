@@ -2925,6 +2925,12 @@ declare namespace egret {
         x: number;
         y: number;
     }
+    interface Point3 extends Point2 {
+        z: number;
+    }
+    interface Point4 extends Point3 {
+        w: number;
+    }
     /**
      * The Point object represents a location in a two-dimensional coordinate system, where x represents the horizontal
      * axis and y represents the vertical axis.
