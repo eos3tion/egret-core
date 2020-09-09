@@ -73,6 +73,10 @@ namespace egret.web {
         textureWidth: number;
         textureHeight: number;
 
+        sourceX: number;
+        sourceY: number;
+        sourceWidth: number;
+        sourceHeight: number;
         /**
          * 纹理数组
          */
@@ -142,7 +146,7 @@ namespace egret.web {
         /**
          * 压入绘制texture指令
          */
-        public pushDrawTexture(texture: WebGLTexture, count: number, maxTextureCount: number, filter?: any, textureWidth?: number, textureHeight?: number) {
+        public pushDrawTexture(texture: WebGLTexture, count: number, maxTextureCount: number, filter?: any, textureWidth?: number, textureHeight?: number, sourceX?: number, sourceY?: number, sourceWidth?: number, sourceHeight?: number) {
             let { drawDataLen, drawData } = this;
             let idx = 0;
             if (filter) {
@@ -154,6 +158,10 @@ namespace egret.web {
                 data.count = count;
                 data.textureWidth = textureWidth;
                 data.textureHeight = textureHeight;
+                data.sourceX = sourceX || 0;
+                data.sourceY = sourceY || 0;
+                data.sourceWidth = sourceWidth || textureWidth;
+                data.sourceHeight = sourceHeight || textureHeight;
                 drawData[drawDataLen] = data;
                 this.drawDataLen = drawDataLen + 1;
             } else {
