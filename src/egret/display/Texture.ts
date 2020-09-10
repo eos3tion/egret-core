@@ -328,7 +328,7 @@ namespace egret {
          */
         public dispose(): void {
             if (this.$bitmapData) {
-                if(this.disposeBitmapData) {
+                if (this.disposeBitmapData) {
                     this.$bitmapData.$dispose();
                 }
                 this.$bitmapData = null;

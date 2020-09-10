@@ -2759,7 +2759,7 @@ var egret;
         Bitmap.prototype.$refreshImageData = function () {
             var texture = this.$texture;
             if (texture) {
-                this.setImageData(texture.$bitmapData, texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight, texture.$offsetX, texture.$offsetY, texture.$getTextureWidth(), texture.$getTextureHeight(), texture.$sourceWidth, texture.$sourceHeight);
+                this.setImageData(texture.$bitmapData, texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight, texture.$offsetX, texture.$offsetY, texture.$textureWidth, texture.$textureHeight, texture.$sourceWidth, texture.$sourceHeight);
             }
         };
         /**
@@ -3929,50 +3929,6 @@ var egret;
             _this.$rotated = false;
             return _this;
         }
-        Object.defineProperty(Texture.prototype, "textureWidth", {
-            /**
-             * Texture width, read only
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 纹理宽度，只读属性，不可以设置
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$getTextureWidth();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Texture.prototype.$getTextureWidth = function () {
-            return this.$textureWidth;
-        };
-        Object.defineProperty(Texture.prototype, "textureHeight", {
-            /**
-             * Texture height, read only
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 纹理高度，只读属性，不可以设置
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$getTextureHeight();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Texture.prototype.$getTextureHeight = function () {
-            return this.$textureHeight;
-        };
         Texture.prototype.$getScaleBitmapWidth = function () {
             return this.$bitmapWidth * egret.$TextureScaleFactor;
         };
@@ -14154,6 +14110,20 @@ var egret;
             function TextNode() {
                 var _this = _super.call(this) || this;
                 /**
+                 * 纹理偏移x
+                 */
+                _this.sx = 0;
+                /**
+                 * 纹理偏移y
+                 */
+                _this.sy = 0;
+                _this.sw = 0;
+                _this.sh = 0;
+                /**
+                 * 是否移除webglTexture
+                 */
+                _this.remTex = true;
+                /**
                  * 颜色值
                  */
                 _this.textColor = 0xFFFFFF;
@@ -14200,7 +14170,7 @@ var egret;
              * 清除非绘制的缓存数据
              */
             TextNode.prototype.clean = function () {
-                if (this.$texture) {
+                if (this.$texture && this.remTex) {
                     egret.WebGLUtils.deleteWebGLTexture(this.$texture);
                     this.$texture = null;
                     this.dirtyRender = true;
@@ -14458,29 +14428,9 @@ var egret;
             }
             displayObject.$cacheDirty = false;
             if (node) {
-                drawCalls++;
                 context.$offsetX = offsetX;
                 context.$offsetY = offsetY;
-                switch (node.type) {
-                    case 1 /* BitmapNode */:
-                        this.renderBitmap(node, context);
-                        break;
-                    case 2 /* TextNode */:
-                        this.renderText(node, context);
-                        break;
-                    case 3 /* GraphicsNode */:
-                        this.renderGraphics(node, context);
-                        break;
-                    case 4 /* GroupNode */:
-                        this.renderGroup(node, context);
-                        break;
-                    case 5 /* MeshNode */:
-                        this.renderMesh(node, context);
-                        break;
-                    case 6 /* NormalBitmapNode */:
-                        this.renderNormalBitmap(node, context);
-                        break;
-                }
+                drawCalls += this.renderNode(node, context);
                 context.$offsetX = 0;
                 context.$offsetY = 0;
             }
@@ -14795,27 +14745,7 @@ var egret;
             }
             var drawCalls = 0;
             if (node) {
-                drawCalls++;
-                switch (node.type) {
-                    case 1 /* BitmapNode */:
-                        this.renderBitmap(node, context);
-                        break;
-                    case 2 /* TextNode */:
-                        this.renderText(node, context);
-                        break;
-                    case 3 /* GraphicsNode */:
-                        this.renderGraphics(node, context);
-                        break;
-                    case 4 /* GroupNode */:
-                        this.renderGroup(node, context);
-                        break;
-                    case 5 /* MeshNode */:
-                        this.renderMesh(node, context);
-                        break;
-                    case 6 /* NormalBitmapNode */:
-                        this.renderNormalBitmap(node, context);
-                        break;
-                }
+                drawCalls += this.renderNode(node, context);
             }
             var children = displayObject.$children;
             if (children) {

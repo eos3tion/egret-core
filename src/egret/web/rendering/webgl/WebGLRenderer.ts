@@ -116,26 +116,7 @@ namespace egret.web {
                 drawCalls++;
                 buffer.$offsetX = offsetX;
                 buffer.$offsetY = offsetY;
-                switch (node.type) {
-                    case sys.RenderNodeType.BitmapNode:
-                        this.renderBitmap(<sys.BitmapNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.TextNode:
-                        this.renderText(<sys.TextNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.GraphicsNode:
-                        this.renderGraphics(<sys.GraphicsNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.GroupNode:
-                        this.renderGroup(<sys.GroupNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.MeshNode:
-                        this.renderMesh(<sys.MeshNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.NormalBitmapNode:
-                        this.renderNormalBitmap(<sys.NormalBitmapNode>node, buffer);
-                        break;
-                }
+                this.renderNode(node, buffer);
                 buffer.$offsetX = 0;
                 buffer.$offsetY = 0;
             }
@@ -567,7 +548,9 @@ namespace egret.web {
             webglBuffer.context.pushBuffer(webglBuffer);
 
             webglBuffer.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-            this.renderNode(node, buffer, 0, 0, forHitTest);
+            buffer.$offsetX = 0;
+            buffer.$offsetY = 0;
+            this.renderNode(node, buffer, forHitTest);
             webglBuffer.context.$drawWebGL();
             webglBuffer.onRenderFinish();
 
@@ -596,26 +579,7 @@ namespace egret.web {
             let drawCalls = 0;
             if (node) {
                 drawCalls++;
-                switch (node.type) {
-                    case sys.RenderNodeType.BitmapNode:
-                        this.renderBitmap(<sys.BitmapNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.TextNode:
-                        this.renderText(<sys.TextNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.GraphicsNode:
-                        this.renderGraphics(<sys.GraphicsNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.GroupNode:
-                        this.renderGroup(<sys.GroupNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.MeshNode:
-                        this.renderMesh(<sys.MeshNode>node, buffer);
-                        break;
-                    case sys.RenderNodeType.NormalBitmapNode:
-                        this.renderNormalBitmap(<sys.NormalBitmapNode>node, buffer);
-                        break;
-                }
+                this.renderNode(node, buffer);
             }
             let children = displayObject.$children;
             if (children) {
@@ -651,9 +615,7 @@ namespace egret.web {
         /**
          * @private
          */
-        private renderNode(node: sys.RenderNode, buffer: WebGLRenderBuffer, offsetX: number, offsetY: number, forHitTest?: boolean): void {
-            buffer.$offsetX = offsetX;
-            buffer.$offsetY = offsetY;
+        private renderNode(node: sys.RenderNode, buffer: WebGLRenderBuffer, forHitTest?: boolean): void {
             switch (node.type) {
                 case sys.RenderNodeType.BitmapNode:
                     this.renderBitmap(<sys.BitmapNode>node, buffer);
@@ -725,8 +687,8 @@ namespace egret.web {
                 buffer.context.setGlobalCompositeOperation(blendModes[blendMode]);
             }
             let originAlpha: number;
-            if (alpha == alpha) {
-                originAlpha = buffer.globalAlpha;
+            if (alpha === alpha) {//做isNaN判断
+                originAlpha = buffer.globalAlpha
                 buffer.globalAlpha *= alpha;
             }
             if (node.filter) {
@@ -746,7 +708,7 @@ namespace egret.web {
             if (blendMode) {
                 buffer.context.setGlobalCompositeOperation(defaultCompositeOp);
             }
-            if (alpha == alpha) {
+            if (alpha === alpha) {
                 buffer.globalAlpha = originAlpha;
             }
             if (m) {
@@ -835,8 +797,8 @@ namespace egret.web {
             }
         }
 
-        private canvasRenderer: CanvasRenderer;
-        private canvasRenderBuffer: CanvasRenderBuffer;
+        canvasRenderer: CanvasRenderer;
+        canvasRenderBuffer: CanvasRenderBuffer;
 
         /**
          * @private
@@ -891,27 +853,16 @@ namespace egret.web {
                 this.canvasRenderBuffer.context.setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
             }
 
-            if (node.dirtyRender) {
-                let surface = this.canvasRenderBuffer.surface;
-                this.canvasRenderer.renderText(node, this.canvasRenderBuffer.context);
-
-                // 拷贝canvas到texture
-                let texture = node.$texture;
-                if (!texture) {
-                    texture = buffer.context.createTexture(surface);
-                    node.$texture = texture;
-                } else {
-                    // 重新拷贝新的图像
-                    buffer.context.updateTexture(texture, surface);
-                }
-                // 保存材质尺寸
-                node.$textureWidth = surface.width;
-                node.$textureHeight = surface.height;
-            }
+            let context = buffer.context;
+            // if (node.dirtyRender) {
+            context.textHelper.render(node, this);
+            // }
 
             let textureWidth = node.$textureWidth;
             let textureHeight = node.$textureHeight;
-            buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
+            let ww = node.sw;
+            let hh = node.sh;
+            context.drawTexture(node.$texture, node.sx, node.sy, ww, hh, 0, 0, ww / canvasScaleX, hh / canvasScaleY, textureWidth, textureHeight);
 
             if (x || y) {
                 if (node.dirtyRender) {
@@ -1032,7 +983,7 @@ namespace egret.web {
             let length = children.length;
             for (let i = 0; i < length; i++) {
                 let node: sys.RenderNode = children[i];
-                this.renderNode(node, buffer, buffer.$offsetX, buffer.$offsetY);
+                this.renderNode(node, buffer);
             }
             if (m) {
                 let matrix = buffer.globalMatrix;

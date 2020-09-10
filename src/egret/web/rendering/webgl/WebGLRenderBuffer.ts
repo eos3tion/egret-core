@@ -246,6 +246,9 @@ namespace egret.web {
 
         public onRenderFinish(): void {
             this.$drawCalls = 0;
+
+            let helper = this.context.textHelper;
+            helper.clear();
         }
 
         /**
@@ -306,9 +309,10 @@ namespace egret.web {
          * 清空缓冲区数据
          */
         public clear(): void {
-            this.context.pushBuffer(this);
-            this.context.clear();
-            this.context.popBuffer();
+            let context = this.context;
+            context.pushBuffer(this);
+            context.clear();
+            context.popBuffer();
         }
 
         public $drawCalls: number = 0;
