@@ -4044,8 +4044,8 @@ var egret;
                 sharedCanvas = document.createElement("canvas");
                 sharedContext = sharedCanvas.getContext("2d");
             }
-            var w = texture.$textureWidth;
-            var h = texture.$textureHeight;
+            var w = texture.$getTextureWidth();
+            var h = texture.$getTextureHeight();
             if (rect == null) {
                 rect = egret.$TempRectangle;
                 rect.x = 0;

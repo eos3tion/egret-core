@@ -2092,12 +2092,40 @@ declare namespace egret {
          * @private
          * 纹理宽度
          */
-        $textureWidth: number;
+        private $textureWidth;
+        /**
+         * Texture width, read only
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 纹理宽度，只读属性，不可以设置
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        get textureWidth(): number;
+        $getTextureWidth(): number;
         /**
          * @private
          * 纹理高度
          */
-        $textureHeight: number;
+        private $textureHeight;
+        /**
+         * Texture height, read only
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 纹理高度，只读属性，不可以设置
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        get textureHeight(): number;
+        $getTextureHeight(): number;
         $getScaleBitmapWidth(): number;
         $getScaleBitmapHeight(): number;
         /**
