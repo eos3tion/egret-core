@@ -4044,8 +4044,8 @@ var egret;
                 sharedCanvas = document.createElement("canvas");
                 sharedContext = sharedCanvas.getContext("2d");
             }
-            var w = texture.$getTextureWidth();
-            var h = texture.$getTextureHeight();
+            var w = texture.$textureWidth;
+            var h = texture.$textureHeight;
             if (rect == null) {
                 rect = egret.$TempRectangle;
                 rect.x = 0;
@@ -7853,7 +7853,7 @@ var egret;
     var web;
     (function (web) {
         function getTextHelper(context) {
-            var ref = window["jy"]["ShortSideBinPacker"];
+            var ref = window["BinPacker"];
             if (!ref) {
                 return {
                     render: function (node, render) {
@@ -7911,13 +7911,7 @@ var egret;
                     changed = true;
                 },
                 clear: function () {
-                    packer.usedRects.length = 0;
-                    packer.freeRects.length = 1;
-                    var first = packer.freeRects[0];
-                    first.x = 0;
-                    first.y = 0;
-                    first.width = $width;
-                    first.height = $height;
+                    packer.reset();
                     textContext.clearRect(0, 0, $width, $height);
                 },
                 update: function () {
