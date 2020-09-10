@@ -14161,6 +14161,8 @@ var egret;
                  * 纹理偏移y
                  */
                 _this.sy = 0;
+                _this.sw = 0;
+                _this.sh = 0;
                 /**
                  * 是否移除webglTexture
                  */

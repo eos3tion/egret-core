@@ -9934,6 +9934,8 @@ declare namespace egret.sys {
          * 纹理偏移y
          */
         sy: number;
+        sw: number;
+        sh: number;
         /**
          * 是否移除webglTexture
          */

@@ -42,6 +42,11 @@ namespace egret.sys {
          * 纹理偏移y
          */
         sy = 0;
+
+        sw = 0;
+
+        sh = 0;
+
         /**
          * 是否移除webglTexture
          */

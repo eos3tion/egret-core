@@ -860,8 +860,8 @@ namespace egret.web {
 
             let textureWidth = node.$textureWidth;
             let textureHeight = node.$textureHeight;
-            let ww = node.width;
-            let hh = node.height;
+            let ww = node.sw;
+            let hh = node.sh;
             context.drawTexture(node.$texture, node.sx, node.sy, ww, hh, 0, 0, ww / canvasScaleX, hh / canvasScaleY, textureWidth, textureHeight);
 
             if (x || y) {

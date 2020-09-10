@@ -58,6 +58,8 @@ namespace egret.web {
                     node.$textureHeight = surface.height;
                     node.sx = 0;
                     node.sy = 0;
+                    node.sw = node.width;
+                    node.sh = node.height;
                     node.remTex = true;
                 },
                 clear() {
@@ -77,7 +79,7 @@ namespace egret.web {
         return {
             render(node: egret.sys.TextNode, render: WebGLRenderer) {
                 let { height, width } = node;
-                let { x, y } = packer.insert(width - 2, height - 2);
+                let { x, y } = packer.insert(width, height);
                 textContext.$offsetX = x + 2;
                 textContext.$offsetY = y + 2;
                 render.canvasRenderer.renderText(node, textContext);
@@ -86,6 +88,8 @@ namespace egret.web {
                 node.$texture = texture;
                 node.sx = x;
                 node.sy = y;
+                node.sw = width - 2;
+                node.sh = height - 2;
                 node.remTex = false;
                 changed = true;
             },

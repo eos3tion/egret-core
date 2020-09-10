@@ -7239,8 +7239,8 @@ var egret;
                 // }
                 var textureWidth = node.$textureWidth;
                 var textureHeight = node.$textureHeight;
-                var ww = node.width;
-                var hh = node.height;
+                var ww = node.sw;
+                var hh = node.sh;
                 context.drawTexture(node.$texture, node.sx, node.sy, ww, hh, 0, 0, ww / canvasScaleX, hh / canvasScaleY, textureWidth, textureHeight);
                 if (x || y) {
                     if (node.dirtyRender) {
@@ -7877,6 +7877,8 @@ var egret;
                         node.$textureHeight = surface.height;
                         node.sx = 0;
                         node.sy = 0;
+                        node.sw = node.width;
+                        node.sh = node.height;
                         node.remTex = true;
                     },
                     clear: function () {
@@ -7894,7 +7896,7 @@ var egret;
             return {
                 render: function (node, render) {
                     var height = node.height, width = node.width;
-                    var _a = packer.insert(width - 2, height - 2), x = _a.x, y = _a.y;
+                    var _a = packer.insert(width, height), x = _a.x, y = _a.y;
                     textContext.$offsetX = x + 2;
                     textContext.$offsetY = y + 2;
                     render.canvasRenderer.renderText(node, textContext);
@@ -7903,6 +7905,8 @@ var egret;
                     node.$texture = texture;
                     node.sx = x;
                     node.sy = y;
+                    node.sw = width - 2;
+                    node.sh = height - 2;
                     node.remTex = false;
                     changed = true;
                 },
