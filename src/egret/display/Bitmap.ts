@@ -207,7 +207,7 @@ namespace egret {
                     texture.$bitmapX, texture.$bitmapY,
                     texture.$bitmapWidth, texture.$bitmapHeight,
                     texture.$offsetX, texture.$offsetY,
-                    texture.$getTextureWidth(), texture.$getTextureHeight(),
+                    texture.$textureWidth, texture.$textureHeight,
                     texture.$sourceWidth, texture.$sourceHeight);
             }
         }

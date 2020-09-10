@@ -707,8 +707,6 @@ namespace egret.web {
          * 清除颜色缓存
          */
         public clear(): void {
-            let helper = this.textHelper;
-            helper.clear();
             this.drawCmdManager.pushClearColor();
         }
 

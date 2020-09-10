@@ -5646,8 +5646,6 @@ var egret;
              * 清除颜色缓存
              */
             WebGLRenderContext.prototype.clear = function () {
-                var helper = this.textHelper;
-                helper.clear();
                 this.drawCmdManager.pushClearColor();
             };
             /**
@@ -6285,6 +6283,8 @@ var egret;
             };
             WebGLRenderBuffer.prototype.onRenderFinish = function () {
                 this.$drawCalls = 0;
+                var helper = this.context.textHelper;
+                helper.clear();
             };
             /**
              * 交换frameBuffer中的图像到surface中

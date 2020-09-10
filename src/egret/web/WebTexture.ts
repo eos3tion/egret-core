@@ -42,8 +42,8 @@ namespace egret.web {
             sharedContext = sharedCanvas.getContext("2d");
         }
 
-        let w = texture.$getTextureWidth();
-        let h = texture.$getTextureHeight();
+        let w = texture.$textureWidth;
+        let h = texture.$textureHeight;
         if (rect == null) {
             rect = egret.$TempRectangle;
             rect.x = 0;

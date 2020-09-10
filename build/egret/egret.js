@@ -14472,29 +14472,9 @@ var egret;
             }
             displayObject.$cacheDirty = false;
             if (node) {
-                drawCalls++;
                 context.$offsetX = offsetX;
                 context.$offsetY = offsetY;
-                switch (node.type) {
-                    case 1 /* BitmapNode */:
-                        this.renderBitmap(node, context);
-                        break;
-                    case 2 /* TextNode */:
-                        this.renderText(node, context);
-                        break;
-                    case 3 /* GraphicsNode */:
-                        this.renderGraphics(node, context);
-                        break;
-                    case 4 /* GroupNode */:
-                        this.renderGroup(node, context);
-                        break;
-                    case 5 /* MeshNode */:
-                        this.renderMesh(node, context);
-                        break;
-                    case 6 /* NormalBitmapNode */:
-                        this.renderNormalBitmap(node, context);
-                        break;
-                }
+                drawCalls += this.renderNode(node, context);
                 context.$offsetX = 0;
                 context.$offsetY = 0;
             }
@@ -14809,27 +14789,7 @@ var egret;
             }
             var drawCalls = 0;
             if (node) {
-                drawCalls++;
-                switch (node.type) {
-                    case 1 /* BitmapNode */:
-                        this.renderBitmap(node, context);
-                        break;
-                    case 2 /* TextNode */:
-                        this.renderText(node, context);
-                        break;
-                    case 3 /* GraphicsNode */:
-                        this.renderGraphics(node, context);
-                        break;
-                    case 4 /* GroupNode */:
-                        this.renderGroup(node, context);
-                        break;
-                    case 5 /* MeshNode */:
-                        this.renderMesh(node, context);
-                        break;
-                    case 6 /* NormalBitmapNode */:
-                        this.renderNormalBitmap(node, context);
-                        break;
-                }
+                drawCalls += this.renderNode(node, context);
             }
             var children = displayObject.$children;
             if (children) {

@@ -246,6 +246,9 @@ namespace egret.web {
 
         public onRenderFinish(): void {
             this.$drawCalls = 0;
+
+            let helper = this.context.textHelper;
+            helper.clear();
         }
 
         /**
