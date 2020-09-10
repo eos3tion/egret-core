@@ -2759,7 +2759,7 @@ var egret;
         Bitmap.prototype.$refreshImageData = function () {
             var texture = this.$texture;
             if (texture) {
-                this.setImageData(texture.$bitmapData, texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight, texture.$offsetX, texture.$offsetY, texture.$textureWidth, texture.$textureHeight, texture.$sourceWidth, texture.$sourceHeight);
+                this.setImageData(texture.$bitmapData, texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight, texture.$offsetX, texture.$offsetY, texture.$getTextureWidth(), texture.$getTextureHeight(), texture.$sourceWidth, texture.$sourceHeight);
             }
         };
         /**
@@ -3929,6 +3929,50 @@ var egret;
             _this.$rotated = false;
             return _this;
         }
+        Object.defineProperty(Texture.prototype, "textureWidth", {
+            /**
+             * Texture width, read only
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 纹理宽度，只读属性，不可以设置
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this.$getTextureWidth();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Texture.prototype.$getTextureWidth = function () {
+            return this.$textureWidth;
+        };
+        Object.defineProperty(Texture.prototype, "textureHeight", {
+            /**
+             * Texture height, read only
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 纹理高度，只读属性，不可以设置
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this.$getTextureHeight();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Texture.prototype.$getTextureHeight = function () {
+            return this.$textureHeight;
+        };
         Texture.prototype.$getScaleBitmapWidth = function () {
             return this.$bitmapWidth * egret.$TextureScaleFactor;
         };

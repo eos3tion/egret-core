@@ -125,10 +125,50 @@ namespace egret {
         $textureWidth: number = 0;
 
         /**
+         * Texture width, read only
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 纹理宽度，只读属性，不可以设置
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        public get textureWidth(): number {
+            return this.$getTextureWidth();
+        }
+
+        $getTextureWidth(): number {
+            return this.$textureWidth;
+        }
+
+        /**
          * @private
          * 纹理高度
          */
         $textureHeight: number = 0;
+
+        /**
+         * Texture height, read only
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 纹理高度，只读属性，不可以设置
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        public get textureHeight(): number {
+            return this.$getTextureHeight();
+        }
+
+        $getTextureHeight(): number {
+            return this.$textureHeight;
+        }
 
         $getScaleBitmapWidth(): number {
             return this.$bitmapWidth * $TextureScaleFactor;
