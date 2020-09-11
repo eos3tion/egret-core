@@ -7852,34 +7852,37 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
+        function $render(node, render, context) {
+            if (!node.dirtyRender) {
+                return;
+            }
+            var surface = render.canvasRenderBuffer.surface;
+            render.canvasRenderer.renderText(node, render.canvasRenderBuffer.context);
+            // 拷贝canvas到texture
+            var texture = node.$texture;
+            if (!texture) {
+                texture = context.createTexture(surface);
+                node.$texture = texture;
+            }
+            else {
+                // 重新拷贝新的图像
+                context.updateTexture(texture, surface);
+            }
+            // 保存材质尺寸
+            node.$textureWidth = surface.width;
+            node.$textureHeight = surface.height;
+            node.sx = 0;
+            node.sy = 0;
+            node.sw = node.width;
+            node.sh = node.height;
+            node.remTex = true;
+        }
         function getTextHelper(context) {
             var ref = window["BinPacker"];
             if (!ref) {
                 return {
                     render: function (node, render) {
-                        if (!node.dirtyRender) {
-                            return;
-                        }
-                        var surface = render.canvasRenderBuffer.surface;
-                        render.canvasRenderer.renderText(node, render.canvasRenderBuffer.context);
-                        // 拷贝canvas到texture
-                        var texture = node.$texture;
-                        if (!texture) {
-                            texture = context.createTexture(surface);
-                            node.$texture = texture;
-                        }
-                        else {
-                            // 重新拷贝新的图像
-                            context.updateTexture(texture, surface);
-                        }
-                        // 保存材质尺寸
-                        node.$textureWidth = surface.width;
-                        node.$textureHeight = surface.height;
-                        node.sx = 0;
-                        node.sy = 0;
-                        node.sw = node.width;
-                        node.sh = node.height;
-                        node.remTex = true;
+                        $render(node, render, context);
                     },
                     clear: function () {
                     },
@@ -7896,19 +7899,29 @@ var egret;
             return {
                 render: function (node, render) {
                     var height = node.height, width = node.width;
-                    var _a = packer.insert(width, height), x = _a.x, y = _a.y;
-                    textContext.$offsetX = x + 2;
-                    textContext.$offsetY = y + 2;
-                    render.canvasRenderer.renderText(node, textContext);
-                    node.$textureWidth = $width;
-                    node.$textureHeight = $height;
-                    node.$texture = texture;
-                    node.sx = x;
-                    node.sy = y;
-                    node.sw = width - 2;
-                    node.sh = height - 2;
-                    node.remTex = false;
-                    changed = true;
+                    var bin = packer.insert(width, height);
+                    if (bin) {
+                        var x = bin.x, y = bin.y;
+                        textContext.$offsetX = x + 2;
+                        textContext.$offsetY = y + 2;
+                        render.canvasRenderer.renderText(node, textContext);
+                        node.$textureWidth = $width;
+                        node.$textureHeight = $height;
+                        node.$texture = texture;
+                        node.sx = x;
+                        node.sy = y;
+                        node.sw = width - 2;
+                        node.sh = height - 2;
+                        node.remTex = false;
+                        changed = true;
+                    }
+                    else {
+                        if (node.$texture == texture) {
+                            node.$texture = null;
+                            node.dirtyRender = true;
+                        }
+                        $render(node, render, context);
+                    }
                 },
                 clear: function () {
                     packer.reset();
