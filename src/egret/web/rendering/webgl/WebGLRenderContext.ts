@@ -33,6 +33,7 @@ interface WebGLRenderingContext {
 
 interface WebGLTexture {
     glContext: WebGLRenderingContext;
+    unpackPremutiplyAlpha: boolean;
 }
 
 namespace egret.web {
@@ -428,6 +429,7 @@ namespace egret.web {
 
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+            texture.unpackPremutiplyAlpha = true;
 
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmapData);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -645,7 +647,7 @@ namespace egret.web {
             let count = meshIndices ? meshIndices.length / 3 : 2;
             // 应用$filter，因为只可能是colorMatrixFilter，最后两个参数可不传
             let idx = drawCmdManager.pushDrawTexture(texture, count, this.$maxTextureCount, this.$filter, textureWidth, textureHeight, sourceX, sourceY, sourceWidth, sourceHeight);
-
+            buffer.currentTexture = texture;
             vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight,
                 destX, destY, destWidth, destHeight, textureWidth, textureHeight,
                 meshUVs, meshVertices, meshIndices, rotated, idx);
@@ -665,7 +667,7 @@ namespace egret.web {
             }
 
             this.drawCmdManager.pushDrawRect();
-
+            buffer.currentTexture = null;
             this.vao.cacheArrays(buffer, 0, 0, width, height, x, y, width, height, width, height);
         }
 
@@ -682,6 +684,7 @@ namespace egret.web {
                 this.$drawWebGL();
             }
             this.drawCmdManager.pushPushMask();
+            buffer.currentTexture = null;
             this.vao.cacheArrays(buffer, 0, 0, width, height, x, y, width, height, width, height);
         }
 
@@ -700,6 +703,7 @@ namespace egret.web {
                 this.$drawWebGL();
             }
             this.drawCmdManager.pushPopMask();
+            buffer.currentTexture = null;
             this.vao.cacheArrays(buffer, 0, 0, mask.width, mask.height, mask.x, mask.y, mask.width, mask.height, mask.width, mask.height);
         }
 
@@ -900,9 +904,9 @@ namespace egret.web {
                     } else if (key === "aTextureCoord") {
                         gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 6 * 4, 2 * 4);
                     } else if (key === "aColor") {
-                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 6 * 4, 4 * 4);
+                        gl.vertexAttribPointer(location, 4, gl.UNSIGNED_BYTE, true, 6 * 4, 4 * 4);
                     } else if (key === "aTexIdx") {
-                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 6 * 4, 5 * 4);
+                        gl.vertexAttribPointer(location, 1, gl.FLOAT, true, 6 * 4, 5 * 4);
                     }
                     gl.enableVertexAttribArray(location);
                 }
@@ -1160,6 +1164,7 @@ namespace egret.web {
             output.transform(1, 0, 0, -1, 0, height);
             this.vao.cacheArrays(output, 0, 0, width, height, 0, 0, width, height, width, height);
             output.restoreTransform();
+            output.currentTexture = input.rootRenderTarget.texture;
 
             this.drawCmdManager.pushDrawTexture(input.rootRenderTarget.texture, 2, this.$maxTextureCount, filter, width, height);
 

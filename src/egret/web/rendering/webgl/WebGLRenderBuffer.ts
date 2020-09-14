@@ -59,6 +59,7 @@ namespace egret.web {
          */
         private root: boolean;
 
+        currentTexture: WebGLTexture = null;
 
         public constructor(width?: number, height?: number, root?: boolean) {
             super();
@@ -92,6 +93,7 @@ namespace egret.web {
         }
 
         public globalAlpha: number = 1;
+        public globalTintColor: number = 0xFFFFFF;
         /**
          * stencil state
          * 模版开关状态
