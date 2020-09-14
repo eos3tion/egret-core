@@ -33,6 +33,7 @@ interface WebGLRenderingContext {
 
 interface WebGLTexture {
     glContext: WebGLRenderingContext;
+    unpackPremutiplyAlpha: boolean;
 }
 
 namespace egret.web {
