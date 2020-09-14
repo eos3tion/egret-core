@@ -216,7 +216,7 @@ namespace egret.web {
                         vertices[iD + 3] = (sourceY + v * sourceHeight) / textureSourceHeight;
                     }
                     // alpha
-                    vertices[iD + 4] = alpha;
+                    vertU32[iD + 4] = alpha;
 
                     vertices[iD + 5] = texIdx;
                 }
@@ -246,7 +246,7 @@ namespace egret.web {
                     vertices[index++] = sourceWidth + sourceX;
                     vertices[index++] = sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
 
@@ -257,7 +257,7 @@ namespace egret.web {
                     vertices[index++] = sourceWidth + sourceX;
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
 
@@ -268,7 +268,7 @@ namespace egret.web {
                     vertices[index++] = sourceX;
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
 
@@ -279,7 +279,7 @@ namespace egret.web {
                     vertices[index++] = sourceX;
                     vertices[index++] = sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
                 }
@@ -293,7 +293,7 @@ namespace egret.web {
                     vertices[index++] = sourceX;
                     vertices[index++] = sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
 
@@ -304,7 +304,7 @@ namespace egret.web {
                     vertices[index++] = sourceWidth + sourceX;
                     vertices[index++] = sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
 
@@ -315,7 +315,7 @@ namespace egret.web {
                     vertices[index++] = sourceWidth + sourceX;
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
 
@@ -326,7 +326,7 @@ namespace egret.web {
                     vertices[index++] = sourceX;
                     vertices[index++] = sourceHeight + sourceY;
                     // alpha
-                    vertices[index++] = alpha;
+                    vertU32[index++] = alpha;
                     // texIdx
                     vertices[index++] = texIdx;
                 }
