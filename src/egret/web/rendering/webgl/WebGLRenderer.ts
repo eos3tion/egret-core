@@ -128,12 +128,14 @@ namespace egret.web {
                 let length = children.length;
                 for (let i = 0; i < length; i++) {
                     let child = children[i];
-                    let offsetX2;
-                    let offsetY2;
-                    let tempAlpha;
+                    let offsetX2: number, offsetY2: number, tempAlpha: number, tempTintColor: number;
                     if (child.$alpha != 1) {
                         tempAlpha = buffer.globalAlpha;
                         buffer.globalAlpha *= child.$alpha;
+                    }
+                    if (child.tint !== 0xFFFFFF) {
+                        tempTintColor = buffer.globalTintColor;
+                        buffer.globalTintColor = child.$tintRGB;
                     }
                     let savedMatrix: Matrix;
                     if (child.$useTranslate) {
@@ -174,6 +176,9 @@ namespace egret.web {
                     }
                     if (tempAlpha) {
                         buffer.globalAlpha = tempAlpha;
+                    }
+                    if (tempTintColor) {
+                        buffer.globalTintColor = tempTintColor;
                     }
                     if (savedMatrix) {
                         let m = buffer.globalMatrix;
