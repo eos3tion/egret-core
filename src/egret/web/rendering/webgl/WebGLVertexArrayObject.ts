@@ -57,8 +57,9 @@ namespace egret.web {
 
         public constructor() {
 
-            this.indices = new Uint16Array(Const.MaxQuadsCount);
-            this.indicesForMesh = new Uint16Array(Const.MaxQuadsCount);
+            const indices = new Uint16Array(Const.MaxIndicesCount);
+            this.indices = indices;
+            this.indicesForMesh = new Uint16Array(Const.MaxIndicesCount);
 
             let vertices = new ArrayBuffer(Const.MaxVertexCount * Const.VertByteSize);
             let vertF32 = new Float32Array(vertices);
@@ -67,12 +68,12 @@ namespace egret.web {
             this._vertU32 = vertU32;
 
             for (let i = 0, j = 0; i < Const.MaxIndicesCount; i += 6, j += 4) {
-                this.indices[i + 0] = j + 0;
-                this.indices[i + 1] = j + 1;
-                this.indices[i + 2] = j + 2;
-                this.indices[i + 3] = j + 0;
-                this.indices[i + 4] = j + 2;
-                this.indices[i + 5] = j + 3;
+                indices[i + 0] = j + 0;
+                indices[i + 1] = j + 1;
+                indices[i + 2] = j + 2;
+                indices[i + 3] = j + 0;
+                indices[i + 4] = j + 2;
+                indices[i + 5] = j + 3;
             }
         }
 
@@ -185,7 +186,7 @@ namespace egret.web {
            * 混入tintcolor => alpha
            */
             alpha = Math.min(alpha, 1.0);
-            const globalTintColor = buffer.globalTintColor || 0xFFFFFF;
+            const globalTintColor = buffer.globalTintColor;
             const currentTexture = buffer.currentTexture;
             alpha = ((alpha < 1.0 && currentTexture && currentTexture.unpackPremutiplyAlpha) ?
                 WebGLUtils.premultiplyTint(globalTintColor, alpha)

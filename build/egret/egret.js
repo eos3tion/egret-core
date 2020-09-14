@@ -649,6 +649,14 @@ var egret;
             _this.$renderNode = null;
             _this.$renderDirty = false;
             _this.$renderMode = null;
+            /**
+            * inspired by pixi.js
+            */
+            _this._tint = 0xffffff;
+            /**
+             * @private
+             */
+            _this.$tintRGB = 0xffffff;
             return _this;
         }
         Object.defineProperty(DisplayObject.prototype, "name", {
@@ -2334,6 +2342,29 @@ var egret;
             arrayRemove(DisplayObject.$enterFrameCallBackList, this);
             arrayRemove(DisplayObject.$renderCallBackList, this);
         };
+        Object.defineProperty(DisplayObject.prototype, "tint", {
+            /**
+             * Set a tint color for the current object
+             * @version Egret 5.2.24
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 给当前对象设置填充色
+             * @version Egret 5.2.24
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this._tint;
+            },
+            set: function (value) {
+                this._tint = value;
+                this.$tintRGB = (value >> 16) + (value & 0xff00) + ((value & 0xff) << 16);
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * @private
          * The default touchEnabled property of DisplayObject
@@ -21859,6 +21890,21 @@ var egret;
                     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bmd.source);
                 }
             }
+        };
+        WebGLUtils.premultiplyTint = function (tint, alpha) {
+            if (alpha === 1.0) {
+                return (alpha * 255 << 24) + tint;
+            }
+            if (alpha === 0.0) {
+                return 0;
+            }
+            var R = ((tint >> 16) & 0xFF);
+            var G = ((tint >> 8) & 0xFF);
+            var B = (tint & 0xFF);
+            R = ((R * alpha) + 0.5) | 0;
+            G = ((G * alpha) + 0.5) | 0;
+            B = ((B * alpha) + 0.5) | 0;
+            return (alpha * 255 << 24) + (R << 16) + (G << 8) + B;
         };
         return WebGLUtils;
     }());

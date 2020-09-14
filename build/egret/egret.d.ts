@@ -1290,6 +1290,28 @@ declare namespace egret {
         willTrigger(type: string): boolean;
         removeListeners(type: string | number, useCapture?: boolean): void;
         removeAllListeners(): void;
+        /**
+        * inspired by pixi.js
+        */
+        private _tint;
+        /**
+         * @private
+         */
+        $tintRGB: number;
+        /**
+         * Set a tint color for the current object
+         * @version Egret 5.2.24
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 给当前对象设置填充色
+         * @version Egret 5.2.24
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        get tint(): number;
+        set tint(value: number);
     }
 }
 declare namespace egret {
@@ -14294,5 +14316,6 @@ declare namespace egret {
         static checkCanUseWebGL(): boolean;
         static deleteWebGLTexture(bitmapData: any): void;
         static updateEgretTexutre(bmd: egret.BitmapData): void;
+        static premultiplyTint(tint: number, alpha: number): number;
     }
 }

@@ -904,9 +904,9 @@ namespace egret.web {
                     } else if (key === "aTextureCoord") {
                         gl.vertexAttribPointer(location, 2, gl.FLOAT, false, 6 * 4, 2 * 4);
                     } else if (key === "aColor") {
-                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 6 * 4, 4 * 4);
+                        gl.vertexAttribPointer(location, 4, gl.UNSIGNED_BYTE, true, 6 * 4, 4 * 4);
                     } else if (key === "aTexIdx") {
-                        gl.vertexAttribPointer(location, 1, gl.FLOAT, false, 6 * 4, 5 * 4);
+                        gl.vertexAttribPointer(location, 1, gl.FLOAT, true, 6 * 4, 5 * 4);
                     }
                     gl.enableVertexAttribArray(location);
                 }

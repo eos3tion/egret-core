@@ -1,6 +1,6 @@
 attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
-attribute float aColor;
+attribute vec4 aColor;
 attribute float aTexIdx;
 
 uniform vec2 projectionVector;
@@ -16,5 +16,5 @@ void main(void) {
    gl_Position = vec4( (aVertexPosition / projectionVector) + center , 0.0, 1.0);
    vTextureCoord = aTextureCoord;
    vTexIdx = aTexIdx;
-   vColor = vec4(aColor);
+   vColor = aColor;
 }

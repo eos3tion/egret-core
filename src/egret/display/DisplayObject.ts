@@ -2005,11 +2005,11 @@ namespace egret {
         /**
         * inspired by pixi.js    
         */
-        private _tint: number = 0;
+        private _tint: number = 0xffffff;
         /**
          * @private
          */
-        $tintRGB: number = 0;
+        $tintRGB: number = 0xffffff;
         /**
          * Set a tint color for the current object
          * @version Egret 5.2.24
