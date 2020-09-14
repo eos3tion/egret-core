@@ -2001,6 +2001,34 @@ namespace egret {
             arrayRemove(DisplayObject.$enterFrameCallBackList, this);
             arrayRemove(DisplayObject.$renderCallBackList, this);
         }
+
+        /**
+        * inspired by pixi.js    
+        */
+        private _tint: number = 0;
+        /**
+         * @private
+         */
+        $tintRGB: number = 0;
+        /**
+         * Set a tint color for the current object
+         * @version Egret 5.2.24
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 给当前对象设置填充色
+         * @version Egret 5.2.24
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        public get tint(): number {
+            return this._tint;
+        }
+        public set tint(value) {
+            this._tint = value;
+            this.$tintRGB = (value >> 16) + (value & 0xff00) + ((value & 0xff) << 16);
+        }
     }
 
     function arrayRemove<T>(list: T[], item: T) {

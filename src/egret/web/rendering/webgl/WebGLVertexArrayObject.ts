@@ -27,7 +27,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 namespace egret.web {
-
+    const enum Const {
+        VertSize = 6,
+        VertByteSize = VertSize * 4,
+        MaxQuadsCount = 2048,
+        MaxVertexCount = MaxQuadsCount * 4,
+        MaxIndicesCount = MaxQuadsCount * 6,
+    }
     /**
      * @private
      * 顶点数组管理对象
@@ -35,29 +41,32 @@ namespace egret.web {
      */
     export class WebGLVertexArrayObject {
 
-        private size: number = 2000;
-        private vertexMaxSize: number = this.size * 4;
-        private indicesMaxSize: number = this.size * 6;
-        private vertSize: number = 6;
 
-        private vertices: Float32Array = null;
-        private indices: Uint16Array = null;
-        private indicesForMesh: Uint16Array = null;
 
-        private vertexIndex: number = 0;
-        private indexIndex: number = 0;
+        private vertices: Float32Array;
+        private _vertU32: Uint32Array;
+        private indices: Uint16Array;
+        private indicesForMesh: Uint16Array;
 
-        private hasMesh: boolean = false;
+        private vertexIndex = 0;
+        private indexIndex = 0;
+
+        private hasMesh = false;
+
+
 
         public constructor() {
-            let numVerts = this.vertexMaxSize * this.vertSize;
-            let numIndices = this.indicesMaxSize;
 
-            this.vertices = new Float32Array(numVerts);
-            this.indices = new Uint16Array(numIndices);
-            this.indicesForMesh = new Uint16Array(numIndices);
+            this.indices = new Uint16Array(Const.MaxQuadsCount);
+            this.indicesForMesh = new Uint16Array(Const.MaxQuadsCount);
 
-            for (let i = 0, j = 0; i < numIndices; i += 6, j += 4) {
+            let vertices = new ArrayBuffer(Const.MaxVertexCount * Const.VertByteSize);
+            let vertF32 = new Float32Array(vertices);
+            let vertU32 = new Uint32Array(vertices);
+            this.vertices = vertF32;
+            this._vertU32 = vertU32;
+
+            for (let i = 0, j = 0; i < Const.MaxIndicesCount; i += 6, j += 4) {
                 this.indices[i + 0] = j + 0;
                 this.indices[i + 1] = j + 1;
                 this.indices[i + 2] = j + 2;
@@ -71,14 +80,14 @@ namespace egret.web {
          * 是否达到最大缓存数量
          */
         public reachMaxSize(vertexCount: number = 4, indexCount: number = 6): boolean {
-            return this.vertexIndex > this.vertexMaxSize - vertexCount || this.indexIndex > this.indicesMaxSize - indexCount;
+            return this.vertexIndex > Const.MaxVertexCount - vertexCount || this.indexIndex > Const.MaxIndicesCount - indexCount;
         }
 
         /**
          * 获取缓存完成的顶点数组
          */
         public getVertices(): any {
-            let view = this.vertices.subarray(0, this.vertexIndex * this.vertSize);
+            let view = this.vertices.subarray(0, this.vertexIndex * Const.VertSize);
             return view;
         }
 
@@ -168,10 +177,19 @@ namespace egret.web {
                     d = d1 * d;
                 }
             }
-            const vertSize = this.vertSize;
-            let index = this.vertexIndex * vertSize;
+            let index = this.vertexIndex * Const.VertSize;
+            const vertU32 = this._vertU32;
             // 计算索引位置与赋值
             let vertices = this.vertices;
+            /*
+           * 混入tintcolor => alpha
+           */
+            alpha = Math.min(alpha, 1.0);
+            const globalTintColor = buffer.globalTintColor || 0xFFFFFF;
+            const currentTexture = buffer.currentTexture;
+            alpha = ((alpha < 1.0 && currentTexture && currentTexture[UNPACK_PREMULTIPLY_ALPHA_WEBGL]) ?
+                WebGLUtils.premultiplyTint(globalTintColor, alpha)
+                : globalTintColor + (alpha * 255 << 24));
             if (meshVertices) {
 
 
@@ -180,7 +198,7 @@ namespace egret.web {
                 let u = 0, v = 0, x = 0, y = 0;
 
                 for (i = 0, l = meshUVs.length; i < l; i += 2) {
-                    iD = index + i * vertSize / 2;
+                    iD = index + i * Const.VertSize / 2;
                     x = meshVertices[i];
                     y = meshVertices[i + 1];
                     u = meshUVs[i];
