@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -46,10 +46,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * @inheritDoc
-         */
         var HtmlSound = /** @class */ (function (_super) {
             __extends(HtmlSound, _super);
             /**
@@ -72,7 +68,7 @@ var egret;
                     throw new Error("sound not loaded!");
                     //return 0;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -227,10 +223,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * @inheritDoc
-         */
         var HtmlSoundChannel = /** @class */ (function (_super) {
             __extends(HtmlSoundChannel, _super);
             /**
@@ -344,7 +336,7 @@ var egret;
                         return;
                     this.audio.volume = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(HtmlSoundChannel.prototype, "position", {
@@ -357,7 +349,7 @@ var egret;
                         return 0;
                     return this.audio.currentTime;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             return HtmlSoundChannel;
@@ -398,9 +390,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebAudioDecode = /** @class */ (function () {
             function WebAudioDecode() {
             }
@@ -445,10 +434,6 @@ var egret;
         }());
         web.WebAudioDecode = WebAudioDecode;
         __reflect(WebAudioDecode.prototype, "egret.web.WebAudioDecode");
-        /**
-         * @private
-         * @inheritDoc
-         */
         var WebAudioSound = /** @class */ (function (_super) {
             __extends(WebAudioSound, _super);
             /**
@@ -471,7 +456,7 @@ var egret;
                     throw new Error("sound not loaded!");
                     //return 0;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -569,10 +554,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * @inheritDoc
-         */
         var WebAudioSoundChannel = /** @class */ (function (_super) {
             __extends(WebAudioSoundChannel, _super);
             /**
@@ -689,7 +670,7 @@ var egret;
                     this._volume = value;
                     this.gain.gain.value = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebAudioSoundChannel.prototype, "position", {
@@ -703,7 +684,7 @@ var egret;
                     }
                     return 0;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             return WebAudioSoundChannel;
@@ -744,10 +725,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * @inheritDoc
-         */
         var WebVideo = /** @class */ (function (_super) {
             __extends(WebVideo, _super);
             /**
@@ -1068,7 +1045,7 @@ var egret;
                         return;
                     this.video.volume = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebVideo.prototype, "position", {
@@ -1088,7 +1065,7 @@ var egret;
                         return;
                     this.video.currentTime = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebVideo.prototype, "fullscreen", {
@@ -1107,7 +1084,7 @@ var egret;
                         this.checkFullScreen(this._fullscreen);
                     }
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebVideo.prototype, "bitmapData", {
@@ -1125,7 +1102,7 @@ var egret;
                     }
                     return this._bitmapData;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             WebVideo.prototype.loadPoster = function () {
@@ -1249,7 +1226,7 @@ var egret;
                     }
                     return true;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebVideo.prototype, "length", {
@@ -1262,7 +1239,7 @@ var egret;
                     }
                     throw new Error("Video not loaded!");
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             return WebVideo;
@@ -1304,9 +1281,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebHttpRequest = /** @class */ (function (_super) {
             __extends(WebHttpRequest, _super);
             /**
@@ -1355,7 +1329,7 @@ var egret;
                     }*/
                     return null;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebHttpRequest.prototype, "responseType", {
@@ -1369,7 +1343,7 @@ var egret;
                 set: function (value) {
                     this._responseType = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebHttpRequest.prototype, "withCredentials", {
@@ -1383,7 +1357,7 @@ var egret;
                 set: function (value) {
                     this._withCredentials = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -1591,10 +1565,6 @@ var egret;
     var web;
     (function (web) {
         var winURL = window["URL"] || window["webkitURL"];
-        /**
-         * @private
-         * ImageLoader 类可用于加载图像（JPG、PNG 或 GIF）文件。使用 load() 方法来启动加载。被加载的图像对象数据将存储在 ImageLoader.data 属性上 。
-         */
         var WebImageLoader = /** @class */ (function (_super) {
             __extends(WebImageLoader, _super);
             function WebImageLoader() {
@@ -1633,7 +1603,7 @@ var egret;
                     this._hasCrossOriginSet = true;
                     this._crossOrigin = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -1804,11 +1774,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @classdesc
-         * @extends egret.StageText
-         * @private
-         */
         var HTML5StageText = /** @class */ (function (_super) {
             __extends(HTML5StageText, _super);
             /**
@@ -2151,9 +2116,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var HTMLInput = /** @class */ (function () {
             function HTMLInput() {
                 /**
@@ -2560,10 +2522,6 @@ var egret;
             return canvas;
         }
         var sharedCanvas;
-        /**
-         * @private
-         * Canvas2D渲染缓冲
-         */
         var CanvasRenderBuffer = /** @class */ (function () {
             function CanvasRenderBuffer(width, height, root) {
                 this.surface = createCanvas(width, height);
@@ -2581,7 +2539,7 @@ var egret;
                 get: function () {
                     return this.surface.width;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(CanvasRenderBuffer.prototype, "height", {
@@ -2592,7 +2550,7 @@ var egret;
                 get: function () {
                     return this.surface.height;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -2696,9 +2654,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebTouchHandler = /** @class */ (function (_super) {
             __extends(WebTouchHandler, _super);
             /**
@@ -3012,9 +2967,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var AudioType = /** @class */ (function () {
             function AudioType() {
             }
@@ -3030,10 +2982,6 @@ var egret;
         }());
         web.AudioType = AudioType;
         __reflect(AudioType.prototype, "egret.web.AudioType");
-        /**
-         * html5兼容性配置
-         * @private
-         */
         var Html5Capatibility = /** @class */ (function (_super) {
             __extends(Html5Capatibility, _super);
             /**
@@ -3388,9 +3336,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebCapability = /** @class */ (function () {
             function WebCapability() {
             }
@@ -3503,9 +3448,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebFps = /** @class */ (function () {
             function WebFps(stage, showFPS, showLog, logFilter, styles) {
                 this.showPanle = true;
@@ -3807,9 +3749,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebPlayer = /** @class */ (function (_super) {
             __extends(WebPlayer, _super);
             function WebPlayer(container, options) {
@@ -4167,9 +4106,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebDeviceOrientation = /** @class */ (function (_super) {
             __extends(WebDeviceOrientation, _super);
             function WebDeviceOrientation() {
@@ -4211,9 +4147,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebGeolocation = /** @class */ (function (_super) {
             __extends(WebGeolocation, _super);
             /**
@@ -4286,9 +4219,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var WebMotion = /** @class */ (function (_super) {
             __extends(WebMotion, _super);
             function WebMotion() {
@@ -4373,11 +4303,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * 绘制指令管理器
-         * 用来维护drawData数组
-         */
         var WebGLDrawCmdManager = /** @class */ (function () {
             function WebGLDrawCmdManager() {
                 /**
@@ -4688,11 +4613,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * 顶点数组管理对象
-         * 用来维护顶点数组
-         */
         var WebGLVertexArrayObject = /** @class */ (function () {
             function WebGLVertexArrayObject() {
                 this.vertexIndex = 0;
@@ -5005,11 +4925,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * WebGLRenderTarget
-         * A WebGL render target with a frame buffer and texture
-         */
         var WebGLRenderTarget = /** @class */ (function (_super) {
             __extends(WebGLRenderTarget, _super);
             function WebGLRenderTarget(context, width, height) {
@@ -5157,11 +5072,6 @@ var egret;
          * WebGLRenderContext单例
          */
         var instance;
-        /**
-         * @private
-         * WebGL上下文对象，提供简单的绘图接口
-         * 抽象出此类，以实现共用一个context
-         */
         var WebGLRenderContext = /** @class */ (function () {
             function WebGLRenderContext(width, height) {
                 this.glID = null;
@@ -6107,10 +6017,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         * WebGL渲染缓存
-         */
         var WebGLRenderBuffer = /** @class */ (function (_super) {
             __extends(WebGLRenderBuffer, _super);
             function WebGLRenderBuffer(width, height, root) {
@@ -6215,7 +6121,7 @@ var egret;
                 get: function () {
                     return this.rootRenderTarget.width;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(WebGLRenderBuffer.prototype, "height", {
@@ -6226,7 +6132,7 @@ var egret;
                 get: function () {
                     return this.rootRenderTarget.height;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -6481,10 +6387,6 @@ var egret;
         var BLACK_COLOR = "#000000";
         var CAPS_STYLES = { none: 'butt', square: 'square', round: 'round' };
         var renderBufferPool = []; //渲染缓冲区对象池
-        /**
-         * @private
-         * WebGL渲染器
-         */
         var WebGLRenderer = /** @class */ (function () {
             function WebGLRenderer() {
                 this.nestLevel = 0; //渲染的嵌套层次，0表示在调用堆栈的最外层。
@@ -7443,9 +7345,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var EgretWebGLAttribute = /** @class */ (function () {
             function EgretWebGLAttribute(gl, program, attributeData) {
                 this.gl = gl;
@@ -7577,9 +7476,6 @@ var egret;
             return uniforms;
         }
         var programCache = {};
-        /**
-         * @private
-         */
         var EgretWebGLProgram = /** @class */ (function () {
             function EgretWebGLProgram(gl, vertSource, fragSource) {
                 this.vshaderSource = vertSource;
@@ -7641,9 +7537,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var EgretWebGLUniform = /** @class */ (function () {
             function EgretWebGLUniform(gl, program, uniformData) {
                 this.gl = gl;
@@ -7847,9 +7740,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var EgretShaderLib = /** @class */ (function () {
             function EgretShaderLib() {
             }

@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -44,20 +44,6 @@ var __extends = (this && this.__extends) || (function () {
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * Easing function set. Different easing functions are used to make an animation proceed according to the corresponding equation
-     * @see http://edn.egret.com/cn/index.php/article/index/id/53 Easing effect Demo
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * 缓动函数集合，使用不同的缓动函数使得动画按照对应的方程进行
-     * @see http://edn.egret.com/cn/index.php/article/index/id/53 缓动效果演示
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var Ease = /** @class */ (function () {
         /**
          * @version Egret 2.4
@@ -685,22 +671,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * Tween is the animation easing class of Egret
-     * @see http://edn.egret.com/cn/docs/page/576 Tween ease animation
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/tween/Tween.ts
-     * @language en_US
-     */
-    /**
-     * Tween是Egret的动画缓动类
-     * @see http://edn.egret.com/cn/docs/page/576 Tween缓动动画
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/tween/Tween.ts
-     * @language zh_CN
-     */
     var Tween = /** @class */ (function (_super) {
         __extends(Tween, _super);
         /**
@@ -1496,18 +1466,6 @@ var egret;
 (function (egret) {
     var tween;
     (function (tween) {
-        /**
-         * Abstract class, Indicate the base action.
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 抽象类，表示一个基本动作
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language zh_CN
-         */
         var BasePath = /** @class */ (function (_super) {
             __extends(BasePath, _super);
             function BasePath() {
@@ -1531,18 +1489,6 @@ var egret;
         }(egret.EventDispatcher));
         tween.BasePath = BasePath;
         __reflect(BasePath.prototype, "egret.tween.BasePath");
-        /**
-         * Indicate the to action. See <code>Tween.to</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 表示一个to动作，参见<code>Tween.to</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language zh_CN
-         */
         var To = /** @class */ (function (_super) {
             __extends(To, _super);
             function To() {
@@ -1592,18 +1538,6 @@ var egret;
         }(BasePath));
         tween.To = To;
         __reflect(To.prototype, "egret.tween.To");
-        /**
-         * Indicate the wait action. See <code>Tween.wait</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 表示一个wait动作，参见<code>Tween.wait</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language zh_CN
-         */
         var Wait = /** @class */ (function (_super) {
             __extends(Wait, _super);
             function Wait() {
@@ -1640,18 +1574,6 @@ var egret;
         }(BasePath));
         tween.Wait = Wait;
         __reflect(Wait.prototype, "egret.tween.Wait");
-        /**
-         * Indicate the set action. See <code>Tween.set</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 表示一个set动作，参见<code>Tween.set</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language zh_CN
-         */
         var Set = /** @class */ (function (_super) {
             __extends(Set, _super);
             function Set() {
@@ -1675,18 +1597,6 @@ var egret;
         }(BasePath));
         tween.Set = Set;
         __reflect(Set.prototype, "egret.tween.Set");
-        /**
-         * Indicate the tick action. See <code>Tween.tick</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 表示一个tick动作，参见<code>Tween.tick</code>
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language zh_CN
-         */
         var Tick = /** @class */ (function (_super) {
             __extends(Tick, _super);
             function Tick() {
@@ -1722,54 +1632,6 @@ var egret;
             }
             return null;
         }
-        /**
-         * TweenItem is a wrapper for Tween, which can set the behavior of Tween by setting attributes and adding Path.
-         *
-         * @event pathComplete Dispatched when some Path has complete.
-         * @event complete Dispatched when all Paths has complete.
-         *
-         * @defaultProperty props
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * TweenItem是对Tween的包装器，能通过设置属性和添加Path的方式设置Tween的行为。
-         * 通常用于使用在EXML中定义组件的动画。
-         *
-         * @event pathComplete 当某个Path执行完毕时会派发此事件。
-         * @event complete 当所有Path执行完毕时会派发此事件。
-         *
-         * @defaultProperty props
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        /**
-         * Use in exml:
-         * ```
-         * 	<tween:TweenItem target="{this.button}">
-         * 		<tween:props>
-         * 			<e:Object loop="{true}"/>
-         * 		</tween:props>
-         * 		<tween:paths>
-         * 			<e:Array>
-         * 				<tween:To duration="500">
-         * 					<tween:props>
-         * 						<e:Object x="{100}" y="{200}" />
-         * 					</tween:props>
-         * 				</tween:To>
-         * 				<tween:Wait duration="1000" />
-         * 				<tween:To duration="1000">
-         * 					<tween:props>
-         * 						<e:Object x="{200}" y="{100}" />
-         * 					</tween:props>
-         * 				</tween:To>
-         * 			</e:Array>
-         * 		</tween:paths>
-         * 	</tween:TweenItem>
-         * ```
-         */
         var TweenItem = /** @class */ (function (_super) {
             __extends(TweenItem, _super);
             function TweenItem() {
@@ -1796,7 +1658,7 @@ var egret;
                 set: function (value) {
                     this._props = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(TweenItem.prototype, "target", {
@@ -1818,7 +1680,7 @@ var egret;
                 set: function (value) {
                     this._target = value;
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             Object.defineProperty(TweenItem.prototype, "paths", {
@@ -1840,7 +1702,7 @@ var egret;
                 set: function (value) {
                     this._paths = value || [];
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             /**
@@ -1949,24 +1811,6 @@ var egret;
         tween.TweenItem = TweenItem;
         __reflect(TweenItem.prototype, "egret.tween.TweenItem");
         registerProperty(TweenItem, 'paths', 'Array', true);
-        /**
-         * TweenGroup is a collection of TweenItem that can be played in parallel with each Item
-         *
-         * @event itemComplete Dispatched when some TweenItem has complete.
-         * @event complete Dispatched when all TweenItems has complete.
-         *
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @includeExample extension/tween/TweenWrapper.ts
-         * @language en_US
-         */
-        /**
-         * TweenGroup是TweenItem的集合，可以并行播放每一个Item
-         * @version Egret 3.1.8
-         * @platform Web,Native
-         * @includeExample extension/tween/TweenWrapper.ts
-         * @language zh_CN
-         */
         var TweenGroup = /** @class */ (function (_super) {
             __extends(TweenGroup, _super);
             function TweenGroup() {
@@ -1996,7 +1840,7 @@ var egret;
                     this._items = value;
                     this.registerEvent(true);
                 },
-                enumerable: true,
+                enumerable: false,
                 configurable: true
             });
             TweenGroup.prototype.registerEvent = function (add) {

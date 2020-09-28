@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -57,19 +57,6 @@ var egret;
      * 哈希计数
      */
     egret.$hashCount = 1;
-    /**
-     * The HashObject class is the base class for all objects in the Egret framework.The HashObject
-     * class includes a hashCode property, which is a unique identification number of the instance.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * Egret顶级对象。框架内所有对象的基类，为对象实例提供唯一的hashCode值。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var HashObject = /** @class */ (function () {
         /**
          * Initializes a HashObject
@@ -102,7 +89,7 @@ var egret;
             get: function () {
                 return this.$hashCode;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return HashObject;
@@ -141,41 +128,6 @@ var egret;
 var egret;
 (function (egret) {
     var ONCE_EVENT_LIST = [];
-    /**
-     * The EventDispatcher class is the base class for all classes that dispatchEvent events. The EventDispatcher class implements
-     * the IEventDispatcher interface and is the base class for the DisplayObject class. The EventDispatcher class allows
-     * any object on the display list to be an event target and as such, to use the methods of the IEventDispatcher interface.
-     * Event targets are an important part of the Egret event model. The event target serves as the focal point for how events
-     * flow through the display list hierarchy. When an event such as a touch tap, Egret dispatches an event object into the
-     * event flow from the root of the display list. The event object then makes its way through the display list until it
-     * reaches the event target, at which point it begins its return trip through the display list. This round-trip journey
-     * to the event target is conceptually divided into three phases: <br/>
-     * the capture phase comprises the journey from the root to the last node before the event target's node, the target
-     * phase comprises only the event target node, and the bubbling phase comprises any subsequent nodes encountered on
-     * the return trip to the root of the display list. In general, the easiest way for a user-defined class to gain event
-     * dispatching capabilities is to extend EventDispatcher. If this is impossible (that is, if the class is already extending
-     * another class), you can instead implement the IEventDispatcher interface, create an EventDispatcher member, and write simple
-     * hooks to route calls into the aggregated EventDispatcher.
-     * @see egret.IEventDispatcher
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/EventDispatcher.ts
-     * @language en_US
-     */
-    /**
-     * EventDispatcher 是 Egret 的事件派发器类，负责进行事件的发送和侦听。
-     * 事件目标是事件如何通过显示列表层次结构这一问题的焦点。当发生鼠标单击、触摸或按键等事件时，
-     * 框架会将事件对象调度到从显示列表根开始的事件流中。然后该事件对象在显示列表中前进，直到到达事件目标，
-     * 然后从这一点开始其在显示列表中的回程。在概念上，到事件目标的此往返行程被划分为三个阶段：
-     * 捕获阶段包括从根到事件目标节点之前的最后一个节点的行程，目标阶段仅包括事件目标节点，冒泡阶段包括回程上遇到的任何后续节点到显示列表的根。
-     * 通常，使用户定义的类能够调度事件的最简单方法是扩展 EventDispatcher。如果无法扩展（即，如果该类已经扩展了另一个类），则可以实现
-     * IEventDispatcher 接口，创建 EventDispatcher 成员，并编写一些简单的映射，将调用连接到聚合的 EventDispatcher 中。
-     * @see egret.IEventDispatcher
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/EventDispatcher.ts
-     * @language zh_CN
-     */
     var EventDispatcher = /** @class */ (function (_super) {
         __extends(EventDispatcher, _super);
         /**
@@ -495,61 +447,6 @@ var egret;
             p.$cacheDirtyUp();
         }
     }
-    /**
-     * The DisplayObject class is the base class for all objects that can be placed on the display list. The display list
-     * manages all objects displayed in the runtime. Use the DisplayObjectContainer class to arrange the display
-     * objects in the display list. DisplayObjectContainer objects can have child display objects, while other display objects,
-     * such as Shape and TextField objects, are "leaf" nodes that have only parents and siblings, no children.
-     * The DisplayObject class supports basic functionality like the x and y position of an object, as well as more advanced
-     * properties of the object such as its transformation matrix.<br/>
-     * The DisplayObject class contains several broadcast events.Normally, the target of any particular event is a specific
-     * DisplayObject instance. For example, the target of an added event is the specific DisplayObject instance that was added
-     * to the display list. Having a single target restricts the placement of event listeners to that target and in some cases
-     * the target's ancestors on the display list. With broadcast events, however, the target is not a specific DisplayObject
-     * instance, but rather all DisplayObject instances, including those that are not on the display list. This means that you
-     * can add a listener to any DisplayObject instance to listen for broadcast events.
-     *
-     * @event egret.EventType.ADDED Dispatched when a display object is added to the display list.
-     * @event egret.EventType.ADDED_TO_STAGE Dispatched when a display object is added to the on stage display list, either directly or through the addition of a sub tree in which the display object is contained.
-     * @event egret.EventType.REMOVED Dispatched when a display object is about to be removed from the display list.
-     * @event egret.EventType.REMOVED_FROM_STAGE Dispatched when a display object is about to be removed from the display list, either directly or through the removal of a sub tree in which the display object is contained.
-     * @event egret.EventType.ENTER_FRAME [broadcast event] Dispatched when the playhead is entering a new frame.
-     * @event egret.EventType.RENDER [broadcast event] Dispatched when the display list is about to be updated and rendered.
-     * @event egret.TouchEvent.TOUCH_MOVE Dispatched when the user touches the device, and is continuously dispatched until the point of contact is removed.
-     * @event egret.TouchEvent.TOUCH_BEGIN Dispatched when the user first contacts a touch-enabled device (such as touches a finger to a mobile phone or tablet with a touch screen).
-     * @event egret.TouchEvent.TOUCH_END Dispatched when the user removes contact with a touch-enabled device (such as lifts a finger off a mobile phone or tablet with a touch screen).
-     * @event egret.TouchEvent.TOUCH_TAP Dispatched when the user lifts the point of contact over the same DisplayObject instance on which the contact was initiated on a touch-enabled device (such as presses and releases a finger from a single point over a display object on a mobile phone or tablet with a touch screen).
-     * @event egret.TouchEvent.TOUCH_RELEASE_OUTSIDE Dispatched when the user lifts the point of contact over the different DisplayObject instance on which the contact was initiated on a touch-enabled device (such as presses and releases a finger from a single point over a display object on a mobile phone or tablet with a touch screen).
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/DisplayObject.ts
-     * @language en_US
-     */
-    /**
-     * DisplayObject 类是可放在显示列表中的所有对象的基类。该显示列表管理运行时中显示的所有对象。使用 DisplayObjectContainer 类排列
-     * 显示列表中的显示对象。DisplayObjectContainer 对象可以有子显示对象，而其他显示对象（如 Shape 和 TextField 对象）是“叶”节点，没有子项，只有父级和
-     * 同级。DisplayObject 类有一些基本的属性（如确定坐标位置的 x 和 y 属性），也有一些高级的对象属性（如 Matrix 矩阵变换）。<br/>
-     * DisplayObject 类包含若干广播事件。通常，任何特定事件的目标均为一个特定的 DisplayObject 实例。例如，added 事件的目标是已添加到显示列表
-     * 的目标 DisplayObject 实例。若只有一个目标，则会将事件侦听器限制为只能监听在该目标上（在某些情况下，可监听在显示列表中该目标的祖代上）。
-     * 但是对于广播事件，目标不是特定的 DisplayObject 实例，而是所有 DisplayObject 实例（包括那些不在显示列表中的实例）。这意味着您可以向任何
-     * DisplayObject 实例添加侦听器来侦听广播事件。
-     *
-     * @event egret.EventType.ADDED 将显示对象添加到显示列表中时调度。
-     * @event egret.EventType.ADDED_TO_STAGE 在将显示对象直接添加到舞台显示列表或将包含显示对象的子树添加至舞台显示列表中时调度。
-     * @event egret.EventType.REMOVED 将要从显示列表中删除显示对象时调度。
-     * @event egret.EventType.REMOVED_FROM_STAGE 在从显示列表中直接删除显示对象或删除包含显示对象的子树时调度。
-     * @event egret.EventType.ENTER_FRAME [广播事件] 播放头进入新帧时调度。
-     * @event egret.EventType.RENDER [广播事件] 将要更新和呈现显示列表时调度。
-     * @event egret.TouchEvent.TOUCH_MOVE 当用户触碰设备时进行调度，而且会连续调度，直到接触点被删除。
-     * @event egret.TouchEvent.TOUCH_BEGIN 当用户第一次触摸启用触摸的设备时（例如，用手指触摸手机屏幕）调度。
-     * @event egret.TouchEvent.TOUCH_END 当用户移除与启用触摸的设备的接触时（例如，将手指从屏幕上抬起）调度。
-     * @event egret.TouchEvent.TOUCH_TAP 当用户在启用触摸设备上的已启动接触的同一 DisplayObject 实例上抬起接触点时（例如，手机点击屏幕后抬起）调度。
-     * @event egret.TouchEvent.TOUCH_RELEASE_OUTSIDE 当用户在启用触摸设备上的已启动接触的不同 DisplayObject 实例上抬起接触点时（例如，按住屏幕上的某个对象,然后从它上面挪开后再松开手指）调度。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/DisplayObject.ts
-     * @language zh_CN
-     */
     var DisplayObject = /** @class */ (function (_super) {
         __extends(DisplayObject, _super);
         /**
@@ -680,7 +577,7 @@ var egret;
             set: function (value) {
                 this.$name = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DisplayObject.prototype, "parent", {
@@ -701,7 +598,7 @@ var egret;
             get: function () {
                 return this.$parent;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -760,7 +657,7 @@ var egret;
             get: function () {
                 return this.$stage;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DisplayObject.prototype, "matrix", {
@@ -797,7 +694,7 @@ var egret;
             set: function (value) {
                 this.$setMatrix(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -912,7 +809,7 @@ var egret;
             set: function (value) {
                 this.$setX(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -964,7 +861,7 @@ var egret;
             set: function (value) {
                 this.$setY(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1011,7 +908,7 @@ var egret;
             set: function (value) {
                 this.$setScaleX(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1059,7 +956,7 @@ var egret;
             set: function (value) {
                 this.$setScaleY(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1111,7 +1008,7 @@ var egret;
             set: function (value) {
                 this.$setRotation(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1150,7 +1047,7 @@ var egret;
             set: function (value) {
                 this.$setSkewX(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1186,7 +1083,7 @@ var egret;
             set: function (value) {
                 this.$setSkewY(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1232,7 +1129,7 @@ var egret;
             set: function (value) {
                 this.$setWidth(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1274,7 +1171,7 @@ var egret;
             set: function (value) {
                 this.$setHeight(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1307,7 +1204,7 @@ var egret;
             get: function () {
                 return this.$getOriginalBounds().width;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DisplayObject.prototype, "measuredHeight", {
@@ -1321,7 +1218,7 @@ var egret;
             get: function () {
                 return this.$getOriginalBounds().height;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DisplayObject.prototype, "anchorOffsetX", {
@@ -1345,7 +1242,7 @@ var egret;
             set: function (value) {
                 this.$setAnchorOffsetX(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1384,7 +1281,7 @@ var egret;
             set: function (value) {
                 this.$setAnchorOffsetY(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1424,7 +1321,7 @@ var egret;
             set: function (value) {
                 this.$setVisible(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         DisplayObject.prototype.$setVisible = function (value) {
@@ -1467,7 +1364,7 @@ var egret;
                 self.$cacheAsBitmap = value;
                 self.$setHasDisplayList(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         DisplayObject.prototype.$setHasDisplayList = function (value) {
@@ -1513,7 +1410,7 @@ var egret;
             set: function (value) {
                 this.$setAlpha(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1560,7 +1457,7 @@ var egret;
             set: function (value) {
                 this.$setTouchEnabled(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1618,7 +1515,7 @@ var egret;
             set: function (value) {
                 this.$setScrollRect(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -1677,7 +1574,7 @@ var egret;
                 self.$updateRenderMode();
                 self.dirty();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DisplayObject.prototype, "mask", {
@@ -1760,7 +1657,7 @@ var egret;
                 }
                 self.$updateRenderMode();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DisplayObject.prototype, "filters", {
@@ -1789,7 +1686,7 @@ var egret;
                 self.$updateRenderMode();
                 self.dirty();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -2362,7 +2259,7 @@ var egret;
                 this._tint = value;
                 this.$tintRGB = (value >> 16) + (value & 0xff00) + ((value & 0xff) << 16);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -2431,11 +2328,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @private
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
     var Filter = /** @class */ (function (_super) {
         __extends(Filter, _super);
         function Filter() {
@@ -2614,35 +2506,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Bitmap class represents display objects that represent bitmap images.
-     * The Bitmap() constructor allows you to create a Bitmap object that contains a reference to a BitmapData object.
-     * After you create a Bitmap object, use the addChild() or addChildAt() method of the parent DisplayObjectContainer
-     * instance to place the bitmap on the display list.A Bitmap object can share its texture reference among several
-     * Bitmap objects, independent of translation or rotation properties. Because you can create multiple Bitmap objects
-     * that reference the same texture object, multiple display objects can use the same complex texture object
-     * without incurring the memory overhead of a texture object for each display object instance.
-     *
-     * @see egret.Texture
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Bitmap.ts
-     * @language en_US
-     */
-    /**
-     * Bitmap 类表示用于显示位图图片的显示对象。
-     * 利用 Bitmap() 构造函数，可以创建包含对 BitmapData 对象引用的 Bitmap 对象。创建了 Bitmap 对象后，
-     * 使用父级 DisplayObjectContainer 实例的 addChild() 或 addChildAt() 方法可以将位图放在显示列表中。
-     * 一个 Bitmap 对象可在若干 Bitmap 对象之中共享其 texture 引用，与缩放或旋转属性无关。
-     * 由于能够创建引用相同 texture 对象的多个 Bitmap 对象，因此，多个显示对象可以使用相同的 texture 对象，
-     * 而不会因为每个显示对象实例使用一个 texture 对象而产生额外内存开销。
-     *
-     * @see egret.Texture
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Bitmap.ts
-     * @language zh_CN
-     */
     var Bitmap = /** @class */ (function (_super) {
         __extends(Bitmap, _super);
         /**
@@ -2739,7 +2602,7 @@ var egret;
                     self.$renderNode.rotated = value.$rotated;
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -2833,7 +2696,7 @@ var egret;
             set: function (value) {
                 this.$setScale9Grid(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Bitmap.prototype.$setScale9Grid = function (value) {
@@ -2873,7 +2736,7 @@ var egret;
             set: function (value) {
                 this.$setFillMode(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Bitmap.prototype.$setFillMode = function (value) {
@@ -2911,7 +2774,7 @@ var egret;
                 this.$renderNode.smoothing = value;
                 self.dirty();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -3020,7 +2883,7 @@ var egret;
             set: function (value) {
                 this._pixelHitTest = !!value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Bitmap.prototype.$hitTest = function (stageX, stageY) {
@@ -3085,20 +2948,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The DisplayObjectContainer class is a basic display list building block: a display list node that can contain children.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/DisplayObjectContainer.ts
-     * @language en_US
-     */
-    /**
-     * DisplayObjectContainer 类是基本显示列表构造块：一个可包含子项的显示列表节点。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/DisplayObjectContainer.ts
-     * @language zh_CN
-     */
     var DisplayObjectContainer = /** @class */ (function (_super) {
         __extends(DisplayObjectContainer, _super);
         /**
@@ -3135,7 +2984,7 @@ var egret;
             get: function () {
                 return this.$children.length;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -3735,7 +3584,7 @@ var egret;
             set: function (value) {
                 this.$setTouchChildren(!!value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -3847,30 +3696,6 @@ var egret;
 var egret;
 (function (egret) {
     egret.$TextureScaleFactor = 1;
-    /**
-     * The Texture class encapsulates different image resources on different platforms.
-     * In HTML5, resource is an HTMLElement object
-     * In OpenGL / WebGL, resource is a texture ID obtained after the GPU is submitted
-     * The Texture class encapsulates the details implemented on the underlayer. Developers just need to focus on interfaces
-     * @see http://edn.egret.com/cn/docs/page/135 The use of texture packs
-     * @see http://edn.egret.com/cn/docs/page/123 Several ways of access to resources
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Texture.ts
-     * @language en_US
-     */
-    /**
-     * 纹理类是对不同平台不同的图片资源的封装
-     * 在HTML5中，资源是一个HTMLElement对象
-     * 在OpenGL / WebGL中，资源是一个提交GPU后获取的纹理id
-     * Texture类封装了这些底层实现的细节，开发者只需要关心接口即可
-     * @see http://edn.egret.com/cn/docs/page/135 纹理集的使用
-     * @see http://edn.egret.com/cn/docs/page/123 获取资源的几种方式
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Texture.ts
-     * @language zh_CN
-     */
     var Texture = /** @class */ (function (_super) {
         __extends(Texture, _super);
         /**
@@ -3976,7 +3801,7 @@ var egret;
             get: function () {
                 return this.$getTextureWidth();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Texture.prototype.$getTextureWidth = function () {
@@ -3998,7 +3823,7 @@ var egret;
             get: function () {
                 return this.$getTextureHeight();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Texture.prototype.$getTextureHeight = function () {
@@ -4029,7 +3854,7 @@ var egret;
             set: function (value) {
                 this._setBitmapData(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -4214,40 +4039,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Event class is used as the base class for the creation of Event objects, which are passed as parameters to event
-     * listeners when an event occurs.The properties of the Event class carry basic information about an event, such as
-     * the event's type or whether the event's default behavior can be canceled. For many events, such as the events represented
-     * by the Event class constants, this basic information is sufficient. Other events, however, may require more detailed
-     * information. Events associated with a touch tap, for example, need to include additional information about the
-     * location of the touch event. You can pass such additional information to event listeners by extending the Event class,
-     * which is what the TouchEvent class does. Egret API defines several Event subclasses for common events that require
-     * additional information. Events associated with each of the Event subclasses are described in the documentation for
-     * each class.The methods of the Event class can be used in event listener functions to affect the behavior of the event
-     * object. Some events have an associated default behavior. Your event listener can cancel this behavior by calling the
-     * preventDefault() method. You can also make the current event listener the last one to process an event by calling
-     * the stopPropagation() or stopImmediatePropagation() method.
-     * @see egret.EventDispatcher
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/Event.ts
-     * @see http://edn.egret.com/cn/docs/page/798 取消触摸事件
-     * @language en_US
-     */
-    /**
-     * Event 类作为创建事件实例的基类，当发生事件时，Event 实例将作为参数传递给事件侦听器。Event 类的属性包含有关事件的基本信息，例如事件
-     * 的类型或者是否可以取消事件的默认行为。对于许多事件（如由 Event 类常量表示的事件），此基本信息就足够了。但其他事件可能需要更详细的信息。
-     * 例如，与触摸关联的事件需要包括有关触摸事件的位置信息。您可以通过扩展 Event 类（TouchEvent 类执行的操作）将此类其他信息传递给事件侦听器。
-     * Egret API 为需要其他信息的常见事件定义多个 Event 子类。与每个 Event 子类关联的事件将在每个类的文档中加以介绍。Event 类的方法可以在
-     * 事件侦听器函数中使用以影响事件对象的行为。某些事件有关联的默认行为，通过调用 preventDefault() 方法，您的事件侦听器可以取消此行为。
-     * 可以通过调用 stopPropagation() 或 stopImmediatePropagation() 方法，将当前事件侦听器作为处理事件的最后一个事件侦听器。
-     * @see egret.EventDispatcher
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/Event.ts
-     * @see http://edn.egret.com/cn/docs/page/798 取消触摸事件
-     * @language zh_CN
-     */
     var Event = /** @class */ (function (_super) {
         __extends(Event, _super);
         /**
@@ -4318,7 +4109,7 @@ var egret;
             get: function () {
                 return this.$type;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Event.prototype, "bubbles", {
@@ -4337,7 +4128,7 @@ var egret;
             get: function () {
                 return this.$bubbles;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Event.prototype, "cancelable", {
@@ -4359,7 +4150,7 @@ var egret;
             get: function () {
                 return this.$cancelable;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Event.prototype, "eventPhase", {
@@ -4386,7 +4177,7 @@ var egret;
             get: function () {
                 return this.$eventPhase;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Event.prototype, "currentTarget", {
@@ -4408,7 +4199,7 @@ var egret;
             get: function () {
                 return this.$currentTarget;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Event.prototype, "target", {
@@ -4428,7 +4219,7 @@ var egret;
             get: function () {
                 return this.$target;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Event.prototype.$setTarget = function (target) {
@@ -4744,21 +4535,6 @@ var egret;
 (function (egret) {
     var pointPool = [];
     var DEG_TO_RAD = Math.PI / 180;
-    /**
-     * The Point object represents a location in a two-dimensional coordinate system, where x represents the horizontal
-     * axis and y represents the vertical axis.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/geom/Point.ts
-     * @language en_US
-     */
-    /**
-     * Point 对象表示二维坐标系统中的某个位置，其中 x 表示水平轴，y 表示垂直轴。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/geom/Point.ts
-     * @language zh_CN
-     */
     var Point = /** @class */ (function (_super) {
         __extends(Point, _super);
         /**
@@ -4842,7 +4618,7 @@ var egret;
             get: function () {
                 return Math.sqrt(this.x * this.x + this.y * this.y);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -5120,14 +4896,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @class egret.GlowFilter
-     * @classdesc
-     * 使用 GlowFilter 类可以对显示对象应用发光效果。在投影滤镜的 distance 和 angle 属性设置为 0 时，发光滤镜与投影滤镜极为相似。
-     * @extends egret.Filter
-     * @version Egret 3.1.4
-     * @platform Web,Native
-     */
     var GlowFilter = /** @class */ (function (_super) {
         __extends(GlowFilter, _super);
         /**
@@ -5225,7 +4993,7 @@ var egret;
                 this.$uniforms.color.y = this.$green / 255;
                 this.$uniforms.color.z = this.$blue / 255;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "alpha", {
@@ -5251,7 +5019,7 @@ var egret;
                 this.$alpha = value;
                 this.$uniforms.alpha = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "blurX", {
@@ -5279,7 +5047,7 @@ var egret;
                 self.$uniforms.blurX = value;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "blurY", {
@@ -5307,7 +5075,7 @@ var egret;
                 self.$uniforms.blurY = value;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "strength", {
@@ -5333,7 +5101,7 @@ var egret;
                 this.$strength = value;
                 this.$uniforms.strength = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "quality", {
@@ -5358,7 +5126,7 @@ var egret;
                 }
                 this.$quality = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "inner", {
@@ -5384,7 +5152,7 @@ var egret;
                 this.$inner = value;
                 this.$uniforms.inner = value ? 1 : 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(GlowFilter.prototype, "knockout", {
@@ -5410,7 +5178,7 @@ var egret;
                 this.$knockout = value;
                 this.$uniforms.knockout = value ? 0 : 1;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -5530,10 +5298,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 渲染节点基类
-         */
         var RenderNode = /** @class */ (function () {
             function RenderNode() {
                 /**
@@ -5597,10 +5361,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 2D路径
-         */
         var Path2D = /** @class */ (function () {
             function Path2D() {
                 /**
@@ -5945,28 +5705,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * A BitmapData object contains an array of pixel data. This data can represent either a fully opaque bitmap or a
-     * transparent bitmap that contains alpha channel data. Either type of BitmapData object is stored as a buffer of 32-bit
-     * integers. Each 32-bit integer determines the properties of a single pixel in the bitmap.<br/>
-     * Each 32-bit integer is a combination of four 8-bit channel values (from 0 to 255) that describe the alpha transparency
-     * and the red, green, and blue (ARGB) values of the pixel. (For ARGB values, the most significant byte represents the
-     * alpha channel value, followed by red, green, and blue.)
-     * @see egret.Bitmap
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * BitmapData 对象是一个包含像素数据的数组。此数据可以表示完全不透明的位图，或表示包含 Alpha 通道数据的透明位图。
-     * 以上任一类型的 BitmapData 对象都作为 32 位整数的缓冲区进行存储。每个 32 位整数确定位图中单个像素的属性。<br/>
-     * 每个 32 位整数都是四个 8 位通道值（从 0 到 255）的组合，这些值描述像素的 Alpha 透明度以及红色、绿色、蓝色 (ARGB) 值。
-     * （对于 ARGB 值，最高有效字节代表 Alpha 通道值，其后的有效字节分别代表红色、绿色和蓝色通道值。）
-     * @see egret.Bitmap
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var BitmapData = /** @class */ (function (_super) {
         __extends(BitmapData, _super);
         /**
@@ -6015,7 +5753,7 @@ var egret;
             set: function (value) {
                 this.$source = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         BitmapData.create = function (type, data, callback) {
@@ -6208,25 +5946,6 @@ var egret;
     //目前所有平台的浏览器都支持的有：Layer,Alpha,Normal,Add,ERASE。
     //IOS中的所有浏览器以及Android内的部分浏览器还支持：Multiply,Screen,Lighten,Darken,Difference,Overlay,HardLight。
     //仅在 Native 端支持的有：Subtract,Invert。
-    /**
-     * A class that provides constant values for visual blend mode effects. These constants are used in the blendMode
-     * property of the DisplayObject class.
-     * @see egret.DisplayObject#blendMode
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/BlendMode.ts
-     * @see http://edn.egret.com/cn/docs/page/108 显示容器的概念与实现
-     * @language en_US
-     */
-    /**
-     * 提供混合模式可视效果的常量值的类,通常用于 DisplayObject 的 blendMode 属性上。
-     * @see egret.DisplayObject#blendMode
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/BlendMode.ts
-     * @see http://edn.egret.com/cn/docs/page/108 显示容器的概念与实现
-     * @language zh_CN
-     */
     var BlendMode = /** @class */ (function () {
         function BlendMode() {
         }
@@ -6400,22 +6119,6 @@ var egret;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
-    /**
-     * The GradientType class provides values for the type parameter in the beginGradientFill() methods of the egret.Graphics class.
-     *
-     * @see egret.Graphics#beginGradientFill()
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * GradientType 类为 egret.Graphics 类的 beginGradientFill() 方法中的 type 参数提供值。
-     *
-     * @see egret.Graphics#beginGradientFill()
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var GradientType = /** @class */ (function () {
         function GradientType() {
         }
@@ -6571,24 +6274,6 @@ var egret;
         var result = Math.pow((1 - factor), 3) * value0 + 3 * factor * Math.pow((1 - factor), 2) * value1 + 3 * (1 - factor) * Math.pow(factor, 2) * value2 + Math.pow(factor, 3) * value3;
         return result;
     }
-    /**
-     * The Graphics class contains a set of methods for creating vector shape. Display objects that support drawing include Sprite and Shape objects. Each class in these classes includes the graphics attribute that is a Graphics object.
-     * The following auxiliary functions are provided for ease of use: drawRect(), drawRoundRect(), drawCircle(), and drawEllipse().
-     * @see http://edn.egret.com/cn/docs/page/136 Draw Rectangle
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Graphics.ts
-     * @language en_US
-     */
-    /**
-     * Graphics 类包含一组可用来创建矢量形状的方法。支持绘制的显示对象包括 Sprite 和 Shape 对象。这些类中的每一个类都包括 graphics 属性，该属性是一个 Graphics 对象。
-     * 以下是为便于使用而提供的一些辅助函数：drawRect()、drawRoundRect()、drawCircle() 和 drawEllipse()。
-     * @see http://edn.egret.com/cn/docs/page/136 绘制矩形
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Graphics.ts
-     * @language zh_CN
-     */
     var Graphics = /** @class */ (function (_super) {
         __extends(Graphics, _super);
         /**
@@ -7398,9 +7083,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @private
-     */
     var Mesh = /** @class */ (function (_super) {
         __extends(Mesh, _super);
         function Mesh(value) {
@@ -7539,22 +7221,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * RenderTexture is a dynamic texture
-     * @extends egret.Texture
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/RenderTexture.ts
-     * @language en_US
-     */
-    /**
-     * RenderTexture 是动态纹理类，他实现了将显示对象及其子对象绘制成为一个纹理的功能
-     * @extends egret.Texture
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/RenderTexture.ts
-     * @language zh_CN
-     */
     var RenderTexture = /** @class */ (function (_super) {
         __extends(RenderTexture, _super);
         function RenderTexture() {
@@ -7674,23 +7340,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * This class is used to create lightweight shapes using the drawing application program interface (API). The Shape
-     * class includes a graphics property, which lets you access methods from the Graphics class.
-     * @see egret.Graphics
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Shape.ts
-     * @language en_US
-     */
-    /**
-     * 此类用于使用绘图应用程序编程接口 (API) 创建简单形状。Shape 类含有 graphics 属性，通过该属性您可以访问各种矢量绘图方法。
-     * @see egret.Graphics
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Shape.ts
-     * @language zh_CN
-     */
     var Shape = /** @class */ (function (_super) {
         __extends(Shape, _super);
         /**
@@ -7727,7 +7376,7 @@ var egret;
             get: function () {
                 return this.$graphics;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -7787,20 +7436,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Sprite class is a basic display list building block: a display list node that can contain children.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Sprite.ts
-     * @language en_US
-     */
-    /**
-     * Sprite 类是基本显示列表构造块：一个可包含子项的显示列表节点。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Sprite.ts
-     * @language zh_CN
-     */
     var Sprite = /** @class */ (function (_super) {
         __extends(Sprite, _super);
         /**
@@ -7837,7 +7472,7 @@ var egret;
             get: function () {
                 return this.$graphics;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Sprite.prototype.$hitTest = function (stageX, stageY) {
@@ -7938,31 +7573,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Stage class represents the main drawing area.The Stage object is not globally accessible. You need to access
-     * it through the stage property of a DisplayObject instance.<br/>
-     * The Stage class has several ancestor classes — Sprite, DisplayObject, and EventDispatcher — from which it inherits
-     * properties and methods. Many of these properties and methods are inapplicable to Stage objects.
-     * @event egret.EventType.RESIZE Dispatched when the stageWidth or stageHeight property of the Stage object is changed.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Stage.ts
-     * @language en_US
-     */
-    /**
-     * Stage 类代表主绘图区。
-     * 可以利用 DisplayObject 实例的 stage 属性进行访问。<br/>
-     * Stage 类具有多个祖代类: Sprite、DisplayObject 和 EventDispatcher，属性和方法便是从这些类继承而来的。
-     * 从这些继承的许多属性和方法不适用于 Stage 对象。
-     * @event egret.EventType.RESIZE 当stageWidth或stageHeight属性发生改变时调度
-     * @event egret.EventType.DEACTIVATE 当stage失去焦点后调度
-     * @event egret.EventType.ACTIVATE 当stage获得焦点后调度
-     *
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Stage.ts
-     * @language zh_CN
-     */
     var Stage = /** @class */ (function (_super) {
         __extends(Stage, _super);
         /**
@@ -8012,7 +7622,7 @@ var egret;
             set: function (value) {
                 egret.ticker.$setFrameRate(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Stage.prototype, "stageWidth", {
@@ -8031,7 +7641,7 @@ var egret;
             get: function () {
                 return this.$stageWidth;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Stage.prototype, "stageHeight", {
@@ -8050,7 +7660,7 @@ var egret;
             get: function () {
                 return this.$stageHeight;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -8120,7 +7730,7 @@ var egret;
                 this.$scaleMode = value;
                 this.$screen.updateScreenSize();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Stage.prototype, "orientation", {
@@ -8158,7 +7768,7 @@ var egret;
                 this.$orientation = value;
                 this.$screen.updateScreenSize();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Stage.prototype, "textureScaleFactor", {
@@ -8178,7 +7788,7 @@ var egret;
             set: function (value) {
                 egret.$TextureScaleFactor = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Stage.prototype, "maxTouches", {
@@ -8202,7 +7812,7 @@ var egret;
                 this.$maxTouches = value;
                 this.$screen.updateMaxTouches();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -8302,23 +7912,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The GeolocationEvent represents the position and altitude of the device on Earth,
-     * and show errors occurred while getting the location of the device.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/sensor/Geolocation.ts
-     * @see http://edn.egret.com/cn/docs/page/662 获取位置信息
-     * @language en_US
-     */
-    /**
-     * GeolocationEvent 提供设备的地理位置信息和获取位置时发生的错误信息
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/sensor/Geolocation.ts
-     * @see http://edn.egret.com/cn/docs/page/662 获取位置信息
-     * @language zh_CN
-     */
     var GeolocationEvent = /** @class */ (function (_super) {
         __extends(GeolocationEvent, _super);
         function GeolocationEvent() {
@@ -8359,20 +7952,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * When a network request returns an HTTP status code, the application dispatches HTTPStatusEvent objects.
-     * Before error or completion events will always send HTTPStatusEvent object. HTTPStatusEvent object does not necessarily indicate an error condition; it simply reflects the HTTP status code provided by the network stack (if any).
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * 在网络请求返回 HTTP 状态代码时，应用程序将调度 HTTPStatusEvent 对象。
-     * 在错误或完成事件之前，将始终发送 HTTPStatusEvent 对象。HTTPStatusEvent 对象不一定表示错误条件；它仅反映网络堆栈提供的 HTTP 状态代码（如果有的话）。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var HTTPStatusEvent = /** @class */ (function (_super) {
         __extends(HTTPStatusEvent, _super);
         /**
@@ -8417,7 +7996,7 @@ var egret;
             get: function () {
                 return this._status;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -8534,24 +8113,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * MotionEvent represents the device's movement
-     * Acceleration and accelerationIncludingGravity to represents the device's acceleration
-     * RotationRate to represents the device's rotation
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/sensor/Motion.ts
-     * @language en_US
-     */
-    /**
-     * MotionEvent 类呈现设备运动的具体信息
-     * Acceleration 和 accelerationIncludingGravity 呈现设备三个维度的加速度信息
-     * RotationRate 呈现设备的旋转状态信息
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/sensor/Motion.ts
-     * @language zh_CN
-     */
     var MotionEvent = /** @class */ (function (_super) {
         __extends(MotionEvent, _super);
         function MotionEvent() {
@@ -8592,24 +8153,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The OrientationEvent provides information from the physical orientation of the device.
-     * Note: Currently, Browsers on the iOS and Android does not handle the coordinates the same way.
-     * Take care about this while using them.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/sensor/DeviceOrientation.ts
-     * @language en_US
-     */
-    /**
-     * OrientationEvent 提供设备的方向信息
-     * 注意: 目前各个浏览器和操作系统处理方向的方式不完全相同，请根据使用场景做相应的校正，
-     * 比如使用两次方向数据的变化而不是直接使用方向的值
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/sensor/DeviceOrientation.ts
-     * @language zh_CN
-     */
     var OrientationEvent = /** @class */ (function (_super) {
         __extends(OrientationEvent, _super);
         function OrientationEvent() {
@@ -8650,20 +8193,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * When a load operation has begun or a socket has received data, ProgressEvent object is dispatched.
-     * There are two types of progress events: ProgressEvent.PROGRESS and ProgressEvent.SOCKET_DATA.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * 当加载操作已开始或套接字已接收到数据时，将调度 ProgressEvent 对象。
-     * 有两种类型的进程事件：ProgressEvent.PROGRESS 和 ProgressEvent.SOCKET_DATA。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var ProgressEvent = /** @class */ (function (_super) {
         __extends(ProgressEvent, _super);
         /**
@@ -8811,20 +8340,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * When a user clicks a hyperlink rich text object dispatches TextEvent object. Text Event Type: TextEvent.LINK.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/TextEvent.ts
-     * @language en_US
-     */
-    /**
-     * 用户在富文本中单击超链接时，对象将调度 TextEvent 对象。文本事件类型：TextEvent.LINK。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/TextEvent.ts
-     * @language zh_CN
-     */
     var TextEvent = /** @class */ (function (_super) {
         __extends(TextEvent, _super);
         /**
@@ -8912,22 +8427,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * A Timer object dispatches a TimerEvent objects whenever the Timer object reaches the interval specified by the Timer.delay property.
-     * @see egret.Timer
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/TimerEvent.ts
-     * @language en_US
-     */
-    /**
-     * 每当 Timer 对象达到由 Timer.delay 属性指定的间隔时，Timer 对象即会调度 TimerEvent 对象。
-     * @see egret.Timer
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/TimerEvent.ts
-     * @language zh_CN
-     */
     var TimerEvent = /** @class */ (function (_super) {
         __extends(TimerEvent, _super);
         /**
@@ -9068,35 +8567,6 @@ var egret;
 var egret;
 (function (egret) {
     var localPoint = new egret.Point();
-    /**
-     * The TouchEvent class lets you handle events on devices that detect user contact with the device (such as a finger
-     * on a touch screen).When a user interacts with a device such as a mobile phone or tablet with a touch screen, the
-     * user typically touches the screen with his or her fingers or a pointing device. You can develop applications that
-     * respond to basic touch events (such as a single finger tap) with the TouchEvent class. Create event listeners using
-     * the event types defined in this class.
-     * Note: When objects are nested on the display list, touch events target the deepest possible nested object that is
-     * visible in the display list. This object is called the target node. To have a target node's ancestor (an object
-     * containing the target node in the display list) receive notification of a touch event, use EventDispatcher.addEventListener()
-     * on the ancestor node with the type parameter set to the specific touch event you want to detect.
-     *
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/TouchEvent.ts
-     * @language en_US
-     */
-    /**
-     * 使用 TouchEvent 类，您可以处理设备上那些检测用户与设备之间的接触的事件。
-     * 当用户与带有触摸屏的移动电话或平板电脑等设备交互时，用户通常使用手指或指针设备接触屏幕。可使用 TouchEvent
-     * 类开发响应基本触摸事件（如单个手指点击）的应用程序。使用此类中定义的事件类型创建事件侦听器。
-     * 注意：当对象嵌套在显示列表中时，触摸事件的目标将是显示列表中可见的最深的可能嵌套对象。
-     * 此对象称为目标节点。要使目标节点的祖代（祖代是一个包含显示列表中所有目标节点的对象，从舞台到目标节点的父节点均包括在内）
-     * 接收触摸事件的通知，请对祖代节点使用 EventDispatcher.on() 并将 type 参数设置为要检测的特定触摸事件。
-     *
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/events/TouchEvent.ts
-     * @language zh_CN
-     */
     var TouchEvent = /** @class */ (function (_super) {
         __extends(TouchEvent, _super);
         /**
@@ -9166,7 +8636,7 @@ var egret;
             get: function () {
                 return this.$stageX;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TouchEvent.prototype, "stageY", {
@@ -9185,7 +8655,7 @@ var egret;
             get: function () {
                 return this.$stageY;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TouchEvent.prototype, "localX", {
@@ -9207,7 +8677,7 @@ var egret;
                 }
                 return this._localX;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TouchEvent.prototype, "localY", {
@@ -9229,7 +8699,7 @@ var egret;
                 }
                 return this._localY;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -9371,22 +8841,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The BlurFilter class lets you apply a blur visual effect to display objects. A blur effect softens the details of an image.
-     * You can produce blurs that range from a softly unfocused look to a Gaussian blur, a hazy appearance like viewing an image through semi-opaque glass.
-     * @version Egret 3.0.1
-     * @platform Web
-     * @see http://edn.egret.com/cn/docs/page/947#模糊滤镜 模糊滤镜
-     * @language en_US
-     */
-    /**
-     * 可使用 BlurFilter 类将模糊视觉效果应用于显示对象。模糊效果可以柔化图像的细节。
-     * 您可以生成一些模糊效果，范围从创建一个柔化的、未聚焦的外观到高斯模糊（就像通过半透明玻璃查看图像一样的朦胧的外观）。
-     * @version Egret 3.1.0
-     * @platform Web
-     * @see http://edn.egret.com/cn/docs/page/947#模糊滤镜 模糊滤镜
-     * @language zh_CN
-     */
     var BlurFilter = /** @class */ (function (_super) {
         __extends(BlurFilter, _super);
         /**
@@ -9447,7 +8901,7 @@ var egret;
                 self.blurXFilter.blurX = value;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(BlurFilter.prototype, "blurY", {
@@ -9475,7 +8929,7 @@ var egret;
                 self.blurYFilter.blurY = value;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -9516,7 +8970,7 @@ var egret;
             set: function (value) {
                 this.$uniforms.blur.x = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return BlurXFilter;
@@ -9539,7 +8993,7 @@ var egret;
             set: function (value) {
                 this.$uniforms.blur.y = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return BlurYFilter;
@@ -9576,22 +9030,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The ColorMatrixFilter class lets you apply a 4 x 5 matrix transformation on the RGBA color and alpha values of every pixel in the input image to produce a result with a new set of RGBA color and alpha values.
-     * It allows saturation changes, hue rotation, luminance to alpha, and various other effects.
-     * @version Egret 3.1.0
-     * @platform Web
-     * @see http://edn.egret.com/cn/docs/page/947 颜色矩阵滤镜
-     * @language en_US
-     */
-    /**
-     * 使用 ColorMatrixFilter 类可以将 4 x 5 矩阵转换应用于输入图像上的每个像素的 RGBA 颜色和 Alpha 值，以生成具有一组新的 RGBA 颜色和 Alpha 值的结果。
-     * 该类允许饱和度更改、色相旋转、亮度为 Alpha 以及各种其他效果。
-     * @version Egret 3.1.0
-     * @platform Web
-     * @see http://edn.egret.com/cn/docs/page/947 颜色矩阵滤镜
-     * @language zh_CN
-     */
     var ColorMatrixFilter = /** @class */ (function (_super) {
         __extends(ColorMatrixFilter, _super);
         /**
@@ -9655,7 +9093,7 @@ var egret;
             set: function (value) {
                 this.setMatrix(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -9762,18 +9200,6 @@ var egret;
         }
         return uuid.join('');
     };
-    /**
-     * custom filter, now support WebGL mode only.
-     * @version Egret 4.1.0
-     * @platform Web
-     * @language en_US
-     */
-    /**
-     * 自定义滤镜，目前仅支持WebGL模式
-     * @version Egret 4.1.0
-     * @platform Web
-     * @language zh_CN
-     */
     var CustomFilter = /** @class */ (function (_super) {
         __extends(CustomFilter, _super);
         /**
@@ -9835,7 +9261,7 @@ var egret;
                 self.$padding = value;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(CustomFilter.prototype, "uniforms", {
@@ -9854,7 +9280,7 @@ var egret;
             get: function () {
                 return this.$uniforms;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         return CustomFilter;
@@ -9892,14 +9318,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @class egret.DropShadowFilter
-     * @classdesc
-     * 可使用 DropShadowFilter 类向显示对象添加投影。
-     * @extends egret.GlowFilter
-     * @version Egret 3.1.4
-     * @platform Web,Native
-     */
     var DropShadowFilter = /** @class */ (function (_super) {
         __extends(DropShadowFilter, _super);
         /**
@@ -9986,7 +9404,7 @@ var egret;
                 self.$uniforms.dist = value;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DropShadowFilter.prototype, "angle", {
@@ -10014,7 +9432,7 @@ var egret;
                 self.$uniforms.angle = value / 180 * Math.PI;
                 self.onPropertyChange();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(DropShadowFilter.prototype, "hideObject", {
@@ -10040,7 +9458,7 @@ var egret;
                 this.$hideObject = value;
                 this.$uniforms.hideObject = value ? 1 : 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -10119,25 +9537,6 @@ var egret;
     var TwoPI = PI * 2;
     var DEG_TO_RAD = PI / 180;
     var matrixPool = [];
-    /**
-     * The Matrix class represents a transformation matrix that determines how to map points from one coordinate space to
-     * another. You can perform various graphical transformations on a display object by setting the properties of a Matrix
-     * object, applying that Matrix object to the matrix property of a display object, These transformation functions include
-     * translation (x and y repositioning), rotation, scaling, and skewing.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/geom/Matrix.ts
-     * @language en_US
-     */
-    /**
-     * Matrix 类表示一个转换矩阵，它确定如何将点从一个坐标空间映射到另一个坐标空间。
-     * 您可以对一个显示对象执行不同的图形转换，方法是设置 Matrix 对象的属性，将该 Matrix
-     * 对象应用于显示对象的 matrix 属性。这些转换函数包括平移（x 和 y 重新定位）、旋转、缩放和倾斜。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/geom/Matrix.ts
-     * @language zh_CN
-     */
     var Matrix = /** @class */ (function (_super) {
         __extends(Matrix, _super);
         /**
@@ -10933,28 +10332,6 @@ var egret;
     function isEmpty(rect) {
         return rect.width <= 0 || rect.height <= 0;
     }
-    /**
-     * A Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its
-     * width and its height.<br/>
-     * The x, y, width, and height properties of the Rectangle class are independent of each other; changing the value of
-     * one property has no effect on the others. However, the right and bottom properties are integrally related to those
-     * four properties. For example, if you change the value of the right property, the value of the width property changes;
-     * if you change the bottom property, the value of the height property changes.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/geom/Rectangle.ts
-     * @language en_US
-     */
-    /**
-     * Rectangle 对象是按其位置（由它左上角的点 (x, y) 确定）以及宽度和高度定义的区域。<br/>
-     * Rectangle 类的 x、y、width 和 height 属性相互独立；更改一个属性的值不会影响其他属性。
-     * 但是，right 和 bottom 属性与这四个属性是整体相关的。例如，如果更改 right 属性的值，则 width
-     * 属性的值将发生变化；如果更改 bottom 属性，则 height 属性的值将发生变化。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/geom/Rectangle.ts
-     * @language zh_CN
-     */
     var Rectangle = /** @class */ (function (_super) {
         __extends(Rectangle, _super);
         /**
@@ -11046,7 +10423,7 @@ var egret;
             set: function (value) {
                 this.width = value - this.x;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "bottom", {
@@ -11068,7 +10445,7 @@ var egret;
             set: function (value) {
                 this.height = value - this.y;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "left", {
@@ -11095,7 +10472,7 @@ var egret;
                 this.width += this.x - value;
                 this.x = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "top", {
@@ -11122,7 +10499,7 @@ var egret;
                 this.height += this.y - value;
                 this.y = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "topLeft", {
@@ -11145,7 +10522,7 @@ var egret;
                 this.top = value.y;
                 this.left = value.x;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "bottomRight", {
@@ -11168,7 +10545,7 @@ var egret;
                 this.bottom = value.y;
                 this.right = value.x;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -12029,10 +11406,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 显示列表
-         */
         var DisplayList = /** @class */ (function (_super) {
             __extends(DisplayList, _super);
             /**
@@ -12275,10 +11648,6 @@ var egret;
     var sys;
     (function (sys) {
         sys.autoClear = true;
-        /**
-         * @private
-         * Egret播放器
-         */
         var Player = /** @class */ (function (_super) {
             __extends(Player, _super);
             /**
@@ -12738,10 +12107,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 屏幕适配器默认实现，开发者可以实现自定义规则的屏幕适配器。并在初始化加载时将适配器的实例赋值给egret.sys.screenAdapter上，从而替换掉默认适配器。
-         */
         var DefaultScreenAdapter = /** @class */ (function (_super) {
             __extends(DefaultScreenAdapter, _super);
             /**
@@ -12948,9 +12313,6 @@ var egret;
          * 需要立即刷新屏幕的标志
          */
         sys.$requestRenderingFlag = false;
-        /**
-         * Egret心跳计时器
-         */
         var SystemTicker = /** @class */ (function () {
             /**
              * @private
@@ -13349,10 +12711,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 用户交互操作管理器
-         */
         var TouchHandler = /** @class */ (function (_super) {
             __extends(TouchHandler, _super);
             /**
@@ -13495,10 +12853,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 位图渲染节点
-         */
         var BitmapNode = /** @class */ (function (_super) {
             __extends(BitmapNode, _super);
             function BitmapNode() {
@@ -13730,10 +13084,6 @@ var egret;
     (function (sys) {
         var CAPS_STYLES = ["none", "round", "square"];
         var JOINT_STYLES = ["bevel", "miter", "round"];
-        /**
-         * @private
-         * 矢量渲染节点
-         */
         var GraphicsNode = /** @class */ (function (_super) {
             __extends(GraphicsNode, _super);
             function GraphicsNode() {
@@ -13900,10 +13250,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 组渲染节点,用于组合多个渲染节点
-         */
         var GroupNode = /** @class */ (function (_super) {
             __extends(GroupNode, _super);
             function GroupNode() {
@@ -13970,10 +13316,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * Mesh 渲染节点
-         */
         var MeshNode = /** @class */ (function (_super) {
             __extends(MeshNode, _super);
             function MeshNode() {
@@ -14065,10 +13407,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 位图渲染节点
-         */
         var NormalBitmapNode = /** @class */ (function (_super) {
             __extends(NormalBitmapNode, _super);
             function NormalBitmapNode() {
@@ -14176,10 +13514,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 文本渲染节点
-         */
         var TextNode = /** @class */ (function (_super) {
             __extends(TextNode, _super);
             function TextNode() {
@@ -14296,10 +13630,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 填充路径
-         */
         var FillPath = /** @class */ (function (_super) {
             __extends(FillPath, _super);
             function FillPath() {
@@ -14345,10 +13675,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 渐变填充路径
-         */
         var GradientFillPath = /** @class */ (function (_super) {
             __extends(GradientFillPath, _super);
             function GradientFillPath() {
@@ -14394,11 +13720,6 @@ var egret;
 (function (egret) {
     var sys;
     (function (sys) {
-        /**
-         * @private
-         * 线条路径。
-         * 注意：当线条宽度（lineWidth）为1或3像素时，需要特殊处理，往右下角偏移0.5像素，以显示清晰锐利的线条。
-         */
         var StrokePath = /** @class */ (function (_super) {
             __extends(StrokePath, _super);
             function StrokePath() {
@@ -15683,20 +15004,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Capabilities class provides properties that describe the system and runtime that are hosting the application.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/system/Capabilities.ts
-     * @language en_US
-     */
-    /**
-     * Capabilities 类提供一些属性，这些属性描述了承载应用程序的系统和运行时。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/system/Capabilities.ts
-     * @language zh_CN
-     */
     var Capabilities = /** @class */ (function () {
         function Capabilities() {
         }
@@ -15959,22 +15266,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * Convert the text in html format to the object that can be assigned to the egret.TextField#textFlow property
-     * @see http://edn.egret.com/cn/docs/page/146 Text mixed in a variety of style
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/text/HtmlTextParser.ts
-     * @language en_US
-     */
-    /**
-     * 将html格式文本转换为可赋值给 egret.TextField#textFlow 属性的对象
-     * @see http://edn.egret.com/cn/docs/page/146 多种样式文本混合
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/text/HtmlTextParser.ts
-     * @language zh_CN
-     */
     var HtmlTextParser = /** @class */ (function () {
         /**
          * @version Egret 2.4
@@ -16248,11 +15539,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @private
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
     var InputController = /** @class */ (function (_super) {
         __extends(InputController, _super);
         /**
@@ -16564,32 +15850,6 @@ var egret;
         var fontFamily = style.fontFamily || values[8 /* fontFamily */] || TextField.default_fontFamily;
         return egret.sys.measureText(text, fontFamily, size, bold, italic);
     }
-    /**
-     * TextField is the text rendering class of egret. It conducts rendering by using the browser / device API. Due to different ways of font rendering in different browsers / devices, there may be differences in the rendering
-     * If developers expect  no differences among all platforms, please use BitmapText
-     * @see http://edn.egret.com/cn/docs/page/141 Create Text
-     *
-     * @event egret.EventType.CHANGE Dispatched when entering text user input。
-     * @event egret.FocusEvent.FOCUS_IN Dispatched after the focus to enter text.
-     * @event egret.FocusEvent.FOCUS_OUT Enter the text loses focus after dispatch.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/text/TextField.ts
-     * @language en_US
-     */
-    /**
-     * TextField是egret的文本渲染类，采用浏览器/设备的API进行渲染，在不同的浏览器/设备中由于字体渲染方式不一，可能会有渲染差异
-     * 如果开发者希望所有平台完全无差异，请使用BitmapText
-     * @see http://edn.egret.com/cn/docs/page/141 创建文本
-     *
-     * @event egret.EventType.CHANGE 输入文本有用户输入时调度。
-     * @event egret.FocusEvent.FOCUS_IN 聚焦输入文本后调度。
-     * @event egret.FocusEvent.FOCUS_OUT 输入文本失去焦点后调度。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/text/TextField.ts
-     * @language zh_CN
-     */
     var TextField = /** @class */ (function (_super) {
         __extends(TextField, _super);
         /**
@@ -16703,7 +15963,7 @@ var egret;
             set: function (value) {
                 this.$setFontFamily(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setFontFamily = function (value) {
@@ -16736,7 +15996,7 @@ var egret;
             set: function (value) {
                 this.$setSize(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setSize = function (value) {
@@ -16769,7 +16029,7 @@ var egret;
             set: function (value) {
                 this.$setBold(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setBold = function (value) {
@@ -16802,7 +16062,7 @@ var egret;
             set: function (value) {
                 this.$setItalic(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setItalic = function (value) {
@@ -16843,7 +16103,7 @@ var egret;
             set: function (value) {
                 this.$setTextAlign(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setTextAlign = function (value) {
@@ -16876,7 +16136,7 @@ var egret;
             set: function (value) {
                 this.$setVerticalAlign(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setVerticalAlign = function (value) {
@@ -16909,7 +16169,7 @@ var egret;
             set: function (value) {
                 this.$setLineSpacing(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setLineSpacing = function (value) {
@@ -16942,7 +16202,7 @@ var egret;
             set: function (value) {
                 this.$setTextColor(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setTextColor = function (value) {
@@ -16980,7 +16240,7 @@ var egret;
             set: function (value) {
                 this.$setWordWrap(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         TextField.prototype.$setWordWrap = function (value) {
@@ -17017,7 +16277,7 @@ var egret;
             set: function (value) {
                 this.$setType(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17082,7 +16342,7 @@ var egret;
                 }
                 this.$TextField[37 /* inputType */] = value;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "text", {
@@ -17104,7 +16364,7 @@ var egret;
             set: function (value) {
                 this.$setText(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17181,7 +16441,7 @@ var egret;
             set: function (value) {
                 this.$setDisplayAsPassword(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17229,7 +16489,7 @@ var egret;
             set: function (value) {
                 this.$setStrokeColor(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17270,7 +16530,7 @@ var egret;
             set: function (value) {
                 this.$setStroke(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17305,7 +16565,7 @@ var egret;
             set: function (value) {
                 this.$setMaxChars(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17348,7 +16608,7 @@ var egret;
                 this.$TextField[28 /* scrollV */] = value;
                 this.$invalidateTextField();
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "maxScrollV", {
@@ -17368,7 +16628,7 @@ var egret;
                 this.$getLinesArr();
                 return Math.max(this.$TextField[29 /* numLines */] - egret.TextFieldUtils.$getScrollNum(this) + 1, 1);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "selectionBeginIndex", {
@@ -17380,7 +16640,7 @@ var egret;
             get: function () {
                 return 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "selectionEndIndex", {
@@ -17392,7 +16652,7 @@ var egret;
             get: function () {
                 return 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "caretIndex", {
@@ -17404,7 +16664,7 @@ var egret;
             get: function () {
                 return 0;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17441,7 +16701,7 @@ var egret;
                 this.$getLinesArr();
                 return this.$TextField[29 /* numLines */];
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "multiline", {
@@ -17463,7 +16723,7 @@ var egret;
             set: function (value) {
                 this.$setMultiline(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17561,7 +16821,7 @@ var egret;
                     }
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17657,7 +16917,7 @@ var egret;
             set: function (value) {
                 this.$setBorder(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17694,7 +16954,7 @@ var egret;
             set: function (value) {
                 this.$setBorderColor(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17733,7 +16993,7 @@ var egret;
             set: function (value) {
                 this.$setBackground(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17769,7 +17029,7 @@ var egret;
             set: function (value) {
                 this.$setBackgroundColor(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -17982,7 +17242,7 @@ var egret;
                     this.setMiddleStyle(textArr);
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -18037,7 +17297,7 @@ var egret;
                 this.$getLinesArr();
                 return this.$TextField[5 /* textWidth */];
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(TextField.prototype, "textHeight", {
@@ -18057,7 +17317,7 @@ var egret;
                 this.$getLinesArr();
                 return egret.TextFieldUtils.$getTextHeight(this);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -18488,18 +17748,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * TextFieldInputType class is an enumeration of constant value used in setting the inputType property of the TextField class.
-     * @version Egret 3.1.2
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * TextFieldInputType 类是在设置 TextField 类的 inputType 属性时使用的常数值的枚举。
-     * @version Egret 3.1.2
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var TextFieldInputType = /** @class */ (function () {
         function TextFieldInputType() {
         }
@@ -18577,18 +17825,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * TextFieldType class is an enumeration of constant value used in setting the type property of the TextField class.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * TextFieldType 类是在设置 TextField 类的 type 属性时使用的常数值的枚举。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var TextFieldType = /** @class */ (function () {
         function TextFieldType() {
         }
@@ -18653,11 +17889,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @private
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
     var TextFieldUtils = /** @class */ (function () {
         function TextFieldUtils() {
         }
@@ -18918,20 +18149,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The VerticalAlign class defines the possible values for the vertical alignment.
-     * @see egret.TextField#verticalAlign
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * VerticalAlign 类为垂直对齐方式定义可能的值。
-     * @see egret.TextField#verticalAlign
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var VerticalAlign = /** @class */ (function () {
         function VerticalAlign() {
         }
@@ -19041,20 +18258,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-    * @language en_US
-    * The Base64Util class provides methods for encoding and decoding base64.
-    * @version Egret 2.4
-    * @platform Web,Native
-    * @includeExample egret/utils/Base64Util.ts
-    */
-    /**
-     * @language zh_CN
-     * Base64Util 类提供用于编解码base64的方法。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/Base64Util.ts
-     */
     var Base64Util = /** @class */ (function () {
         function Base64Util() {
         }
@@ -19172,20 +18375,6 @@ for (var i = 0; i < chars.length; i++) {
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Endian class contains values that denote the byte order used to represent multibyte numbers.
-     * The byte order is either bigEndian (most significant byte first) or littleEndian (least significant byte first).
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * Endian 类中包含一些值，它们表示用于表示多字节数字的字节顺序。
-     * 字节顺序为 bigEndian（最高有效字节位于最前）或 littleEndian（最低有效字节位于最前）。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var Endian = /** @class */ (function () {
         function Endian() {
         }
@@ -19223,22 +18412,6 @@ var egret;
     }());
     egret.Endian = Endian;
     __reflect(Endian.prototype, "egret.Endian");
-    /**
-     * The ByteArray class provides methods and attributes for optimized reading and writing as well as dealing with binary data.
-     * Note: The ByteArray class is applied to the advanced developers who need to access data at the byte layer.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/ByteArray.ts
-     * @language en_US
-     */
-    /**
-     * ByteArray 类提供用于优化读取、写入以及处理二进制数据的方法和属性。
-     * 注意：ByteArray 类适用于需要在字节层访问数据的高级开发人员。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/ByteArray.ts
-     * @language zh_CN
-     */
     var ByteArray = /** @class */ (function () {
         /**
          * @version Egret 2.4
@@ -19303,7 +18476,7 @@ var egret;
             set: function (value) {
                 this.$endian = value == Endian.LITTLE_ENDIAN ? 0 /* LITTLE_ENDIAN */ : 1 /* BIG_ENDIAN */;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -19324,7 +18497,7 @@ var egret;
             get: function () {
                 return this.write_position - this._position;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "buffer", {
@@ -19345,21 +18518,21 @@ var egret;
                 this._bytes = bytes;
                 this.data = new DataView(bytes.buffer);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "rawBuffer", {
             get: function () {
                 return this.data.buffer;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "bytes", {
             get: function () {
                 return this._bytes;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "dataView", {
@@ -19377,7 +18550,7 @@ var egret;
             set: function (value) {
                 this.buffer = value.buffer;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "bufferOffset", {
@@ -19387,7 +18560,7 @@ var egret;
             get: function () {
                 return this.data.byteOffset;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "position", {
@@ -19412,7 +18585,7 @@ var egret;
                     this.write_position = value;
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(ByteArray.prototype, "length", {
@@ -19442,7 +18615,7 @@ var egret;
                 }
                 this._validateBuffer(value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         ByteArray.prototype._validateBuffer = function (value) {
@@ -19473,7 +18646,7 @@ var egret;
             get: function () {
                 return this.data.byteLength - this._position;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -20325,18 +19498,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * Logger is an entrance for the log processing namespace of the engine
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * Logger是引擎的日志处理模块入口
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @language zh_CN
-     */
     var Logger = /** @class */ (function () {
         function Logger() {
         }
@@ -20375,7 +19536,7 @@ var egret;
              */
             set: function (logType) {
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -20491,10 +19652,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
     var NumberUtils = /** @class */ (function () {
         function NumberUtils() {
         }
@@ -20670,29 +19827,6 @@ if (!Function.prototype.bind) {
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The Timer class is the interface to timers, which let you run code on a specified time sequence. Use the start()
-     * method to start a timer. Add an event listener for the timer event to set up code to be run on the timer interval.<br/>
-     * You can create Timer objects to run once or repeat at specified intervals to execute code on a schedule. Depending
-     * on the framerate or the runtime environment (available memory and other factors), the runtime may dispatchEvent events at
-     * slightly offset intervals.
-     * @see egret.TimerEvent
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/Timer.ts
-     * @language en_US
-     */
-    /**
-     * Timer 类是计时器的接口，它使您能按指定的时间序列运行代码。
-     * 使用 start() 方法来启动计时器。为 timer 事件添加事件侦听器，以便将代码设置为按计时器间隔运行。
-     * 可以创建 Timer 对象以运行一次或按指定间隔重复运行，从而按计划执行代码。
-     * 根据 Egret 的帧速率或运行时环境（可用内存和其他因素），运行时调度事件的间隔可能稍有不同。
-     * @see egret.TimerEvent
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/Timer.ts
-     * @language zh_CN
-     */
     var Timer = /** @class */ (function (_super) {
         __extends(Timer, _super);
         /**
@@ -20772,7 +19906,7 @@ var egret;
                 this._delay = value;
                 this.lastCount = this.updateInterval = Math.round(60 * value);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Timer.prototype, "currentCount", {
@@ -20791,7 +19925,7 @@ var egret;
             get: function () {
                 return this._currentCount;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Timer.prototype, "running", {
@@ -20810,7 +19944,7 @@ var egret;
             get: function () {
                 return this._running;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -21826,9 +20960,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * @private
-     */
     var WebGLUtils = /** @class */ (function () {
         function WebGLUtils() {
         }

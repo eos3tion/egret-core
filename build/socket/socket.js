@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -75,34 +75,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The egret.WebSocket class enables code to establish a TCP socket connection, for sending and receiving character string or binary data.
-     * To use the methods of the egret.WebSocket class, first use the constructor function new egret.WebSocket to create an egret.WebSocket object.
-     * The socket transmits and receives data in asynchronous mode.
-     * @event egret.EventType.CONNECT Successfully connect to the server。
-     * @event egret.ProgressEvent.SOCKET_DATA Receiving server data。
-     * @event egret.EventType.CLOSE Dispatched when the server closes the connection.
-     * @event egret.ProgressEvent Dispatched when an IO error causes a send or load operation to fail.
-     * @see http://edn.egret.com/cn/docs/page/602 WebSocket
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/socket/WebSocket.ts
-     * @language en_US
-     */
-    /**
-     * egret.WebSocket 类启用代码以建立传输控制协议 (TCP) 套接字连接，用于发送和接收字符串或二进制数据。
-     * 要使用 egret.WebSocket 类的方法，请先使用构造函数 new egret.WebSocket 创建一个 egret.WebSocket 对象。
-     * 套接字以异步方式传输和接收数据。
-     * @event egret.EventType.CONNECT 连接服务器成功。
-     * @event egret.ProgressEvent.SOCKET_DATA 接收服务器数据。
-     * @event egret.EventType.CLOSE 在服务器关闭连接时调度。
-     * @event egret.IOErrorEvent.IO_ERROR 在出现输入/输出错误并导致发送或加载操作失败时调度。。
-     * @see http://edn.egret.com/cn/docs/page/602 WebSocket
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/socket/WebSocket.ts
-     * @language zh_CN
-     */
     var WebSocket = /** @class */ (function (_super) {
         __extends(WebSocket, _super);
         /**
@@ -419,7 +391,7 @@ var egret;
             get: function () {
                 return this._connected;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(WebSocket.prototype, "type", {
@@ -445,7 +417,7 @@ var egret;
                     this._writeByte = new egret.ByteArray();
                 }
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -511,9 +483,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        /**
-         * @private
-         */
         var HTML5WebSocket = /** @class */ (function () {
             function HTML5WebSocket() {
                 this.host = "";
