@@ -14,7 +14,7 @@ export class BaidugamePlugin implements plugins.Command {
                 let content = file.contents.toString();
                 content += `;window.egret = egret;`;
                 content = content.replace(/definition = __global/, "definition = window");
-                file.contents = new Buffer(content);
+                file.contents = Buffer.from(content);
             }
             else {
                 let content = file.contents.toString();
@@ -36,7 +36,7 @@ export class BaidugamePlugin implements plugins.Command {
                 if (filename == 'main.js') {
                     content += "\n;window.Main = Main;"
                 }
-                file.contents = new Buffer(content);
+                file.contents = Buffer.from(content);
             }
         }
         return file;

@@ -166,7 +166,7 @@ async function runWxIde() {
             const encoding = 'cp936';
             const binaryEncoding = 'binary';
             const result2 = await utils.executeCommand('REG QUERY "HKLM\\SOFTWARE\\Wow6432Node\\Tencent\\微信web开发者工具"', { encoding: binaryEncoding });
-            const stdout = iconv.decode(new Buffer(result2.stdout, binaryEncoding), encoding);
+            const stdout = iconv.decode(Buffer.from(result2.stdout, binaryEncoding), encoding);
             if (stdout != '') {
                 const stdoutArr = stdout.split("\r\n");
                 let exePath: string = stdoutArr.find((path) => path.indexOf(".exe") != -1);

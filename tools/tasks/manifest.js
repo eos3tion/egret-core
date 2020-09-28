@@ -99,7 +99,7 @@ var ManifestPlugin = /** @class */ (function () {
                         contents = manifest.initial.concat(manifest.game).map(function (fileName) { return "require(\"./" + fileName + "\")"; }).join("\n");
                         break;
                 }
-                pluginContext.createFile(this.options.output, new Buffer(contents));
+                pluginContext.createFile(this.options.output, Buffer.from(contents));
                 if (this.options.verbose) {
                     this.verboseInfo.forEach(function (item) {
                         console.log("manifest-plugin: " + item.filename + " => " + item.new_file_path);

@@ -73,7 +73,7 @@ export class EmitResConfigFilePlugin implements Plugin {
         return { name, url, type, ...fileOptions }
     }
 
-    async  onFile(file: plugin.File): Promise<plugin.File> {
+    async onFile(file: plugin.File): Promise<plugin.File> {
 
         const filename = file.origin;
         const extname = file.extname;
@@ -96,7 +96,7 @@ export class EmitResConfigFilePlugin implements Plugin {
         return file;
 
     }
-    async  onFinish(pluginContext: plugin.PluginContext): Promise<void> {
+    async onFinish(pluginContext: plugin.PluginContext): Promise<void> {
 
 
         function emitResourceConfigFile(debug: boolean) {
@@ -116,10 +116,10 @@ exports.resources = ${JSON.stringify(generateConfig.resources, null, "\t")};
         const config = this.config;
 
         const configContent = path.extname(options.output) == ".js" ? emitResourceConfigFile(true) : resourceConfig.generateClassicalConfig(this.config);
-        pluginContext.createFile(options.output, new Buffer(configContent));
+        pluginContext.createFile(options.output, Buffer.from(configContent));
         if (this.remoteRoot) {
             const remoteConfigContent = resourceConfig.generateClassicalConfig(this.remoteConfig);
-            pluginContext.createFile(options.output, new Buffer(remoteConfigContent), { outputDir: this.remoteRoot });
+            pluginContext.createFile(options.output, Buffer.fromm(remoteConfigContent), { outputDir: this.remoteRoot });
         }
 
     }
@@ -320,7 +320,7 @@ class TextureMergerResConfigPlugin {
             }
             this.deleteReferenceByName(imgName, resourceConfig, root);
             resourceConfig.resources.push(image);
-            const buffer = new Buffer(JSON.stringify(resourceConfig));
+            const buffer = Buffer.from(JSON.stringify(resourceConfig));
             pluginContext.createFile(filename, buffer);
         }
     }

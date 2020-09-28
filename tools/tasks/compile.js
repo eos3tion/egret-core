@@ -72,7 +72,7 @@ var CompilePlugin = /** @class */ (function () {
                     pluginContext.createFile(script, fs.readFileSync(FileUtil.joinPath(pluginContext.projectRoot, script)));
                 });
                 jscode = tinyCompiler(this.options.defines);
-                pluginContext.createFile("main.js", new Buffer(jscode));
+                pluginContext.createFile("main.js", Buffer.from(jscode));
                 if (target == 'web' || target == 'ios' || target == 'android') {
                     filepath = FileUtil.joinPath(projectRoot, 'template/web/index.html');
                     htmlContent = fs.readFileSync(filepath);
@@ -127,7 +127,7 @@ var UglifyPlugin = /** @class */ (function () {
                         }
                         return code;
                     }));
-                    pluginContext.createFile(matcher.target, new Buffer(jscode));
+                    pluginContext.createFile(matcher.target, Buffer.from(jscode));
                 }
                 return [2 /*return*/];
             });

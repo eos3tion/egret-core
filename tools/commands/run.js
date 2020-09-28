@@ -220,7 +220,7 @@ function runWxIde() {
                     return [4 /*yield*/, utils.executeCommand('REG QUERY "HKLM\\SOFTWARE\\Wow6432Node\\Tencent\\微信web开发者工具"', { encoding: binaryEncoding })];
                 case 4:
                     result2 = _b.sent();
-                    stdout = iconv.decode(new Buffer(result2.stdout, binaryEncoding), encoding);
+                    stdout = iconv.decode(Buffer.from(result2.stdout, binaryEncoding), encoding);
                     if (stdout != '') {
                         stdoutArr = stdout.split("\r\n");
                         exePath = stdoutArr.find(function (path) { return path.indexOf(".exe") != -1; });

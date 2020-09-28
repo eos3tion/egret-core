@@ -32,14 +32,14 @@ export class BricksPlugin implements plugins.Command {
             }
             content += `BK.Script.loadlib("GameRes://egret.bricks.js");\n`
             file.path = file.dirname + '/manifest.js'
-            file.contents = new Buffer(content);
+            file.contents = Buffer.from(content);
         } else if (filename == 'main.js') {
             const content = file.contents.toString();
             let result = content.replace(/RES\.loadConfig\("resource\/default\.res\.json", "resource\/"\)/gm, 'RES.loadConfig("GameRes://resource/default.res.json", "GameRes://resource/")');
             result = result.replace(/eui\.Theme\("resource\/default\.thm\.json", _this\.stage\)/gm, 'eui.Theme("GameRes://resource/default.thm.json", _this.stage)');
             result += ";global.Main = Main;";
             file.path = file.dirname + '/main.js'
-            file.contents = new Buffer(result);
+            file.contents = Buffer.from(result);
         } else if (filename == 'promise.js') {
             return null;
         }

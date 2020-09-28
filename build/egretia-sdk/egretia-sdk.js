@@ -4316,7 +4316,7 @@ require = (function () { function e(t, n, r) { function s(o, u) { if (!n[o]) { i
 
             request.open('POST', this.host, async);
             if (this.user && this.password) {
-                var auth = 'Basic ' + new Buffer(this.user + ':' + this.password).toString('base64');
+                var auth = 'Basic ' + Buffer.from(this.user + ':' + this.password).toString('base64');
                 request.setRequestHeader('Authorization', auth);
             } request.setRequestHeader('Content-Type', 'application/json');
             if (this.headers) {

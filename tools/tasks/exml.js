@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -76,12 +76,12 @@ var ExmlPlugin = /** @class */ (function () {
                 if (this.publishPolicy == "debug") {
                     dtsContents = exml.generateExmlDTS(this.exmls);
                     if (!FileUtil.exists('libs/exml.e.d.ts')) {
-                        pluginContext.createFile('libs/exml.e.d.ts', new Buffer(dtsContents));
+                        pluginContext.createFile('libs/exml.e.d.ts', Buffer.from(dtsContents));
                     }
                     else {
                         exmlDTS = FileUtil.read('libs/exml.e.d.ts');
                         if (dtsContents !== exmlDTS) {
-                            pluginContext.createFile('libs/exml.e.d.ts', new Buffer(dtsContents));
+                            pluginContext.createFile('libs/exml.e.d.ts', Buffer.from(dtsContents));
                         }
                     }
                 }
@@ -96,13 +96,13 @@ var ExmlPlugin = /** @class */ (function () {
                 if (result.EuiJson) {
                     result.EuiJson.forEach(function (item) {
                         var filename = item.path.split("\\").join("/");
-                        pluginContext.createFile(filename, new Buffer(item.json));
+                        pluginContext.createFile(filename, Buffer.from(item.json));
                     });
                 }
                 //写入解析规则和定义
                 result.files.forEach(function (item) {
                     var filename = item.path.split("\\").join("/");
-                    pluginContext.createFile(filename, new Buffer(item.content));
+                    pluginContext.createFile(filename, Buffer.from(item.content));
                 });
                 return [2 /*return*/];
             });

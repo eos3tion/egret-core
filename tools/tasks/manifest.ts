@@ -77,7 +77,7 @@ export class ManifestPlugin {
                 contents = manifest.initial.concat(manifest.game).map((fileName) => `require("./${fileName}")`).join("\n")
                 break;
         }
-        pluginContext.createFile(this.options.output, new Buffer(contents));
+        pluginContext.createFile(this.options.output, Buffer.from(contents));
         if (this.options.verbose) {
             this.verboseInfo.forEach((item) => {
                 console.log(`manifest-plugin: ${item.filename} => ${item.new_file_path}`)

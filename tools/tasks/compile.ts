@@ -40,7 +40,7 @@ export class CompilePlugin {
             pluginContext.createFile(script, fs.readFileSync(FileUtil.joinPath(pluginContext.projectRoot, script)));
         })
         const jscode = tinyCompiler(this.options.defines);
-        pluginContext.createFile("main.js", new Buffer(jscode));
+        pluginContext.createFile("main.js", Buffer.from(jscode));
 
         if (target == 'web' || target == 'ios' || target == 'android') {
             const filepath = FileUtil.joinPath(projectRoot, 'template/web/index.html')
@@ -112,7 +112,7 @@ export class UglifyPlugin {
                 }
                 return code;
             }));
-            pluginContext.createFile(matcher.target, new Buffer(jscode));
+            pluginContext.createFile(matcher.target, Buffer.from(jscode));
         }
     }
 

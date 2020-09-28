@@ -164,11 +164,11 @@ export class MergeEuiJsonPlugin implements Plugin {
                 }
             })
             const content = JSON.stringify(json, null, '\t');
-            commandContext.createFile(mergeFilename, new Buffer(content))
+            commandContext.createFile(mergeFilename, Buffer.from(content))
         }
         if (this.options.createConfig) {
             this.defaultThm["merge"] = this.jsonConfig
-            commandContext.createFile("resource/default.thm.json", new Buffer(JSON.stringify(this.defaultThm)));
+            commandContext.createFile("resource/default.thm.json", Buffer.from(JSON.stringify(this.defaultThm)));
         }
     }
 }

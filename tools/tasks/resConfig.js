@@ -1,4 +1,4 @@
-var __assign = (this && this.__assign) || Object.assign || function(t) {
+var __assign = (this && this.__assign) || Object.assign || function (t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
         for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -15,8 +15,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -128,10 +128,10 @@ var EmitResConfigFilePlugin = /** @class */ (function () {
                 options = this.options;
                 config = this.config;
                 configContent = path.extname(options.output) == ".js" ? emitResourceConfigFile(true) : resourceConfig.generateClassicalConfig(this.config);
-                pluginContext.createFile(options.output, new Buffer(configContent));
+                pluginContext.createFile(options.output, Buffer.from(configContent));
                 if (this.remoteRoot) {
                     remoteConfigContent = resourceConfig.generateClassicalConfig(this.remoteConfig);
-                    pluginContext.createFile(options.output, new Buffer(remoteConfigContent), { outputDir: this.remoteRoot });
+                    pluginContext.createFile(options.output, Buffer.from(remoteConfigContent), { outputDir: this.remoteRoot });
                 }
                 return [2 /*return*/];
             });
@@ -329,7 +329,7 @@ var TextureMergerResConfigPlugin = /** @class */ (function () {
             };
             this.deleteReferenceByName(imgName, resourceConfig_1, root);
             resourceConfig_1.resources.push(image);
-            var buffer = new Buffer(JSON.stringify(resourceConfig_1));
+            var buffer = Buffer.from(JSON.stringify(resourceConfig_1));
             pluginContext.createFile(filename, buffer);
         }
     };

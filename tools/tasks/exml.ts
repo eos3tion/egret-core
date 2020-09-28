@@ -37,11 +37,11 @@ export class ExmlPlugin implements Plugin {
         if (this.publishPolicy == "debug") {
             const dtsContents = exml.generateExmlDTS(this.exmls);
             if (!FileUtil.exists('libs/exml.e.d.ts')) {
-                pluginContext.createFile('libs/exml.e.d.ts', new Buffer(dtsContents))
+                pluginContext.createFile('libs/exml.e.d.ts', Buffer.from(dtsContents))
             } else {
                 const exmlDTS = FileUtil.read('libs/exml.e.d.ts');
                 if (dtsContents !== exmlDTS) {
-                    pluginContext.createFile('libs/exml.e.d.ts', new Buffer(dtsContents))
+                    pluginContext.createFile('libs/exml.e.d.ts', Buffer.from(dtsContents))
                 }
             }
         }
@@ -56,13 +56,13 @@ export class ExmlPlugin implements Plugin {
         if (result.EuiJson) {
             result.EuiJson.forEach(item => {
                 const filename = item.path.split("\\").join("/");
-                pluginContext.createFile(filename, new Buffer(item.json))
+                pluginContext.createFile(filename, Buffer.from(item.json))
             })
         }
         //写入解析规则和定义
         result.files.forEach(item => {
             const filename = item.path.split("\\").join("/");
-            pluginContext.createFile(filename, new Buffer(item.content))
+            pluginContext.createFile(filename, Buffer.from(item.content))
         })
     }
 }
