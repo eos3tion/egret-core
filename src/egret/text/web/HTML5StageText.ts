@@ -143,6 +143,11 @@ namespace egret.web {
             if (!this.htmlInput.isCurrentStageText(this)) {
                 this.inputElement = this.htmlInput.getInputElement(this);
                 if (!this.$textfield.multiline) {
+                    if ((this.inputElement as any).type == "password" && this.$textfield.inputType != "password") {
+                        //解决安卓手机切换到安全键盘后无法切换回普通键盘的问题
+                        this.htmlInput.initInputElement(false);
+                        this.inputElement = this.htmlInput.getInputElement(this);
+                    }
                     this.inputElement.type = this.$textfield.inputType;
                 }
                 else {
@@ -585,7 +590,7 @@ namespace egret.web {
         }
 
         //初始化输入框
-        private initInputElement(multiline: boolean): void {
+        initInputElement(multiline: boolean): void {
             let self = this;
 
             //增加1个空的textarea
