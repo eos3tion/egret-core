@@ -3647,7 +3647,7 @@ var egret;
                 }
                 return this;
             }
-            if (found) {
+            if (found || this.isOpaque) {
                 return this;
             }
             return _super.prototype.$hitTest.call(this, stageX, stageY);
@@ -7514,7 +7514,7 @@ var egret;
                 }
                 return this;
             }
-            if (found) {
+            if (found || this.isOpaque) {
                 return this;
             }
             target = egret.DisplayObject.prototype.$hitTest.call(this, stageX, stageY);
