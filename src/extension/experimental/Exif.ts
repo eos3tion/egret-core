@@ -13,9 +13,9 @@ namespace egret.experimental {
      */
     export let debug = false;
     export const ExifTags = {
-        0x9000: "ExifVersion",             
-        0xA000: "FlashpixVersion",         
-        0xA001: "ColorSpace",              
+        0x9000: "ExifVersion",
+        0xA000: "FlashpixVersion",
+        0xA001: "ColorSpace",
         0xA002: "PixelXDimension",         // Valid width of meaningful image
         0xA003: "PixelYDimension",         // Valid height of meaningful image
         0x9101: "ComponentsConfiguration", // Information about channels
@@ -341,7 +341,7 @@ namespace egret.experimental {
 
         if (img.src) {
             if (/^data\:/i.test(img.src)) { // Data URI
-                var arrayBuffer = base64ToArrayBuffer(img.src,"");
+                var arrayBuffer = base64ToArrayBuffer(img.src, "");
                 handleBinaryFile(arrayBuffer);
 
             } else if (/^blob\:/i.test(img.src)) { // Object URL
@@ -369,7 +369,7 @@ namespace egret.experimental {
         } else if (window["FileReader"] && (img instanceof window.Blob || img instanceof window["File"])) {
             var fileReader = new FileReader();
             fileReader.onload = function (e) {
-                if (debug) console.log("Got file of length " + e.target["result"].byteLength);
+                if (debug) console.log("Got file of length " + (e.target["result"] as ArrayBuffer).byteLength);
                 handleBinaryFile(e.target["result"]);
             };
 
