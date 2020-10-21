@@ -32,51 +32,55 @@
  */
 interface PlayerOption {
     /**
+     * 入口类
+     */
+    entryClass?: { new(): egret.DisplayObject };
+    /**
      * 入口类完整类名
      */
-    entryClassName?:string;
+    entryClassName?: string;
     /**
      * 默认帧率
      */
-    frameRate?:number;
+    frameRate?: number;
     /**
      * 屏幕适配模式
      */
-    scaleMode?:string;
+    scaleMode?: string;
     /**
      * 初始内容宽度
      */
-    contentWidth?:number;
+    contentWidth?: number;
     /**
      * 初始内容高度
      */
-    contentHeight?:number;
+    contentHeight?: number;
     /**
      * 屏幕方向
      */
-    orientation?:string;
+    orientation?: string;
     /**
      * 显示FPS
      */
-    showFPS?:boolean;
+    showFPS?: boolean;
     /**
      *
      */
-    fpsStyles?:Object;
+    fpsStyles?: Object;
     /**
      * 显示日志
      */
-    showLog?:boolean;
+    showLog?: boolean;
     /**
      * 过滤日志的正则表达式
      */
-    logFilter?:string;
+    logFilter?: string;
     /**
      *
      */
-    maxTouches?:number;
+    maxTouches?: number;
     /**
      *
      */
-    textureScaleFactor?:number;
+    textureScaleFactor?: number;
 }

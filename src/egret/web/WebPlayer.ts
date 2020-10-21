@@ -66,7 +66,7 @@ namespace egret.web {
             this.attachCanvas(container, canvas);
 
             let webTouch = new WebTouchHandler(stage, canvas);
-            let player = new egret.sys.Player(buffer, stage, option.entryClassName);
+            let player = new egret.sys.Player(buffer, stage, option);
 
             lifecycle.stage = stage;
             lifecycle.addLifecycleListener(WebLifeCycleHandler);
@@ -128,6 +128,7 @@ namespace egret.web {
             option.showLog = container.getAttribute("data-show-log") == "true";
             option.logFilter = container.getAttribute("data-log-filter");
             option.lowDPI = options.lowDPI;
+            option.entryClass = options.entryClass;
             return option;
         }
 

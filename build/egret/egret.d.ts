@@ -8843,6 +8843,9 @@ declare namespace egret {
         canvasScaleFactor?: number;
         calculateCanvasScaleFactor?: (context: CanvasRenderingContext2D) => number;
         entryClassName?: string;
+        entryClass?: {
+            new (): egret.DisplayObject;
+        };
         scaleMode?: string;
         frameRate?: number;
         contentWidth?: number;
@@ -8930,11 +8933,14 @@ declare namespace egret.sys {
          * @private
          * 实例化一个播放器对象。
          */
-        constructor(buffer: RenderBuffer, stage: Stage, entryClassName: string);
+        constructor(buffer: RenderBuffer, stage: Stage, opt: PlayerOption);
         /**
          * @private
          */
         private createDisplayList;
+        entryClass: {
+            new (): egret.DisplayObject;
+        };
         /**
          * @private
          */
@@ -9024,6 +9030,12 @@ declare namespace egret.sys {
  * @private
  */
 interface PlayerOption {
+    /**
+     * 入口类
+     */
+    entryClass?: {
+        new (): egret.DisplayObject;
+    };
     /**
      * 入口类完整类名
      */

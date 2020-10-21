@@ -39,6 +39,7 @@ namespace egret {
 
         //以下目前仅供微信小游戏使用
         entryClassName?: string;
+        entryClass?: { new(): egret.DisplayObject }
         scaleMode?: string;
         frameRate?: number;
         contentWidth?: number;

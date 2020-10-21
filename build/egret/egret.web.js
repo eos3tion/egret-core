@@ -3775,7 +3775,7 @@ var egret;
                 var canvas = buffer.surface;
                 this.attachCanvas(container, canvas);
                 var webTouch = new web.WebTouchHandler(stage, canvas);
-                var player = new egret.sys.Player(buffer, stage, option.entryClassName);
+                var player = new egret.sys.Player(buffer, stage, option);
                 egret.lifecycle.stage = stage;
                 egret.lifecycle.addLifecycleListener(web.WebLifeCycleHandler);
                 var webInput = new web.HTMLInput();
@@ -3827,6 +3827,7 @@ var egret;
                 option.showLog = container.getAttribute("data-show-log") == "true";
                 option.logFilter = container.getAttribute("data-log-filter");
                 option.lowDPI = options.lowDPI;
+                option.entryClass = options.entryClass;
                 return option;
             };
             /**

@@ -47,12 +47,13 @@ namespace egret.sys {
          * @private
          * 实例化一个播放器对象。
          */
-        public constructor(buffer: RenderBuffer, stage: Stage, entryClassName: string) {
+        public constructor(buffer: RenderBuffer, stage: Stage, opt: PlayerOption) {
             super();
             if (DEBUG && !buffer) {
                 $error(1003, "buffer");
             }
-            this.entryClassName = entryClassName;
+            this.entryClass = opt.entryClass;
+            this.entryClassName = opt.entryClassName;
             this.stage = stage;
             this.screenDisplayList = this.createDisplayList(stage, buffer);
 
@@ -72,7 +73,7 @@ namespace egret.sys {
             return displayList;
         }
 
-
+        entryClass: { new(): egret.DisplayObject };
         /**
          * @private
          */
@@ -120,12 +121,12 @@ namespace egret.sys {
          * @private
          */
         private initialize(): void {
-            let rootClass;
-            if (this.entryClassName) {
+            let rootClass = this.entryClass;
+            if (!rootClass && this.entryClassName) {
                 rootClass = egret.getDefinitionByName(this.entryClassName);
             }
             if (rootClass) {
-                let rootContainer: any = new rootClass();
+                let rootContainer = new rootClass();
                 this.root = rootContainer;
                 if (rootContainer instanceof egret.DisplayObject) {
                     this.stage.addChild(rootContainer);

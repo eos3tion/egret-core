@@ -11654,7 +11654,7 @@ var egret;
              * @private
              * 实例化一个播放器对象。
              */
-            function Player(buffer, stage, entryClassName) {
+            function Player(buffer, stage, opt) {
                 var _this = _super.call(this) || this;
                 /**
                  * @private
@@ -11663,7 +11663,8 @@ var egret;
                 if (true && !buffer) {
                     egret.$error(1003, "buffer");
                 }
-                _this.entryClassName = entryClassName;
+                _this.entryClass = opt.entryClass;
+                _this.entryClassName = opt.entryClassName;
                 _this.stage = stage;
                 _this.screenDisplayList = _this.createDisplayList(stage, buffer);
                 _this.showFPS = false;
@@ -11699,8 +11700,8 @@ var egret;
              * @private
              */
             Player.prototype.initialize = function () {
-                var rootClass;
-                if (this.entryClassName) {
+                var rootClass = this.entryClass;
+                if (!rootClass && this.entryClassName) {
                     rootClass = egret.getDefinitionByName(this.entryClassName);
                 }
                 if (rootClass) {
