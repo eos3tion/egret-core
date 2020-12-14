@@ -13399,6 +13399,9 @@ declare namespace egret {
     function registerClass(classDefinition: any, className: string, interfaceNames?: string[]): void;
 }
 declare namespace egret {
+    const SharedIndices: Uint16Array;
+}
+declare namespace egret {
     /**
      * Logger is an entrance for the log processing namespace of the engine
      * @version Egret 2.4

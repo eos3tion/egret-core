@@ -26,6 +26,7 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+
 namespace egret.web {
     const enum Const {
         VertSize = 6,
@@ -34,6 +35,9 @@ namespace egret.web {
         MaxVertexCount = MaxQuadsCount * 4,
         MaxIndicesCount = MaxQuadsCount * 6,
     }
+
+
+
     /**
      * @private
      * 顶点数组管理对象
@@ -57,8 +61,8 @@ namespace egret.web {
 
         public constructor() {
 
-            const indices = new Uint16Array(Const.MaxIndicesCount);
-            this.indices = indices;
+
+            this.indices = egret.SharedIndices;
             this.indicesForMesh = new Uint16Array(Const.MaxIndicesCount);
 
             let vertices = new ArrayBuffer(Const.MaxVertexCount * Const.VertByteSize);
@@ -67,14 +71,7 @@ namespace egret.web {
             this.vertices = vertF32;
             this._vertU32 = vertU32;
 
-            for (let i = 0, j = 0; i < Const.MaxIndicesCount; i += 6, j += 4) {
-                indices[i + 0] = j + 0;
-                indices[i + 1] = j + 1;
-                indices[i + 2] = j + 2;
-                indices[i + 3] = j + 0;
-                indices[i + 4] = j + 2;
-                indices[i + 5] = j + 3;
-            }
+
         }
 
         /**

@@ -19469,6 +19469,19 @@ var egret;
     }
     egret.registerClass = registerClass;
 })(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var indices = new Uint16Array(12288);
+    for (var i = 0, j = 0; i < 12288; i += 6, j += 4) {
+        indices[i + 0] = j + 0;
+        indices[i + 1] = j + 1;
+        indices[i + 2] = j + 2;
+        indices[i + 3] = j + 0;
+        indices[i + 4] = j + 2;
+        indices[i + 5] = j + 3;
+    }
+    egret.SharedIndices = indices;
+})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
