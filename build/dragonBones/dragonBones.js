@@ -839,6 +839,13 @@ var dragonBones;
             this.alphaMultiplier = this.redMultiplier = this.greenMultiplier = this.blueMultiplier = 1.0;
             this.alphaOffset = this.redOffset = this.greenOffset = this.blueOffset = 0;
         };
+        Object.defineProperty(ColorTransform.prototype, "tint", {
+            get: function () {
+                return (this.redMultiplier * 0xff) << 16 | (this.greenMultiplier * 0xff) << 8 | (this.blueMultiplier * 0xff);
+            },
+            enumerable: true,
+            configurable: true
+        });
         return ColorTransform;
     }());
     dragonBones.ColorTransform = ColorTransform;
@@ -15915,51 +15922,16 @@ var dragonBones;
             }
         };
         EgretSlot.prototype._updateColor = function () {
-            var alpha = this._colorTransform.alphaMultiplier * this._globalAlpha;
-            if (this._colorTransform.redMultiplier !== 1.0 ||
-                this._colorTransform.greenMultiplier !== 1.0 ||
-                this._colorTransform.blueMultiplier !== 1.0 ||
-                this._colorTransform.redOffset !== 0 ||
-                this._colorTransform.greenOffset !== 0 ||
-                this._colorTransform.blueOffset !== 0 ||
-                this._colorTransform.alphaOffset !== 0) {
-                if (this._colorFilter === null) {
-                    this._colorFilter = new egret.ColorMatrixFilter();
-                }
-                var colorMatrix = this._colorFilter.matrix;
-                colorMatrix[0] = this._colorTransform.redMultiplier;
-                colorMatrix[6] = this._colorTransform.greenMultiplier;
-                colorMatrix[12] = this._colorTransform.blueMultiplier;
-                colorMatrix[18] = alpha;
-                colorMatrix[4] = this._colorTransform.redOffset;
-                colorMatrix[9] = this._colorTransform.greenOffset;
-                colorMatrix[14] = this._colorTransform.blueOffset;
-                colorMatrix[19] = this._colorTransform.alphaOffset;
-                this._colorFilter.matrix = colorMatrix;
-                if (this._armatureDisplay._batchEnabled) {
-                    var node = this._renderDisplay.$renderNode;
-                    node.filter = this._colorFilter;
-                    node.alpha = 1.0;
-                }
-                var filters = this._renderDisplay.filters;
-                if (!filters) { // null or undefined?
-                    filters = [];
-                }
-                if (filters.indexOf(this._colorFilter) < 0) {
-                    filters.push(this._colorFilter);
-                }
-                this._renderDisplay.filters = filters;
-                this._renderDisplay.alpha = 1.0;
+            var transform = this._colorTransform;
+            var alpha = transform.alphaMultiplier * this._globalAlpha;
+            var display = this._renderDisplay;
+            if (this._armatureDisplay._batchEnabled) {
+                var node = display.$renderNode;
+                node.filter = null;
+                node.alpha = alpha;
             }
-            else {
-                if (this._armatureDisplay._batchEnabled) {
-                    var node = this._renderDisplay.$renderNode;
-                    node.filter = null;
-                    node.alpha = alpha;
-                }
-                this._renderDisplay.filters = null;
-                this._renderDisplay.alpha = alpha;
-            }
+            display.tint = transform.tint;
+            display.alpha = alpha;
         };
         EgretSlot.prototype._updateFrame = function () {
             var currentTextureData = this._textureData;
