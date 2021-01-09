@@ -16283,7 +16283,7 @@ var dragonBones;
             configurable: true
         });
         EgretFactory.prototype._isSupportMesh = function () {
-            if (egret.Capabilities.renderMode === "webgl" || egret.Capabilities.runtimeType === egret.RuntimeType.NATIVE) {
+            if (egret.Capabilities.renderMode === "webgl") {
                 return true;
             }
             console.warn("Canvas can not support mesh, please change renderMode to webgl.");
