@@ -6418,10 +6418,10 @@ var egret;
                     if (renderBufferPool.length > 6) {
                         renderBufferPool.length = 6;
                     }
-                    var length_2 = renderBufferPool.length;
-                    for (var i = 0; i < length_2; i++) {
-                        renderBufferPool[i].resize(0, 0);
-                    }
+                    // let length = renderBufferPool.length;
+                    // for (let i = 0; i < length; i++) {
+                    //     renderBufferPool[i].resize(0, 0);
+                    // }
                 }
                 return drawCall;
             };
@@ -6463,8 +6463,8 @@ var egret;
                 }
                 var children = displayObject.$children;
                 if (children) {
-                    var length_3 = children.length;
-                    for (var i = 0; i < length_3; i++) {
+                    var length_2 = children.length;
+                    for (var i = 0; i < length_2; i++) {
                         var child = children[i];
                         var offsetX2 = void 0, offsetY2 = void 0, tempAlpha = void 0, tempTintColor = void 0;
                         if (child.$alpha != 1) {
@@ -6899,8 +6899,8 @@ var egret;
                 }
                 var children = displayObject.$children;
                 if (children) {
-                    var length_4 = children.length;
-                    for (var i = 0; i < length_4; i++) {
+                    var length_3 = children.length;
+                    for (var i = 0; i < length_3; i++) {
                         var child = children[i];
                         switch (child.$renderMode) {
                             case 1 /* NONE */:

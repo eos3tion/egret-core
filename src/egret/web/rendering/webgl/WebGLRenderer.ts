@@ -79,10 +79,10 @@ namespace egret.web {
                 if (renderBufferPool.length > 6) {
                     renderBufferPool.length = 6;
                 }
-                let length = renderBufferPool.length;
-                for (let i = 0; i < length; i++) {
-                    renderBufferPool[i].resize(0, 0);
-                }
+                // let length = renderBufferPool.length;
+                // for (let i = 0; i < length; i++) {
+                //     renderBufferPool[i].resize(0, 0);
+                // }
             }
             return drawCall;
         }
