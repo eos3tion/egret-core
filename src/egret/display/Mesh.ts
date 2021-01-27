@@ -92,21 +92,21 @@ namespace egret {
                 this._verticesDirty = false;
                 let node = <sys.MeshNode>this.$renderNode;
                 let vertices = node.vertices;
+                let left = 0, right = 0, top = 0, bottom = 0;
                 if (vertices.length) {
+                    top = left = Infinity;
+                    bottom = right = -Infinity;
                     this._bounds.setTo(Number.MAX_VALUE, Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
                     for (let i = 0, l = vertices.length; i < l; i += 2) {
                         let x = vertices[i];
                         let y = vertices[i + 1];
-                        if (this._bounds.x > x) this._bounds.x = x;
-                        if (this._bounds.width < x) this._bounds.width = x;
-                        if (this._bounds.y > y) this._bounds.y = y;
-                        if (this._bounds.height < y) this._bounds.height = y;
+                        if (x < left) left = x;
+                        if (x > right) right = x;
+                        if (y < top) top = y;
+                        if (y > bottom) bottom = y;
                     }
-                    this._bounds.width -= this._bounds.x;
-                    this._bounds.height -= this._bounds.y;
-                } else {
-                    this._bounds.setTo(0, 0, 0, 0);
                 }
+                this._bounds.setTo(left, top, right - left, bottom - top);
                 node.bounds.copyFrom(this._bounds);
             }
             bounds.copyFrom(this._bounds);
