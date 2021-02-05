@@ -76,7 +76,6 @@ namespace egret.web {
          * 默认shader
          */
         private defaultFragShader: string;
-        emptyTexture: WebGLTexture;
         public static getInstance(width: number, height: number): WebGLRenderContext {
             if (!instance) {
                 instance = new WebGLRenderContext(width, height);
@@ -320,7 +319,6 @@ namespace egret.web {
                 `}`
             );
             this.defaultFragShader = defaultFragShader.join("\n");
-            this.emptyTexture = this.createTexture2(1, 1);
         }
 
         private handleContextLost() {
@@ -919,17 +917,16 @@ namespace egret.web {
             let uniforms = program.uniforms;
             const { texs } = data;
             if (texs) {
-                const { context, emptyTexture, $maxTextureCount } = this;
-                for (let i = 0; i < $maxTextureCount; i++) {
+                const { context } = this;
+                for (let i = 0; i < texs.length; i++) {
                     let uni = uniforms[`tex${i}`];
                     if (uni) {
                         let tex = texs[i];
-                        if (!tex) {
-                            tex = emptyTexture;
+                        if (tex !== undefined) {
+                            context.activeTexture(context.TEXTURE0 + i);
+                            context.bindTexture(context.TEXTURE_2D, tex);
+                            uni.setValue(i);
                         }
-                        context.activeTexture(context.TEXTURE0 + i);
-                        context.bindTexture(context.TEXTURE_2D, tex);
-                        uni.setValue(i);
                     }
                 }
             }
