@@ -635,7 +635,7 @@ namespace egret.web {
             });
             inputElement.addEventListener('compositionend', function () {
                 inputLock = false;
-                if (self._stageText && !inputLock) {
+                if (self._stageText) {
                     self._stageText._onInput();
                 }
             });
