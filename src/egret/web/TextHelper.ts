@@ -89,6 +89,7 @@ namespace egret.web {
                     let { x, y } = bin;
                     textContext.$offsetX = x + 2;
                     textContext.$offsetY = y + 2;
+                    textContext.rect(x, y, width, height);
                     render.canvasRenderer.renderText(node, textContext);
                     node.$textureWidth = $width;
                     node.$textureHeight = $height;
