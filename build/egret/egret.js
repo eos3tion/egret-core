@@ -20930,18 +20930,8 @@ var egret;
      * @language zh_CN
      */
     function toColorString(value) {
-        if (value < 0)
-            value = 0;
-        if (value > 16777215)
-            value = 16777215;
-        var color = value.toString(16).toUpperCase();
-        while (color.length > 6) {
-            color = color.slice(1, color.length);
-        }
-        while (color.length < 6) {
-            color = "0" + color;
-        }
-        return "#" + color;
+        var color = value.toString(16);
+        return "#000000".slice(0, 7 - color.length) + color;
     }
     egret.toColorString = toColorString;
 })(egret || (egret = {}));
