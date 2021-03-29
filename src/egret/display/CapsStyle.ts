@@ -44,7 +44,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export const CapsStyle = {
+    export const enum CapsStyle {
         /**
          * Used to specify no caps in the caps parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -57,7 +57,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        NONE: "none",
+        NONE = "none",
         /**
          * Used to specify round caps in the caps parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -70,7 +70,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        ROUND: "round",
+        ROUND = "round",
         /**
          * Used to specify square caps in the caps parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -83,6 +83,6 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        SQUARE: "square"
+        SQUARE = "square"
     }
 }

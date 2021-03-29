@@ -1143,14 +1143,14 @@ namespace egret {
 
         /**
          * Indicates a user can enter into the text field character set. If you restrict property is null, you can enter any character. If you restrict property is an empty string, you can not enter any character. If you restrict property is a string of characters, you can enter only characters in the string in the text field. The string is scanned from left to right. You can use a hyphen (-) to specify a range. Only restricts user interaction; a script may put any text into the text field. <br/>
-                  * If the string of characters caret (^) at the beginning, all characters are initially accepted, then the string are excluded from receiving ^ character. If the string does not begin with a caret (^) to, any characters are initially accepted and then a string of characters included in the set of accepted characters. <br/>
-                  * The following example allows only uppercase characters, spaces, and numbers in the text field: <br/>
-                  * My_txt.restrict = "A-Z 0-9"; <br/>
-                  * The following example includes all characters except lowercase letters: <br/>
-                  * My_txt.restrict = "^ a-z"; <br/>
-                  * If you need to enter characters \ ^, use two backslash "\\ -" "\\ ^": <br/>
-                  * Can be used anywhere in the string ^ to rule out including characters and switch between characters, but can only be used to exclude a ^. The following code includes only uppercase letters except uppercase Q: <br/>
-                  * My_txt.restrict = "A-Z ^ Q"; <br/>
+                  * If the string of characters caret (^) at the beginning, all characters are initially accepted, then the string are excluded from receiving ^ character. If the string does not begin with a caret (^) to, any characters are initially accepted and then a string of characters included in the set of accepted characters. <br/>
+                  * The following example allows only uppercase characters, spaces, and numbers in the text field: <br/>
+                  * My_txt.restrict = "A-Z 0-9"; <br/>
+                  * The following example includes all characters except lowercase letters: <br/>
+                  * My_txt.restrict = "^ a-z"; <br/>
+                  * If you need to enter characters \ ^, use two backslash "\\ -" "\\ ^": <br/>
+                  * Can be used anywhere in the string ^ to rule out including characters and switch between characters, but can only be used to exclude a ^. The following code includes only uppercase letters except uppercase Q: <br/>
+                  * My_txt.restrict = "A-Z ^ Q"; <br/>
          * @version Egret 2.4
          * @platform Web,Native
          * @default null
@@ -1467,13 +1467,13 @@ namespace egret {
          * @private
          *
          */
-        private fillBackground(lines?: number[]): void {
+        private fillBackground(): void {
             let graphics = this.$graphicsNode;
             if (graphics) {
                 graphics.clear();
             }
             let values = this.$TextField;
-            if (values[sys.TextKeys.background] || values[sys.TextKeys.border] || (lines && lines.length > 0)) {
+            if (values[sys.TextKeys.background] || values[sys.TextKeys.border]) {
                 if (!graphics) {
                     graphics = this.$graphicsNode = new sys.GraphicsNode();
                     let groupNode = new sys.GroupNode();
@@ -1493,24 +1493,6 @@ namespace egret {
                     strokePath = graphics.lineStyle(1, values[sys.TextKeys.borderColor]);
                     //1像素和3像素线条宽度的情况，会向右下角偏移0.5像素绘制。少画一像素宽度，正好能不超出文本测量边界。
                     strokePath.drawRect(0, 0, this.$getWidth() - 1, this.$getHeight() - 1);
-                }
-                //渲染下划线
-                if (lines && lines.length > 0) {
-                    let textColor = values[sys.TextKeys.textColor];
-                    let lastColor = -1;
-                    let length = lines.length;
-                    for (let i = 0; i < length; i += 4) {
-                        let x: number = lines[i];
-                        let y: number = lines[i + 1];
-                        let w: number = lines[i + 2];
-                        let color: number = lines[i + 3] || textColor;
-                        if (lastColor < 0 || lastColor != color) {
-                            lastColor = color;
-                            strokePath = graphics.lineStyle(2, color, 1, CapsStyle.NONE);
-                        }
-                        strokePath.moveTo(x, y);
-                        strokePath.lineTo(x + w, y);
-                    }
                 }
             }
             if (graphics) {
@@ -1632,8 +1614,8 @@ namespace egret {
                 return;
             }
 
-            let underLines = this.drawText();
-            this.fillBackground(underLines);
+            this.drawText();
+            this.fillBackground();
             //tudo 宽高很小的情况下webgl模式绘制异常
             let bounds = this.$getRenderBounds();
             let node = this.textNode;
@@ -2090,7 +2072,6 @@ namespace egret {
             let hAlign: number = TextFieldUtils.$getHalign(this);
 
             let drawX: number = 0;
-            let underLineData: number[] = [];
             for (let i: number = startLine, numLinesLength: number = values[sys.TextKeys.numLines]; i < numLinesLength; i++) {
                 let line: egret.ILineElement = lines[i];
                 let h: number = line.height;
@@ -2111,21 +2092,11 @@ namespace egret {
 
                     node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
 
-                    if (element.style.underline) {
-                        underLineData.push(
-                            drawX,
-                            drawY + (h) / 2,
-                            element.width,
-                            element.style.textColor
-                        );
-                    }
-
                     drawX += element.width;
                 }
                 drawY += h / 2 + values[sys.TextKeys.lineSpacing];
             }
 
-            return underLineData;
         }
 
         //增加点击事件

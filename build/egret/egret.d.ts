@@ -4055,7 +4055,7 @@ declare namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    const CapsStyle: {
+    const enum CapsStyle {
         /**
          * Used to specify no caps in the caps parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -4068,7 +4068,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        NONE: string;
+        NONE = "none",
         /**
          * Used to specify round caps in the caps parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -4081,7 +4081,7 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        ROUND: string;
+        ROUND = "round",
         /**
          * Used to specify square caps in the caps parameter of the egret.Graphics.lineStyle() method.
          * @version Egret 2.5
@@ -4094,8 +4094,8 @@ declare namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        SQUARE: string;
-    };
+        SQUARE = "square"
+    }
 }
 declare namespace egret {
     /**
@@ -9957,6 +9957,7 @@ declare namespace egret.sys {
          * 字体名称
          */
         fontFamily?: string;
+        underline?: boolean;
     }
 }
 declare namespace egret.sys {

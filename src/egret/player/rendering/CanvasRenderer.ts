@@ -703,9 +703,12 @@ namespace egret {
 
                 let gradients = format.gradients || node.gradients;
                 let style;
+                let sx = x + $offsetX;
+                let sy = y + $offsetY;
+                let hh = 0;
                 if (gradients) {
-                    let hh = (format.size || node.size) >> 1;//textBaseline = "middle" 是从中间渲染，所以基于高度要上下补值
-                    style = context.createLinearGradient(x, y - hh, x, y + hh);
+                    hh = (format.size || node.size) >> 1;//textBaseline = "middle" 是从中间渲染，所以基于高度要上下补值
+                    style = context.createLinearGradient(sx, sy - hh, sx, sy + hh);
                     for (let i = 0; i < gradients.length; i++) {
                         const colorStop = gradients[i];
                         style.addColorStop(colorStop[0], colorStop[1]);
@@ -731,11 +734,23 @@ namespace egret {
                     strokeStyle = toColorString(strokeColor);
                 }
                 context.strokeStyle = strokeStyle;
+
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    context.strokeText(text, x + $offsetX, y + $offsetY);
+                    context.strokeText(text, sx, sy);
                 }
-                context.fillText(text, x + $offsetX, y + $offsetY);
+                context.fillText(text, sx, sy);
+                if (format.underline) {
+                    context.lineWidth = 2;
+                    hh = hh || (format.size || node.size) >> 1;
+                    sy = sy + hh;
+                    context.beginPath();
+                    context.moveTo(sx, sy);
+                    let w = context.measureText(text).width;
+                    context.lineTo(sx + w, sy);
+                    context.strokeStyle = egret.toColorString(textColor);
+                    context.stroke();
+                }
             }
         }
 

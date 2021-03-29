@@ -6062,65 +6062,6 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    /**
-     * The CapsStyle class is an enumeration of constant values that specify the caps style to use in drawing lines.
-     * The constants are provided for use as values in the caps parameter of the egret.Graphics.lineStyle() method.
-     * @see egret.Graphics#lineStyle()
-     * @version Egret 2.5
-     * @platform Web,Native
-     * @language en_US
-     */
-    /**
-     * CapsStyle 类是可指定在绘制线条中使用的端点样式的常量值枚举。常量可用作 egret.Graphics.lineStyle() 方法的 caps 参数中的值。
-     * @see egret.Graphics#lineStyle()
-     * @version Egret 2.5
-     * @platform Web,Native
-     * @language zh_CN
-     */
-    egret.CapsStyle = {
-        /**
-         * Used to specify no caps in the caps parameter of the egret.Graphics.lineStyle() method.
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 用于在 egret.Graphics.lineStyle() 方法的 caps 参数中指定没有端点。
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        NONE: "none",
-        /**
-         * Used to specify round caps in the caps parameter of the egret.Graphics.lineStyle() method.
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 用于在 egret.Graphics.lineStyle() 方法的 caps 参数中指定圆头端点。
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        ROUND: "round",
-        /**
-         * Used to specify square caps in the caps parameter of the egret.Graphics.lineStyle() method.
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 用于在 egret.Graphics.lineStyle() 方法的 caps 参数中指定方头端点。
-         * @version Egret 2.5
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        SQUARE: "square"
-    };
-})(egret || (egret = {}));
-var egret;
-(function (egret) {
     var GradientType = /** @class */ (function () {
         function GradientType() {
         }
@@ -13183,7 +13124,7 @@ var egret;
                 path.lineWidth = thickness;
                 path.lineColor = color;
                 path.lineAlpha = alpha;
-                path.caps = caps || egret.CapsStyle.ROUND;
+                path.caps = caps || "round" /* ROUND */;
                 path.joints = joints;
                 path.miterLimit = miterLimit;
                 path.lineDash = lineDash;
@@ -14357,9 +14298,12 @@ var egret;
                 var textColor = format.textColor == null ? node.textColor : format.textColor;
                 var gradients = format.gradients || node.gradients;
                 var style = void 0;
+                var sx = x + $offsetX;
+                var sy = y + $offsetY;
+                var hh = 0;
                 if (gradients) {
-                    var hh = (format.size || node.size) >> 1; //textBaseline = "middle" 是从中间渲染，所以基于高度要上下补值
-                    style = context.createLinearGradient(x, y - hh, x, y + hh);
+                    hh = (format.size || node.size) >> 1; //textBaseline = "middle" 是从中间渲染，所以基于高度要上下补值
+                    style = context.createLinearGradient(sx, sy - hh, sx, sy + hh);
                     for (var i = 0; i < gradients.length; i++) {
                         var colorStop = gradients[i];
                         style.addColorStop(colorStop[0], colorStop[1]);
@@ -14387,9 +14331,20 @@ var egret;
                 context.strokeStyle = strokeStyle;
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    context.strokeText(text, x + $offsetX, y + $offsetY);
+                    context.strokeText(text, sx, sy);
                 }
-                context.fillText(text, x + $offsetX, y + $offsetY);
+                context.fillText(text, sx, sy);
+                if (format.underline) {
+                    context.lineWidth = 2;
+                    hh = hh || (format.size || node.size) >> 1;
+                    sy = sy + hh;
+                    context.beginPath();
+                    context.moveTo(sx, sy);
+                    var w = context.measureText(text).width;
+                    context.lineTo(sx + w, sy);
+                    context.strokeStyle = egret.toColorString(textColor);
+                    context.stroke();
+                }
             }
         };
         /**
@@ -17048,13 +17003,13 @@ var egret;
          * @private
          *
          */
-        TextField.prototype.fillBackground = function (lines) {
+        TextField.prototype.fillBackground = function () {
             var graphics = this.$graphicsNode;
             if (graphics) {
                 graphics.clear();
             }
             var values = this.$TextField;
-            if (values[33 /* background */] || values[31 /* border */] || (lines && lines.length > 0)) {
+            if (values[33 /* background */] || values[31 /* border */]) {
                 if (!graphics) {
                     graphics = this.$graphicsNode = new egret.sys.GraphicsNode();
                     var groupNode = new egret.sys.GroupNode();
@@ -17074,24 +17029,6 @@ var egret;
                     strokePath = graphics.lineStyle(1, values[32 /* borderColor */]);
                     //1像素和3像素线条宽度的情况，会向右下角偏移0.5像素绘制。少画一像素宽度，正好能不超出文本测量边界。
                     strokePath.drawRect(0, 0, this.$getWidth() - 1, this.$getHeight() - 1);
-                }
-                //渲染下划线
-                if (lines && lines.length > 0) {
-                    var textColor = values[2 /* textColor */];
-                    var lastColor = -1;
-                    var length_6 = lines.length;
-                    for (var i = 0; i < length_6; i += 4) {
-                        var x = lines[i];
-                        var y = lines[i + 1];
-                        var w = lines[i + 2];
-                        var color = lines[i + 3] || textColor;
-                        if (lastColor < 0 || lastColor != color) {
-                            lastColor = color;
-                            strokePath = graphics.lineStyle(2, color, 1, egret.CapsStyle.NONE);
-                        }
-                        strokePath.moveTo(x, y);
-                        strokePath.lineTo(x + w, y);
-                    }
                 }
             }
             if (graphics) {
@@ -17199,8 +17136,8 @@ var egret;
                 }
                 return;
             }
-            var underLines = this.drawText();
-            this.fillBackground(underLines);
+            this.drawText();
+            this.fillBackground();
             //tudo 宽高很小的情况下webgl模式绘制异常
             var bounds = this.$getRenderBounds();
             var node = this.textNode;
@@ -17609,7 +17546,6 @@ var egret;
             drawY = Math.round(drawY);
             var hAlign = egret.TextFieldUtils.$getHalign(this);
             var drawX = 0;
-            var underLineData = [];
             for (var i = startLine, numLinesLength = values[29 /* numLines */]; i < numLinesLength; i++) {
                 var line = lines[i];
                 var h = line.height;
@@ -17627,14 +17563,10 @@ var egret;
                     var element = line.elements[j];
                     var size = element.style.size || values[0 /* fontSize */];
                     node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
-                    if (element.style.underline) {
-                        underLineData.push(drawX, drawY + (h) / 2, element.width, element.style.textColor);
-                    }
                     drawX += element.width;
                 }
                 drawY += h / 2 + values[1 /* lineSpacing */];
             }
-            return underLineData;
         };
         //增加点击事件
         TextField.prototype.addEvent = function () {
@@ -19458,8 +19390,8 @@ var egret;
         }
         var superTypes = prototype.__types__;
         if (prototype.__types__) {
-            var length_7 = superTypes.length;
-            for (var i = 0; i < length_7; i++) {
+            var length_6 = superTypes.length;
+            for (var i = 0; i < length_6; i++) {
                 var name_1 = superTypes[i];
                 if (types.indexOf(name_1) == -1) {
                     types.push(name_1);
