@@ -37,7 +37,7 @@ namespace egret.web {
         /**
          * @private
          */
-        public constructor(stage:egret.Stage, canvas:HTMLCanvasElement) {
+        public constructor(stage: egret.Stage, canvas: HTMLCanvasElement) {
             super();
             this.canvas = canvas;
             this.touch = new egret.sys.TouchHandler(stage);
@@ -47,29 +47,29 @@ namespace egret.web {
         /**
          * @private
          */
-        private canvas:HTMLCanvasElement;
+        private canvas: HTMLCanvasElement;
         /**
          * @private
          */
-        private touch:egret.sys.TouchHandler;
+        private touch: egret.sys.TouchHandler;
 
         /**
          * @private
          * 添加事件监听
          */
-        private addListeners():void {
+        private addListeners(): void {
             if (window.navigator.msPointerEnabled) {
-                this.canvas.addEventListener("MSPointerDown", (event:any)=> {
+                this.canvas.addEventListener("MSPointerDown", (event: any) => {
                     event.identifier = event.pointerId;
                     this.onTouchBegin(event);
                     this.prevent(event);
                 }, false);
-                this.canvas.addEventListener("MSPointerMove", (event:any)=> {
+                this.canvas.addEventListener("MSPointerMove", (event: any) => {
                     event.identifier = event.pointerId;
                     this.onTouchMove(event);
                     this.prevent(event);
                 }, false);
-                this.canvas.addEventListener("MSPointerUp", (event:any)=> {
+                this.canvas.addEventListener("MSPointerUp", (event: any) => {
                     event.identifier = event.pointerId;
                     this.onTouchEnd(event);
                     this.prevent(event);
@@ -87,7 +87,7 @@ namespace egret.web {
          * @private
          * 
          */
-        private addMouseListener():void {
+        private addMouseListener(): void {
             this.canvas.addEventListener("mousedown", this.onTouchBegin);
             this.canvas.addEventListener("mousemove", this.onMouseMove);
             this.canvas.addEventListener("mouseup", this.onTouchEnd);
@@ -97,31 +97,31 @@ namespace egret.web {
          * @private
          * 
          */
-        private addTouchListener():void {
-            this.canvas.addEventListener("touchstart", (event:any)=> {
+        private addTouchListener(): void {
+            this.canvas.addEventListener("touchstart", (event: any) => {
                 let l = event.changedTouches.length;
-                for (let i:number = 0; i < l; i++) {
+                for (let i: number = 0; i < l; i++) {
                     this.onTouchBegin(event.changedTouches[i]);
                 }
                 this.prevent(event);
             }, false);
-            this.canvas.addEventListener("touchmove", (event:any)=> {
+            this.canvas.addEventListener("touchmove", (event: any) => {
                 let l = event.changedTouches.length;
-                for (let i:number = 0; i < l; i++) {
+                for (let i: number = 0; i < l; i++) {
                     this.onTouchMove(event.changedTouches[i]);
                 }
                 this.prevent(event);
             }, false);
-            this.canvas.addEventListener("touchend", (event:any)=> {
+            this.canvas.addEventListener("touchend", (event: any) => {
                 let l = event.changedTouches.length;
-                for (let i:number = 0; i < l; i++) {
+                for (let i: number = 0; i < l; i++) {
                     this.onTouchEnd(event.changedTouches[i]);
                 }
                 this.prevent(event);
             }, false);
-            this.canvas.addEventListener("touchcancel", (event:any)=> {
+            this.canvas.addEventListener("touchcancel", (event: any) => {
                 let l = event.changedTouches.length;
-                for (let i:number = 0; i < l; i++) {
+                for (let i: number = 0; i < l; i++) {
                     this.onTouchEnd(event.changedTouches[i]);
                 }
                 this.prevent(event);
@@ -131,9 +131,9 @@ namespace egret.web {
         /**
          * @private
          */
-        private prevent(event):void {
+        private prevent(event): void {
             event.stopPropagation();
-            if (event["isScroll"] != true && !this.canvas['userTyping']) {
+            if (event["isScroll"] != true && !this.canvas['userTyping'] && event.cancelable) {
                 event.preventDefault();
             }
         }
@@ -141,12 +141,12 @@ namespace egret.web {
         /**
          * @private
          */
-        private onTouchBegin = (event:any):void => {
+        private onTouchBegin = (event: any): void => {
             let location = this.getLocation(event);
             this.touch.onTouchBegin(location.x, location.y, event.identifier);
         }
 
-        private onMouseMove = (event:MouseEvent) => {
+        private onMouseMove = (event: MouseEvent) => {
             if (event.buttons == 0) {//在外面松开按键
                 this.onTouchEnd(event);
             } else {
@@ -157,7 +157,7 @@ namespace egret.web {
         /**
          * @private
          */
-        private onTouchMove = (event:any):void => {
+        private onTouchMove = (event: any): void => {
             let location = this.getLocation(event);
             this.touch.onTouchMove(location.x, location.y, event.identifier);
 
@@ -166,7 +166,7 @@ namespace egret.web {
         /**
          * @private
          */
-        private onTouchEnd = (event:any):void => {
+        private onTouchEnd = (event: any): void => {
             let location = this.getLocation(event);
             this.touch.onTouchEnd(location.x, location.y, event.identifier);
         }
@@ -174,7 +174,7 @@ namespace egret.web {
         /**
          * @private
          */
-        private getLocation(event:any):Point {
+        private getLocation(event: any): Point {
             event.identifier = +event.identifier || 0;
             let doc = document.documentElement;
             let box = this.canvas.getBoundingClientRect();
@@ -198,15 +198,15 @@ namespace egret.web {
         /**
          * @private
          */
-        private scaleX:number = 1;
+        private scaleX: number = 1;
         /**
          * @private
          */
-        private scaleY:number = 1;
+        private scaleY: number = 1;
         /**
          * @private
          */
-        private rotation:number = 0;
+        private rotation: number = 0;
 
         /**
          * @private
@@ -214,7 +214,7 @@ namespace egret.web {
          * @param scaleX 水平方向的缩放比例。
          * @param scaleY 垂直方向的缩放比例。
          */
-        public updateScaleMode(scaleX:number, scaleY:number, rotation:number):void {
+        public updateScaleMode(scaleX: number, scaleY: number, rotation: number): void {
             this.scaleX = scaleX;
             this.scaleY = scaleY;
             this.rotation = rotation;
@@ -224,7 +224,7 @@ namespace egret.web {
          * @private
          * 更新同时触摸点的数量
          */
-        public $updateMaxTouches():void {
+        public $updateMaxTouches(): void {
             this.touch.$initMaxTouches();
         }
     }
