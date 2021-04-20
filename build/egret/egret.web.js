@@ -2804,7 +2804,7 @@ var egret;
              */
             WebTouchHandler.prototype.prevent = function (event) {
                 event.stopPropagation();
-                if (event["isScroll"] != true && !this.canvas['userTyping']) {
+                if (event["isScroll"] != true && !this.canvas['userTyping'] && event.cancelable) {
                     event.preventDefault();
                 }
             };
