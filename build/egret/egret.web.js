@@ -5241,6 +5241,7 @@ var egret;
                 }
                 defaultFragShader.push("gl_FragColor = color * vColor;", "}");
                 this.defaultFragShader = defaultFragShader.join("\n");
+                this.emptyTexture = this.createTexture2(1, 1);
             };
             WebGLRenderContext.prototype.handleContextLost = function () {
                 this.contextLost = true;
@@ -5763,16 +5764,17 @@ var egret;
                 var uniforms = program.uniforms;
                 var texs = data.texs;
                 if (texs) {
-                    var context = this.context;
-                    for (var i = 0; i < texs.length; i++) {
+                    var _a = this, context = _a.context, emptyTexture = _a.emptyTexture, $maxTextureCount = _a.$maxTextureCount;
+                    for (var i = 0; i < $maxTextureCount; i++) {
                         var uni_1 = uniforms["tex" + i];
                         if (uni_1) {
                             var tex = texs[i];
-                            if (tex !== undefined) {
-                                context.activeTexture(context.TEXTURE0 + i);
-                                context.bindTexture(context.TEXTURE_2D, tex);
-                                uni_1.setValue(i);
+                            if (!tex) {
+                                tex = emptyTexture;
                             }
+                            context.activeTexture(context.TEXTURE0 + i);
+                            context.bindTexture(context.TEXTURE_2D, tex);
+                            uni_1.setValue(i);
                         }
                     }
                 }
