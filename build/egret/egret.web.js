@@ -5348,6 +5348,11 @@ var egret;
             WebGLRenderContext.prototype.createTexture2 = function (width, height) {
                 var gl = this.context;
                 var texture = gl.createTexture();
+                if (!texture) {
+                    //先创建texture失败,然后lost事件才发出来..
+                    this.contextLost = true;
+                    return;
+                }
                 texture.glContext = gl;
                 gl.bindTexture(gl.TEXTURE_2D, texture);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
