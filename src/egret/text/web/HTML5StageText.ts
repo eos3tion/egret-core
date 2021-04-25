@@ -212,18 +212,18 @@ namespace egret.web {
             let oldHeight = document.documentElement.clientHeight;
 
             inputElement.focus();
-            if (egret.Capabilities.isMobile) {
-                this.t = window.setTimeout(function () {
-                    let de = document.documentElement.clientHeight;
-                    if (de === oldHeight && document.activeElement === inputElement) {
-                        let player = document.querySelector(".egret-player") as HTMLElement;
-                        let b = inputElement.getBoundingClientRect().bottom;
-                        if (de * .6 < b) {
-                            player.style.top = -de * .4 + "px";
-                        }
-                    }
-                }, 200)
-            }
+            // if (egret.Capabilities.isMobile) {
+            //     this.t = window.setTimeout(function () {
+            //         let de = document.documentElement.clientHeight;
+            //         if (de === oldHeight && document.activeElement === inputElement) {
+            //             let player = document.querySelector(".egret-player") as HTMLElement;
+            //             let b = inputElement.getBoundingClientRect().bottom;
+            //             if (de * .6 < b) {
+            //                 player.style.top = -de * .4 + "px";
+            //             }
+            //         }
+            //     }, 200)
+            // }
         }
 
         /**
@@ -233,12 +233,12 @@ namespace egret.web {
             if (this.htmlInput) {
                 this.htmlInput.disconnectStageText(this);
             }
-            if (this.t) {
-                let player = document.querySelector(".egret-player") as HTMLElement;
-                player.style.top = "0px";
-                window.clearTimeout(this.t);
-                this.t = 0;
-            }
+            // if (this.t) {
+            //     let player = document.querySelector(".egret-player") as HTMLElement;
+            //     player.style.top = "0px";
+            //     window.clearTimeout(this.t);
+            //     this.t = 0;
+            // }
         }
 
         /**
