@@ -1832,6 +1832,15 @@ var egret;
              */
             HTML5StageText.prototype.$addToStage = function () {
                 this.htmlInput = egret.web.$getTextAdapter(this.$textfield);
+                window.addEventListener('resize', this.onResize.bind(this));
+            };
+            HTML5StageText.prototype.onResize = function () {
+                var inputElement = this.inputElement;
+                if (document.activeElement === inputElement) {
+                    window.setTimeout(function () {
+                        inputElement.scrollIntoViewIfNeeded();
+                    }, 0);
+                }
             };
             /**
              * @private

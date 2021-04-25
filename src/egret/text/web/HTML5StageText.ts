@@ -90,6 +90,16 @@ namespace egret.web {
          */
         $addToStage(): void {
             this.htmlInput = egret.web.$getTextAdapter(this.$textfield);
+            window.addEventListener('resize', this.onResize.bind(this))
+        }
+
+        onResize() {
+            let inputElement = this.inputElement;
+            if (document.activeElement === inputElement) {
+                window.setTimeout(function () {
+                    inputElement.scrollIntoViewIfNeeded();
+                }, 0);
+            }
         }
 
         /**
