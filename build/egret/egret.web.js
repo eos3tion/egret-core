@@ -1940,7 +1940,7 @@ var egret;
                             var player = document.querySelector(".egret-player");
                             var b = inputElement.getBoundingClientRect().bottom;
                             if (de * .6 < b) {
-                                player.style.top = -de * .4 + "px";
+                                player.style.top = -de * .5 + "px";
                             }
                         }
                     }, 200);
