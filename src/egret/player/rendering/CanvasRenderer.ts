@@ -128,6 +128,7 @@ namespace egret {
          */
         private drawDisplayObject(displayObject: DisplayObject, context: CanvasRenderingContext2D, offsetX: number, offsetY: number, isStage?: boolean): number {
             let drawCalls = 0;
+            displayObject.beforeDraw();
             let node: sys.RenderNode;
             let displayList = displayObject.$displayList;
             if (displayList && !isStage) {
@@ -210,6 +211,7 @@ namespace egret {
         }
 
         private drawWithFilter(displayObject: DisplayObject, context: CanvasRenderingContext2D, offsetX: number, offsetY: number): number {
+            displayObject.beforeDraw();
             if (displayObject.$children && displayObject.$children.length == 0 && (!displayObject.$renderNode || displayObject.$renderNode.$getRenderCount() == 0)) {
                 return 0;
             }
@@ -290,6 +292,7 @@ namespace egret {
 
         private drawWithClip(displayObject: DisplayObject, context: CanvasRenderingContext2D, offsetX: number, offsetY: number): number {
             let drawCalls = 0;
+            displayObject.beforeDraw();
             let hasBlendMode = (displayObject.$blendMode !== 0);
             let compositeOp: string;
             if (hasBlendMode) {
@@ -433,6 +436,7 @@ namespace egret {
 
         private drawWithScrollRect(displayObject: DisplayObject, context: CanvasRenderingContext2D, offsetX: number, offsetY: number): number {
             let drawCalls = 0;
+            displayObject.beforeDraw();
             let scrollRect = displayObject.$scrollRect ? displayObject.$scrollRect : displayObject.$maskRect;
             if (scrollRect.isEmpty()) {
                 return drawCalls;

@@ -1312,6 +1312,7 @@ declare namespace egret {
          */
         get tint(): number;
         set tint(value: number);
+        beforeDraw(): void;
     }
 }
 declare namespace egret {

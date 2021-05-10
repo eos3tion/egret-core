@@ -6477,6 +6477,7 @@ var egret;
              */
             WebGLRenderer.prototype.drawDisplayObject = function (displayObject, buffer, offsetX, offsetY, isStage) {
                 var drawCalls = 0;
+                displayObject.beforeDraw();
                 var node;
                 var displayList = displayObject.$displayList;
                 if (displayList && !isStage) {
@@ -6583,6 +6584,7 @@ var egret;
              */
             WebGLRenderer.prototype.drawWithFilter = function (displayObject, buffer, offsetX, offsetY) {
                 var drawCalls = 0;
+                displayObject.beforeDraw();
                 if (displayObject.$children && displayObject.$children.length == 0 && (!displayObject.$renderNode || displayObject.$renderNode.$getRenderCount() == 0)) {
                     return drawCalls;
                 }
@@ -6705,6 +6707,7 @@ var egret;
              */
             WebGLRenderer.prototype.drawWithClip = function (displayObject, buffer, offsetX, offsetY) {
                 var drawCalls = 0;
+                displayObject.beforeDraw();
                 var hasBlendMode = (displayObject.$blendMode !== 0);
                 var compositeOp;
                 if (hasBlendMode) {
@@ -6822,6 +6825,7 @@ var egret;
              */
             WebGLRenderer.prototype.drawWithScrollRect = function (displayObject, buffer, offsetX, offsetY) {
                 var drawCalls = 0;
+                displayObject.beforeDraw();
                 var scrollRect = displayObject.$scrollRect ? displayObject.$scrollRect : displayObject.$maskRect;
                 if (scrollRect.isEmpty()) {
                     return drawCalls;

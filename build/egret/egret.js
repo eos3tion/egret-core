@@ -2264,6 +2264,7 @@ var egret;
             enumerable: false,
             configurable: true
         });
+        DisplayObject.prototype.beforeDraw = function () { };
         /**
          * @private
          * The default touchEnabled property of DisplayObject
@@ -13747,6 +13748,7 @@ var egret;
          */
         CanvasRenderer.prototype.drawDisplayObject = function (displayObject, context, offsetX, offsetY, isStage) {
             var drawCalls = 0;
+            displayObject.beforeDraw();
             var node;
             var displayList = displayObject.$displayList;
             if (displayList && !isStage) {
@@ -13828,6 +13830,7 @@ var egret;
             return drawCalls;
         };
         CanvasRenderer.prototype.drawWithFilter = function (displayObject, context, offsetX, offsetY) {
+            displayObject.beforeDraw();
             if (displayObject.$children && displayObject.$children.length == 0 && (!displayObject.$renderNode || displayObject.$renderNode.$getRenderCount() == 0)) {
                 return 0;
             }
@@ -13907,6 +13910,7 @@ var egret;
         };
         CanvasRenderer.prototype.drawWithClip = function (displayObject, context, offsetX, offsetY) {
             var drawCalls = 0;
+            displayObject.beforeDraw();
             var hasBlendMode = (displayObject.$blendMode !== 0);
             var compositeOp;
             if (hasBlendMode) {
@@ -14042,6 +14046,7 @@ var egret;
         };
         CanvasRenderer.prototype.drawWithScrollRect = function (displayObject, context, offsetX, offsetY) {
             var drawCalls = 0;
+            displayObject.beforeDraw();
             var scrollRect = displayObject.$scrollRect ? displayObject.$scrollRect : displayObject.$maskRect;
             if (scrollRect.isEmpty()) {
                 return drawCalls;

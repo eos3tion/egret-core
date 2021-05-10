@@ -2029,6 +2029,8 @@ namespace egret {
             this._tint = value;
             this.$tintRGB = (value >> 16) + (value & 0xff00) + ((value & 0xff) << 16);
         }
+
+        beforeDraw() { }
     }
 
     function arrayRemove<T>(list: T[], item: T) {
