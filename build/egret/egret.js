@@ -14284,7 +14284,130 @@ var egret;
             return drawCalls;
         };
         CanvasRenderer.prototype.renderMesh = function (node, context) {
-            return 0;
+            var image = node.image;
+            var data = node.drawData;
+            var dataLength = data.length;
+            var pos = 0;
+            var m = node.matrix;
+            var blendMode = node.blendMode;
+            var alpha = node.alpha;
+            var savedMatrix;
+            var offsetX;
+            var offsetY;
+            var saved = false;
+            var drawCalls = 0;
+            if (context.$imageSmoothingEnabled != node.smoothing) {
+                context.imageSmoothingEnabled = node.smoothing;
+                context.$imageSmoothingEnabled = node.smoothing;
+            }
+            context.save();
+            saved = true;
+            if (context.$offsetX != 0 || context.$offsetY != 0) {
+                context.translate(context.$offsetX, context.$offsetY);
+                offsetX = context.$offsetX;
+                offsetY = context.$offsetY;
+                context.$offsetX = context.$offsetY = 0;
+            }
+            if (m) {
+                context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
+            }
+            //这里不考虑嵌套
+            if (blendMode) {
+                context.globalCompositeOperation = blendModes[blendMode];
+            }
+            // 设置alpha
+            var originAlpha;
+            if (alpha == alpha) {
+                originAlpha = context.globalAlpha;
+                context.globalAlpha *= alpha;
+            }
+            //暂不考虑滤镜
+            // if (node.filter) {
+            //     buffer.context.$filter = node.filter;
+            //     while (pos < length) {
+            //         buffer.context.drawMesh(image, data[pos++], data[pos++], data[pos++], data[pos++],
+            //             data[pos++], data[pos++], data[pos++], data[pos++], node.imageWidth, node.imageHeight, node.uvs, node.vertices, node.indices, node.bounds, node.rotated, node.smoothing);
+            //     }
+            //     buffer.context.$filter = null;
+            // }
+            // else {
+            while (pos < dataLength) {
+                drawCalls += this.drawMesh(image, data[pos++], data[pos++], data[pos++], data[pos++], data[pos++], data[pos++], data[pos++], data[pos++], node.uvs, node.vertices, node.indices, node.bounds, node.rotated, context);
+            }
+            if (blendMode) {
+                context.globalCompositeOperation = defaultCompositeOp;
+            }
+            if (alpha == alpha) {
+                context.globalAlpha = originAlpha;
+            }
+            if (offsetX) {
+                context.$offsetX = offsetX;
+            }
+            if (offsetY) {
+                context.$offsetY = offsetY;
+            }
+            if (saved) {
+                context.restore();
+            }
+            return drawCalls;
+        };
+        CanvasRenderer.prototype.drawMesh = function (image, sourceX, sourceY, sourceWidth, sourceHeight, offsetX, offsetY, destWidth, destHeight, meshUVs, meshVertices, meshIndices, bounds, rotated, context) {
+            if (!context || !image) {
+                return;
+            }
+            var drawCalls = 0;
+            var u0 = NaN, u1 = NaN, u2 = NaN, v0 = NaN, v1 = NaN, v2 = NaN;
+            var a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0;
+            var _sourceWidth = sourceWidth;
+            var _sourceHeight = sourceHeight;
+            var _destWidth = destWidth;
+            var _destHeight = destHeight;
+            if (rotated) {
+                _sourceWidth = sourceHeight;
+                _sourceHeight = sourceWidth;
+                _destWidth = destHeight;
+                _destHeight = destWidth;
+            }
+            var indicesLen = meshIndices.length;
+            var index1, index2, index3;
+            var x0, y0, x1, y1, x2, y2;
+            for (var i = 0; i < indicesLen; i += 3) {
+                index1 = meshIndices[i] * 2, index2 = meshIndices[i + 1] * 2, index3 = meshIndices[i + 2] * 2;
+                u0 = meshUVs[index1] * sourceWidth;
+                v0 = meshUVs[index1 + 1] * sourceHeight;
+                u1 = meshUVs[index2] * sourceWidth;
+                v1 = meshUVs[index2 + 1] * sourceHeight;
+                u2 = meshUVs[index3] * sourceWidth;
+                v2 = meshUVs[index3 + 1] * sourceHeight;
+                x0 = meshVertices[index1];
+                y0 = meshVertices[index1 + 1];
+                x1 = meshVertices[index2];
+                y1 = meshVertices[index2 + 1];
+                x2 = meshVertices[index3];
+                y2 = meshVertices[index3 + 1];
+                context.save();
+                context.beginPath();
+                context.moveTo(x0, y0);
+                context.lineTo(x1, y1);
+                context.lineTo(x2, y2);
+                context.closePath();
+                context.clip();
+                var ratio = 1 / ((u0 * v1) + (v0 * u2) + (u1 * v2) - (v1 * u2) - (v0 * u1) - (u0 * v2));
+                a = (x0 * v1) + (v0 * x2) + (x1 * v2) - (v1 * x2) - (v0 * x1) - (x0 * v2);
+                b = (y0 * v1) + (v0 * y2) + (y1 * v2) - (v1 * y2) - (v0 * y1) - (y0 * v2);
+                c = (u0 * x1) + (x0 * u2) + (u1 * x2) - (x1 * u2) - (x0 * u1) - (u0 * x2);
+                d = (u0 * y1) + (y0 * u2) + (u1 * y2) - (y1 * u2) - (y0 * u1) - (u0 * y2);
+                tx = (u0 * v1 * x2) + (v0 * x1 * u2) + (x0 * u1 * v2) - (x0 * v1 * u2) - (v0 * u1 * x2) - (u0 * x1 * v2);
+                ty = (u0 * v1 * y2) + (v0 * y1 * u2) + (y0 * u1 * v2) - (y0 * v1 * u2) - (v0 * u1 * y2) - (u0 * y1 * v2);
+                context.transform(a * ratio, b * ratio, c * ratio, d * ratio, tx * ratio, ty * ratio);
+                if (rotated) {
+                    context.transform(0, -1, 1, 0, 0, _destWidth);
+                }
+                context.drawImage(image.source, sourceX, sourceY, _sourceWidth, _sourceHeight, offsetX + context.$offsetX, offsetY + context.$offsetY, _destWidth, _destHeight);
+                context.restore();
+                drawCalls++;
+            }
+            return drawCalls;
         };
         CanvasRenderer.prototype.renderText = function (node, context) {
             context.textAlign = "left";

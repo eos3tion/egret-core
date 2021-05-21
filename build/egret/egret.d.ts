@@ -10199,6 +10199,7 @@ declare namespace egret {
         private renderNormalBitmap;
         private renderBitmap;
         private renderMesh;
+        private drawMesh;
         renderText(node: sys.TextNode, context: CanvasRenderingContext2D): void;
         private renderingMask;
         /**
